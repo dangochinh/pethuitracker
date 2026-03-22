@@ -18,13 +18,15 @@ export async function GET(request) {
             return NextResponse.json({ success: true, data: [] });
         }
 
-        const data = rows.map((row, index) => ({
-            id: index + 7,
-            vaccineId: row[0],
-            date: row[1],
-            scheduledDate: row[2] || '', // Column H
-            note: row[3] || '' // Column I
-        }));
+        const data = rows
+            .map((row, index) => ({
+                id: index + 7,
+                vaccineId: row[0],
+                date: row[1],
+                scheduledDate: row[2] || '',
+                note: row[3] || ''
+            }))
+            .filter(d => d.vaccineId);
 
         return NextResponse.json({ success: true, data });
     } catch (err) {

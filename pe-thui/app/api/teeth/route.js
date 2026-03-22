@@ -18,12 +18,14 @@ export async function GET(request) {
             return NextResponse.json({ success: true, data: [] });
         }
 
-        const data = rows.map((row, index) => ({
-            id: index + 7,
-            toothId: row[0],
-            date: row[1],
-            note: row[2] || ''
-        }));
+        const data = rows
+            .map((row, index) => ({
+                id: index + 7,
+                toothId: row[0],
+                date: row[1],
+                note: row[2] || ''
+            }))
+            .filter(d => d.toothId);
 
         return NextResponse.json({ success: true, data });
     } catch (err) {
@@ -51,15 +53,38 @@ export async function POST(request) {
 
         const newRow = [toothId, date, note || ''];
 
-        await sheets.spreadsheets.values.append({
+        // Check if a record already exists for this toothId
+        const response = await sheets.spreadsheets.values.get({
             spreadsheetId: SHEET_ID,
             range: `${code}!J7:L`,
-            valueInputOption: 'USER_ENTERED',
-            insertDataOption: 'INSERT_ROWS',
-            requestBody: {
-                values: [newRow]
-            }
         });
+
+        const rows = response.data.values || [];
+        const existingRowIndex = rows.findIndex(row => row[0] === toothId);
+
+        if (existingRowIndex >= 0) {
+            // Update existing row
+            const rowNumber = existingRowIndex + 7;
+            await sheets.spreadsheets.values.update({
+                spreadsheetId: SHEET_ID,
+                range: `${code}!J${rowNumber}:L${rowNumber}`,
+                valueInputOption: 'USER_ENTERED',
+                requestBody: {
+                    values: [newRow]
+                }
+            });
+        } else {
+            // Append new row
+            await sheets.spreadsheets.values.append({
+                spreadsheetId: SHEET_ID,
+                range: `${code}!J7:L`,
+                valueInputOption: 'USER_ENTERED',
+                insertDataOption: 'INSERT_ROWS',
+                requestBody: {
+                    values: [newRow]
+                }
+            });
+        }
 
         return NextResponse.json({ success: true, data: body });
     } catch (err) {

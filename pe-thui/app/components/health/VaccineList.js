@@ -20,7 +20,8 @@ export default function VaccineList({ dob, records, code, onSave }) {
     const [hideCompleted, setHideCompleted] = useState(false);
 
     // Parse custom vaccines from records
-    const customVaccines = records
+    const validRecords = records.filter(r => r.vaccineId);
+    const customVaccines = validRecords
         .filter(r => r.vaccineId.startsWith('custom-'))
         .map(r => {
             try {
@@ -39,8 +40,8 @@ export default function VaccineList({ dob, records, code, onSave }) {
     const uniqueCustomVaccines = customVaccines.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
     const ALL_VACCINES = [...VACCINES, ...uniqueCustomVaccines];
 
-    const completedIds = new Set(records.filter(r => r.date).map(r => r.vaccineId));
-    const scheduledRecords = records.reduce((acc, r) => {
+    const completedIds = new Set(validRecords.filter(r => r.date).map(r => r.vaccineId));
+    const scheduledRecords = validRecords.reduce((acc, r) => {
         if (r.scheduledDate) acc[r.vaccineId] = r.scheduledDate;
         return acc;
     }, {});

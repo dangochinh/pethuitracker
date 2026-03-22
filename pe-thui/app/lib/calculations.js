@@ -47,15 +47,15 @@ export function predictAdultHeight(currentHeight, gender, ageMonths) {
 export function assessWeight(weight, ageMonths) {
     // Rough estimate for MVP
     const avg = ageMonths * 0.5 + 4;
-    if (weight > avg * 1.3) return { status: 'Béo phì', color: 'text-red-500', bg: 'bg-red-50' };
-    if (weight < avg * 0.75) return { status: 'Suy dinh dưỡng', color: 'text-orange-500', bg: 'bg-orange-50' };
-    return { status: 'Đạt chuẩn', color: 'text-green-500', bg: 'bg-green-50' };
+    if (weight > avg * 1.3) return { status: 'Béo phì', color: 'text-[#e65100]', bg: 'bg-[#ffe0b2]' };
+    if (weight < avg * 0.75) return { status: 'Suy dinh dưỡng', color: 'text-[#c2185b]', bg: 'bg-[#f8bbd0]' };
+    return { status: 'Đạt chuẩn', color: 'text-[#00838f]', bg: 'bg-[#b2ebf2]' };
 }
 
 export function assessHeight(height, ageMonths) {
     // Rough estimate for MVP
     const avg = ageMonths * 1.5 + 50;
-    if (height > avg * 1.1) return { status: 'Cao so với tiêu chuẩn', color: 'text-cyan-500', bg: 'bg-cyan-50' };
-    if (height < avg * 0.9) return { status: 'Thấp còi', color: 'text-orange-500', bg: 'bg-orange-50' };
-    return { status: 'Bình thường', color: 'text-green-500', bg: 'bg-green-50' };
+    if (height > avg * 1.1) return { status: 'Cao so với tiêu chuẩn', color: 'text-[#e65100]', bg: 'bg-[#ffe0b2]' };
+    if (height < avg * 0.9) return { status: 'Thấp còi', color: 'text-[#c2185b]', bg: 'bg-[#f8bbd0]' };
+    return { status: 'Bình thường', color: 'text-[#00838f]', bg: 'bg-[#b2ebf2]' };
 }

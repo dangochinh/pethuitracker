@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#001f23",
+              "background": "#fff8f8",
+              "surface-container-high": "#f8e3e8",
+              "on-background": "#24191c",
+              "tertiary-fixed-dim": "#d0c5b3",
+              "surface-container": "#fee9ee",
+              "on-error-container": "#93000a",
+              "primary-container": "#f06e9c",
+              "on-tertiary-fixed": "#201b10",
+              "on-secondary-container": "#006b75",
+              "tertiary": "#655d4f",
+              "surface-dim": "#e9d5da",
+              "on-tertiary-fixed-variant": "#4d4638",
+              "error": "#ba1a1a",
+              "surface-bright": "#fff8f8",
+              "secondary": "#006972",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#ffd9e2",
+              "on-primary-fixed-variant": "#861949",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#ffecf0",
+              "on-surface": "#24191c",
+              "surface-tint": "#a53361",
+              "on-tertiary-container": "#373124",
+              "on-primary-fixed": "#3e001d",
+              "primary": "#a53361",
+              "secondary-fixed-dim": "#54d8e8",
+              "surface-container-low": "#fff0f3",
+              "on-surface-variant": "#554147",
+              "secondary-fixed": "#8ff2ff",
+              "on-primary-container": "#670033",
+              "surface-variant": "#f2dde2",
+              "outline-variant": "#dbc0c6",
+              "inverse-surface": "#3a2d31",
+              "inverse-primary": "#ffb1c7",
+              "primary-fixed-dim": "#ffb1c7",
+              "tertiary-container": "#a29888",
+              "tertiary-fixed": "#ede1cf",
+              "outline": "#887177",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary": "#ffffff",
+              "secondary-container": "#6fefff",
+              "surface-container-highest": "#f2dde2",
+              "on-secondary-fixed-variant": "#004f56",
+              "on-secondary": "#ffffff",
+              "surface": "#fff8f8"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        font-family: 'Be Vietnam Pro', sans-serif;
+      }
+      .glass-effect {
+        backdrop-filter: blur(16px);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Backdrop Overlay with High-Quality Blur -->
+<div class="fixed inset-0 bg-on-background/30 glass-effect z-50 flex items-center justify-center p-4">
+<!-- Modal Container -->
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-[2.5rem] shadow-[0px_24px_48px_rgba(165,51,97,0.15)] overflow-hidden flex flex-col relative animate-in fade-in zoom-in duration-300">
+<!-- Modal Header -->
+<div class="px-8 pt-8 pb-2 flex justify-between items-center">
+<h2 class="font-headline font-bold text-2xl text-primary">Sửa Thông Tin Của Bé</h2>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Content (Scrollable) -->
+<form class="px-8 pb-10 space-y-6">
+<!-- Profile Orb Section -->
+<div class="flex flex-col items-center justify-center space-y-3 relative py-2">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full border-4 border-surface-container-low shadow-md overflow-hidden ring-4 ring-primary/5">
+<img alt="Baby Profile" class="w-full h-full object-cover" data-alt="Baby portrait photo in a circular frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzfTbylwlJHf6d7akhlI9o-gQE-IojTqD9dEMdXitlf4nUFjuJE1mb8Jgps-Na-XFuUhCDUaQs8If--UMii8o1Og1thZk02qI2iwDk3TJ7BzB_KpWMGQVN41QNyFvo4e_ZyioCKSgaS8T5XmJDkd5HRDuGTrX3PkD6kEqo5KktUJyLUd39Ghsz6oPpqPbNoL5HB_APkPdDqQSy9J1YdaHYUlqi1LwRgvOFEr3FDOvN40s0h5w6oBX6gIsCVeARditH805YeUuQhPE"/>
+</div>
+<label class="absolute bottom-1 right-1 bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 transition-transform active:scale-95" for="avatar_upload">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</label>
+<input class="hidden" id="avatar_upload" type="file"/>
+</div>
+<p class="text-label text-sm text-on-surface-variant font-medium">Thay đổi ảnh đại diện</p>
+</div>
+<!-- Input Fields Grid -->
+<div class="grid grid-cols-1 gap-5">
+<!-- Baby Name Field -->
+<div class="space-y-2">
+<label class="text-label text-sm font-semibold text-primary ml-4">Tên của bé</label>
+<div class="relative">
+<input class="w-full h-14 bg-surface-container-low border-transparent rounded-full px-6 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline-variant" placeholder="Nhập tên của bé" type="text" value="Bé Bún"/>
+</div>
+</div>
+<!-- Code / URL Field -->
+<div class="space-y-2">
+<label class="text-label text-sm font-semibold text-primary ml-4">Mã Code (Định danh)</label>
+<div class="relative">
+<input class="w-full h-14 bg-surface-container-low border-transparent rounded-full px-6 pr-12 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline-variant" placeholder="Ví dụ: BAB-123" type="text" value="BUN-2023-XYZ"/>
+<span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-outline text-[20px]">link</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Birthday Field -->
+<div class="space-y-2">
+<label class="text-label text-sm font-semibold text-primary ml-4">Ngày sinh</label>
+<div class="relative">
+<input class="w-full h-14 bg-surface-container-low border-transparent rounded-full px-6 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all text-on-surface font-medium" type="date" value="2023-05-15"/>
+</div>
+</div>
+<!-- Gender Toggle -->
+<div class="space-y-2">
+<label class="text-label text-sm font-semibold text-primary ml-4">Giới tính</label>
+<div class="flex h-14 bg-surface-container-low p-1.5 rounded-full">
+<button class="flex-1 rounded-full text-sm font-bold transition-all bg-secondary-fixed text-on-secondary-fixed shadow-sm" type="button">
+                                    Bé Trai
+                                </button>
+<button class="flex-1 rounded-full text-sm font-medium transition-all text-on-surface-variant hover:bg-surface-container/50" type="button">
+                                    Bé Gái
+                                </button>
+</div>
+</div>
+</div>
+<!-- Avatar URL Field -->
+<div class="space-y-2">
+<label class="text-label text-sm font-semibold text-primary ml-4">Đường dẫn ảnh (Avatar URL)</label>
+<input class="w-full h-14 bg-surface-container-low border-transparent rounded-full px-6 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline-variant" placeholder="https://example.com/image.jpg" type="url"/>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="pt-4 flex flex-col space-y-3">
+<button class="w-full h-14 bg-primary text-on-primary rounded-full font-headline font-bold text-lg shadow-[0px_8px_20px_rgba(165,51,97,0.3)] hover:bg-primary-container hover:text-on-primary-container active:scale-95 transition-all flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">save</span>
+                        Lưu Thay Đổi
+                    </button>
+<button class="w-full h-12 bg-transparent text-secondary rounded-full font-headline font-semibold text-sm hover:bg-surface-container transition-colors" type="button">
+                        Hủy bỏ
+                    </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Background Content (Simulating the App Dashboard behind the modal) -->
+<div class="p-6 opacity-20 pointer-events-none">
+<!-- Top App Bar Mockup -->
+<header class="flex justify-between items-center mb-8">
+<h1 class="font-headline font-extrabold text-primary text-xl tracking-tight">PETHUI</h1>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border-2 border-surface-container-lowest"></div>
+</header>
+<!-- Stats Grid Mockup -->
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-highest p-6 rounded-xl aspect-square"></div>
+<div class="bg-surface-container p-6 rounded-xl aspect-square"></div>
+</div>
+<!-- Large Chart Card Mockup -->
+<div class="bg-surface-container-low h-64 w-full rounded-xl mb-6"></div>
+<!-- List Mockup -->
+<div class="space-y-4">
+<div class="h-16 bg-surface-container-low rounded-lg w-full"></div>
+<div class="h-16 bg-surface-container-low rounded-lg w-full"></div>
+<div class="h-16 bg-surface-container-low rounded-lg w-full"></div>
+</div>
+</div>
+</body></html>

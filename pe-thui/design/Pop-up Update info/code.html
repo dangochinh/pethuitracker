@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#001f23",
+              "background": "#fff8f8",
+              "surface-container-high": "#f8e3e8",
+              "on-background": "#24191c",
+              "tertiary-fixed-dim": "#d0c5b3",
+              "surface-container": "#fee9ee",
+              "on-error-container": "#93000a",
+              "primary-container": "#f06e9c",
+              "on-tertiary-fixed": "#201b10",
+              "on-secondary-container": "#006b75",
+              "tertiary": "#655d4f",
+              "surface-dim": "#e9d5da",
+              "on-tertiary-fixed-variant": "#4d4638",
+              "error": "#ba1a1a",
+              "surface-bright": "#fff8f8",
+              "secondary": "#006972",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#ffd9e2",
+              "on-primary-fixed-variant": "#861949",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#ffecf0",
+              "on-surface": "#24191c",
+              "surface-tint": "#a53361",
+              "on-tertiary-container": "#373124",
+              "on-primary-fixed": "#3e001d",
+              "primary": "#a53361",
+              "secondary-fixed-dim": "#54d8e8",
+              "surface-container-low": "#fff0f3",
+              "on-surface-variant": "#554147",
+              "secondary-fixed": "#8ff2ff",
+              "on-primary-container": "#670033",
+              "surface-variant": "#f2dde2",
+              "outline-variant": "#dbc0c6",
+              "inverse-surface": "#3a2d31",
+              "inverse-primary": "#ffb1c7",
+              "primary-fixed-dim": "#ffb1c7",
+              "tertiary-container": "#a29888",
+              "tertiary-fixed": "#ede1cf",
+              "outline": "#887177",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary": "#ffffff",
+              "secondary-container": "#6fefff",
+              "surface-container-highest": "#f2dde2",
+              "on-secondary-fixed-variant": "#004f56",
+              "on-secondary": "#ffffff",
+              "surface": "#fff8f8"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .ambient-glow {
+        box-shadow: 0px 20px 40px rgba(165, 51, 97, 0.08);
+      }
+      /* Custom styles for prominent inputs to match visual request */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface overflow-hidden">
+<!-- Main Background (Simulating Dashboard Content Underneath) -->
+<div class="fixed inset-0 z-0 p-6 flex flex-col gap-6">
+<!-- Top Nav Component (Shared) -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-40 backdrop-blur-md bg-opacity-80 bg-[#fff8f8] dark:bg-[#24191c]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-lowest overflow-hidden">
+<img alt="Baby profile orb" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJoQCUaJX5CwGRsnb25x2N058-iuwWQnaFXcTp7bHyzwMAMXQlG8x2qVLkSvaXdBJLHXO_rvpikFH3F2n0ZCOBmO2vRYCn-Fhg2g_jEB9crv4sCYqfaKqRn70EcBOP4aJX4UE_mGCvotWyV8w4HNmSLXo2MQNxKkSHET3PJIucL2mthGfN9NAqbDJkliN_SAJHZ28YryeHXE2eU9eBKnDahl_o6k9C3aS6tLehU_9kv14opolc5vWtubYR-M6v_45dA37WmCoNu9M"/>
+</div>
+<h1 class="font-headline font-extrabold text-primary dark:text-[#f06e9c] tracking-tight">PETHUI</h1>
+</div>
+<button class="material-symbols-outlined text-primary dark:text-[#f06e9c] hover:scale-105 transition-transform active:scale-95 active:duration-150" data-icon="settings">settings</button>
+</header>
+<!-- Mock Content Behind Modal -->
+<div class="flex flex-col gap-4 opacity-30">
+<div class="h-48 w-full bg-surface-container rounded-xl"></div>
+<div class="grid grid-cols-2 gap-4">
+<div class="h-32 bg-surface-container-high rounded-xl"></div>
+<div class="h-32 bg-surface-container-high rounded-xl"></div>
+</div>
+</div>
+</div>
+<!-- Modal Backdrop -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-on-background/40 backdrop-blur-sm">
+<!-- Modal Card -->
+<div class="relative w-full max-w-sm bg-surface-container-lowest rounded-xl ambient-glow overflow-hidden">
+<!-- Header -->
+<div class="px-8 pt-10 pb-4 text-center">
+<h2 class="font-headline text-2xl font-bold text-primary mb-1">Cập nhật chỉ số</h2>
+<p class="text-on-surface-variant text-sm">Ghi lại sự phát triển của bé yêu hôm nay</p>
+</div>
+<!-- Close Button -->
+<button class="absolute top-6 right-6 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant hover:scale-105 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="close">close</span>
+</button>
+<!-- Modal Content -->
+<div class="px-8 pb-10">
+<form class="space-y-6">
+<!-- Date Picker Field -->
+<div class="space-y-3">
+<label class="font-headline text-sm font-semibold text-primary px-1 block">Ngày đo</label>
+<div class="relative flex items-center">
+<input class="w-full pl-14 pr-12 py-4 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-secondary/20 text-on-surface font-semibold text-lg outline-none appearance-none" type="date" value="2023-10-24"/>
+<span class="absolute left-5 text-secondary material-symbols-outlined text-2xl" data-icon="calendar_today" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span class="absolute right-5 text-on-surface-variant material-symbols-outlined pointer-events-none" data-icon="calendar_month">calendar_month</span>
+</div>
+</div>
+<!-- Input Group: Weight & Height -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Weight -->
+<div class="space-y-3">
+<label class="font-headline text-sm font-semibold text-primary px-1 block">Cân nặng (kg)</label>
+<div class="relative flex items-center">
+<span class="absolute left-5 text-secondary material-symbols-outlined text-2xl" data-icon="monitor_weight" style="font-variation-settings: 'FILL' 1;">monitor_weight</span>
+<input class="w-full pl-14 pr-4 py-4 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-secondary/20 text-on-surface font-semibold text-lg outline-none" placeholder="8.5" step="0.1" type="number"/>
+</div>
+</div>
+<!-- Height -->
+<div class="space-y-3">
+<label class="font-headline text-sm font-semibold text-primary px-1 block">Chiều cao (cm)</label>
+<div class="relative flex items-center">
+<span class="absolute left-5 text-secondary material-symbols-outlined text-2xl" data-icon="straighten" style="font-variation-settings: 'FILL' 1;">straighten</span>
+<input class="w-full pl-14 pr-4 py-4 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-secondary/20 text-on-surface font-semibold text-lg outline-none" placeholder="72" step="0.5" type="number"/>
+</div>
+</div>
+</div>
+<!-- Friendly Tip Box -->
+<div class="flex items-center gap-4 p-5 bg-[#E8F8FB] rounded-[2rem]">
+<div class="flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-2xl" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<p class="text-xs leading-relaxed text-secondary font-semibold">
+                            Dữ liệu này sẽ giúp PETHUI tính toán biểu đồ tăng trưởng chuẩn WHO cho bé.
+                        </p>
+</div>
+<!-- Actions -->
+<div class="pt-2">
+<button class="w-full py-5 bg-gradient-to-r from-primary-container to-primary text-on-primary font-headline font-bold text-lg rounded-full ambient-glow hover:scale-[1.02] transition-transform active:scale-95 shadow-lg shadow-primary/20" type="submit">
+                            Lưu Kết Quả
+                        </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- Bottom Nav Component (Shared) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 backdrop-blur-xl bg-[#fff8f8]/80 dark:bg-[#24191c]/80 rounded-t-[3rem] shadow-[0px_-10px_30px_rgba(165,51,97,0.05)]">
+<div class="flex flex-col items-center justify-center text-[#006972] dark:text-[#54d8e8] opacity-70 hover:bg-[#fee9ee] dark:hover:bg-[#3d2b30] cursor-pointer">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium text-center">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#ffd9e2] dark:bg-[#5c1e38] text-[#a53361] dark:text-[#ffd9e2] rounded-full px-5 py-2 transition-all scale-110 duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="child_care" style="font-variation-settings: 'FILL' 1;">child_care</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium text-center">Mọc răng</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#006972] dark:text-[#54d8e8] opacity-70 hover:bg-[#fee9ee] dark:hover:bg-[#3d2b30] cursor-pointer">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium text-center">Sức khỏe</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#006972] dark:text-[#54d8e8] opacity-70 hover:bg-[#fee9ee] dark:hover:bg-[#3d2b30] cursor-pointer">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-['Be_Vietnam_Pro'] text-[11px] font-medium text-center">Phát triển</span>
+</div>
+</nav>
+</body></html>

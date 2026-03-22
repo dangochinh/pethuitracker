@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PETHUI - Development</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-container": "#f06e9c",
+              "tertiary-fixed": "#ede1cf",
+              "on-secondary-fixed": "#001f23",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#ffd9e2",
+              "surface-variant": "#f2dde2",
+              "surface-dim": "#e9d5da",
+              "primary-fixed-dim": "#ffb1c7",
+              "on-secondary": "#ffffff",
+              "on-surface-variant": "#554147",
+              "on-surface": "#24191c",
+              "on-primary-fixed-variant": "#861949",
+              "secondary-fixed": "#8ff2ff",
+              "surface-bright": "#fff8f8",
+              "on-tertiary-fixed": "#201b10",
+              "outline-variant": "#dbc0c6",
+              "on-secondary-fixed-variant": "#004f56",
+              "inverse-on-surface": "#ffecf0",
+              "secondary": "#006972",
+              "primary": "#a53361",
+              "surface-tint": "#a53361",
+              "secondary-fixed-dim": "#54d8e8",
+              "inverse-primary": "#ffb1c7",
+              "outline": "#887177",
+              "tertiary": "#655d4f",
+              "tertiary-container": "#a29888",
+              "secondary-container": "#6fefff",
+              "background": "#fff8f8",
+              "on-tertiary-fixed-variant": "#4d4638",
+              "on-primary-fixed": "#3e001d",
+              "error": "#ba1a1a",
+              "on-tertiary": "#ffffff",
+              "on-background": "#24191c",
+              "surface-container-high": "#f8e3e8",
+              "on-primary-container": "#670033",
+              "on-error-container": "#93000a",
+              "error-container": "#ffdad6",
+              "on-primary": "#ffffff",
+              "inverse-surface": "#3a2d31",
+              "on-error": "#ffffff",
+              "surface": "#fff8f8",
+              "on-tertiary-container": "#373124",
+              "surface-container-low": "#fff0f3",
+              "tertiary-fixed-dim": "#d0c5b3",
+              "surface-container": "#fee9ee",
+              "on-secondary-container": "#006b75",
+              "surface-container-highest": "#f2dde2"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .profile-orb-shadow {
+            box-shadow: 0px 20px 40px rgba(165, 51, 97, 0.08);
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-surface selection:bg-primary-fixed">
+<!-- Top App Bar - Refined to match Dashboard style -->
+<nav class="fixed top-0 w-full flex justify-between items-center px-6 py-4 bg-[#fff8f8]/80 backdrop-blur-xl z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-lowest overflow-hidden shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Baby's portrait in a circular frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxeaNh-PYsxnZy0Tgt0dgwGlk8Rpec5pS4rJYkSbO85BKwsvsPvWEwa7QlCnbY0s-l70YeoAeXF8UYlQl5qOc2v5E7JWz3ioDM04RlQvkT67vIiImrzyjPZeO6b2OObZBZiZAXFVb54YrHiB5X_KFZOIj5x4Iyz4CSZ2gtST8IHFWT5KEo1S0Sxw_sNtMdK2WHDam_ORsmH27GpHzjmzk0QMGpqQU9hGFTNT33ZVttr0TSjysgJTGiuQXMo5qYHZ89jC05L9sj6Os"/>
+</div>
+<span class="text-2xl font-extrabold tracking-tight text-[#a53361] uppercase">PETHUI</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</nav>
+<main class="pt-24 pb-32 px-6 max-w-lg mx-auto">
+<!-- Profile Header -->
+<section class="flex flex-col items-center mb-8">
+<div class="relative mb-6">
+<div class="w-40 h-40 rounded-full bg-gradient-to-tr from-primary-fixed to-primary-container p-1.5 profile-orb-shadow">
+<div class="w-full h-full rounded-full border-4 border-surface-container-lowest overflow-hidden bg-white">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a smiling baby" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtrGs6v53SSPzuahTcmzx7JavkmsmozzJSf17-K56-1NBOuzrMfh-ZDz2UrcCwaqhuBoeUAv7Fei-9kqH_QFbzyvE435SOJc_dp_U4C_AsTkkakB6oaEB8Uza5xB5_EXgNrmwoyPSKJg-NxjN1T5RH74wSJQl5SJnO2scvxDW-avyUQscgIBOo2_YU8q2Miv5FScPY5plcOgo6daNdujFSiA_mx3HpiLSWe7M9IDjWuGpXFvVNMB0DDO7FTXIJAjpxtirngMJZrIQ"/>
+</div>
+</div>
+<button class="absolute bottom-1 right-1 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white border-4 border-background hover:scale-110 transition-transform shadow-md">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+</div>
+<div class="text-center">
+<div class="flex items-center justify-center gap-2 mb-1">
+<h1 class="font-headline font-extrabold text-3xl text-primary tracking-tight">Pe thúi</h1>
+<span class="material-symbols-outlined text-secondary font-bold" style="font-variation-settings: 'FILL' 1;">female</span>
+</div>
+<p class="text-on-surface-variant font-medium">1 Tháng 3 năm 2025</p>
+<div class="inline-block mt-3 px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-bold text-sm">
+                1 tuổi 21 ngày
+            </div>
+</div>
+</section>
+<!-- Birthday Countdown Card -->
+<section class="mb-6">
+<div class="bg-surface-container rounded-xl p-6 flex items-center gap-5 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-8xl text-primary">cake</span>
+</div>
+<div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">celebration</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-primary text-lg">Sắp đến sinh nhật</h3>
+<p class="text-on-surface-variant font-medium">Còn 344 ngày nữa</p>
+</div>
+</div>
+</section>
+<!-- Prediction Section - Refined Visual Distinction -->
+<section class="mb-6">
+<div class="bg-primary text-white rounded-[2rem] p-8 profile-orb-shadow relative overflow-hidden border-2 border-primary-container/20">
+<div class="absolute -right-6 -bottom-6 w-32 h-32 bg-primary-container/20 rounded-full blur-3xl"></div>
+<div class="absolute -left-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<h3 class="font-headline font-bold text-lg leading-tight w-2/3">Dự đoán chiều cao trưởng thành cho con</h3>
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+<span class="material-symbols-outlined text-white">auto_awesome</span>
+</div>
+</div>
+<div class="flex items-end gap-4 relative z-10">
+<div class="flex items-baseline gap-1">
+<span class="text-6xl font-headline font-extrabold tracking-tighter">156</span>
+<span class="text-2xl font-bold opacity-80 pb-1">cm</span>
+</div>
+<div class="flex-1 flex flex-col items-end pb-1">
+<p class="text-[11px] font-medium text-primary-fixed/80 leading-tight italic text-right">Dựa trên biểu đồ<br/>tăng trưởng hiện tại</p>
+</div>
+</div>
+</div>
+</section>
+<!-- See Growth Charts Link - Primary Action Feel -->
+<div class="flex justify-center mb-10">
+<button class="group flex items-center gap-2 px-6 py-3 bg-secondary/10 hover:bg-secondary/20 text-secondary rounded-full font-bold text-sm transition-all duration-300">
+<span>Xem biểu đồ phát triển</span>
+<span class="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">trending_up</span>
+</button>
+</div>
+<!-- Growth Process Section - Refined Typography & Separators -->
+<section class="mb-8">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline font-bold text-xl text-primary">Quá trình phát triển</h2>
+<button class="w-10 h-10 rounded-full bg-primary-fixed text-primary flex items-center justify-center hover:scale-110 transition-transform shadow-sm">
+<span class="material-symbols-outlined text-2xl font-bold">add</span>
+</button>
+</div>
+<div class="space-y-4">
+<!-- Record 1 -->
+<div class="bg-surface-container-low border border-outline-variant/40 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="px-5 py-3 bg-surface-variant/20 flex justify-between items-center">
+<span class="text-sm font-bold text-on-surface tracking-tight">Tuổi: 1 tuổi 20 ngày</span>
+<div class="flex items-center gap-3 text-on-surface-variant/70">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">calendar_month</span>
+<span class="text-[12px] font-semibold">21/03/2026</span>
+</div>
+<span class="material-symbols-outlined text-lg hover:text-primary transition-colors cursor-pointer">edit_note</span>
+</div>
+</div>
+<div class="grid grid-cols-2 p-5 relative">
+<!-- Vertical Separator -->
+<div class="absolute left-1/2 top-4 bottom-4 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-extrabold text-on-surface-variant/60 uppercase tracking-widest mb-1.5">Cân nặng</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-extrabold text-primary">10.8</span>
+<span class="text-sm font-bold text-on-surface-variant">kg</span>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-extrabold text-on-surface-variant/60 uppercase tracking-widest mb-1.5">Chiều cao</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-extrabold text-primary">78</span>
+<span class="text-sm font-bold text-on-surface-variant">cm</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Record 2 -->
+<div class="bg-surface-container-low border border-outline-variant/40 rounded-2xl overflow-hidden shadow-sm">
+<div class="px-5 py-3 bg-surface-variant/20 flex justify-between items-center">
+<span class="text-sm font-bold text-on-surface tracking-tight">Tuổi: 11 tháng 26 ngày</span>
+<div class="flex items-center gap-3 text-on-surface-variant/70">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">calendar_month</span>
+<span class="text-[12px] font-semibold">27/02/2026</span>
+</div>
+<span class="material-symbols-outlined text-lg hover:text-primary transition-colors cursor-pointer">edit_note</span>
+</div>
+</div>
+<div class="grid grid-cols-2 p-5 relative">
+<div class="absolute left-1/2 top-4 bottom-4 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-extrabold text-on-surface-variant/60 uppercase tracking-widest mb-1.5">Cân nặng</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-extrabold text-primary">10.5</span>
+<span class="text-sm font-bold text-on-surface-variant">kg</span>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-extrabold text-on-surface-variant/60 uppercase tracking-widest mb-1.5">Chiều cao</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-extrabold text-primary">77</span>
+<span class="text-sm font-bold text-on-surface-variant">cm</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Record 3 (Dimmed) -->
+<div class="bg-surface-container-low border border-outline-variant/40 rounded-2xl overflow-hidden opacity-70">
+<div class="px-5 py-3 bg-surface-variant/10 flex justify-between items-center border-b border-outline-variant/20">
+<span class="text-sm font-bold text-on-surface tracking-tight">Tuổi: 9 tháng 26 ngày</span>
+<div class="flex items-center gap-3 text-on-surface-variant/70">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">calendar_month</span>
+<span class="text-[12px] font-semibold">27/12/2025</span>
+</div>
+<span class="material-symbols-outlined text-lg">edit_note</span>
+</div>
+</div>
+<div class="grid grid-cols-2 p-5 relative">
+<div class="absolute left-1/2 top-4 bottom-4 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-extrabold text-on-surface-variant/60 uppercase tracking-widest mb-1.5">Cân nặng</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-extrabold text-primary">10.1</span>
+<span class="text-sm font-bold text-on-surface-variant">kg</span>
+</div>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-[10px] font-extrabold text-on-surface-variant/60 uppercase tracking-widest mb-1.5">Chiều cao</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-extrabold text-primary">77</span>
+<span class="text-sm font-bold text-on-surface-variant">cm</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar - Refined to match Dashboard style -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-[#fff8f8]/80 backdrop-blur-xl rounded-t-[3rem] shadow-[0px_-10px_40px_rgba(165,51,97,0.08)] z-50">
+<div class="flex flex-col items-center justify-center text-[#a53361]/40 px-5 py-2 hover:bg-[#ffd9e2]/30 rounded-full transition-colors cursor-pointer">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label text-[10px] font-bold tracking-wide mt-0.5">TRANG CHỦ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#a53361]/40 px-5 py-2 hover:bg-[#ffd9e2]/30 rounded-full transition-colors cursor-pointer">
+<span class="material-symbols-outlined">child_care</span>
+<span class="font-label text-[10px] font-bold tracking-wide mt-0.5">MỌC RĂNG</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#a53361]/40 px-5 py-2 hover:bg-[#ffd9e2]/30 rounded-full transition-colors cursor-pointer">
+<span class="material-symbols-outlined">vaccines</span>
+<span class="font-label text-[10px] font-bold tracking-wide mt-0.5">Y TẾ</span>
+</div>
+<!-- Active Tab -->
+<div class="flex flex-col items-center justify-center bg-primary text-white rounded-full px-5 py-2.5 scale-105 shadow-lg shadow-primary/20 transition-all duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+<span class="font-label text-[10px] font-bold tracking-wide mt-0.5">PHÁT TRIỂN</span>
+</div>
+</nav>
+</body></html>

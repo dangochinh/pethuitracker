@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#d0c5b3",
+              "surface-dim": "#e9d5da",
+              "surface-container-high": "#f8e3e8",
+              "surface-bright": "#fff8f8",
+              "on-primary-fixed": "#3e001d",
+              "on-primary-fixed-variant": "#861949",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#670033",
+              "inverse-on-surface": "#ffecf0",
+              "tertiary": "#655d4f",
+              "secondary-fixed-dim": "#54d8e8",
+              "primary": "#a53361",
+              "on-secondary-container": "#006b75",
+              "secondary-fixed": "#8ff2ff",
+              "surface-container": "#fee9ee",
+              "tertiary-fixed": "#ede1cf",
+              "on-background": "#24191c",
+              "surface-container-lowest": "#ffffff",
+              "surface-variant": "#f2dde2",
+              "on-secondary-fixed": "#001f23",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+              "on-surface-variant": "#554147",
+              "outline-variant": "#dbc0c6",
+              "on-surface": "#24191c",
+              "primary-fixed": "#ffd9e2",
+              "on-error-container": "#93000a",
+              "on-secondary-fixed-variant": "#004f56",
+              "primary-fixed-dim": "#ffb1c7",
+              "surface-container-low": "#fff0f3",
+              "surface": "#fff8f8",
+              "surface-tint": "#a53361",
+              "on-tertiary-fixed": "#201b10",
+              "primary-container": "#f06e9c",
+              "on-tertiary-fixed-variant": "#4d4638",
+              "background": "#fff8f8",
+              "surface-container-highest": "#f2dde2",
+              "secondary": "#006972",
+              "outline": "#887177",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#373124",
+              "inverse-primary": "#ffb1c7",
+              "error-container": "#ffdad6",
+              "secondary-container": "#6fefff",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#a29888",
+              "inverse-surface": "#3a2d31"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-checkbox:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-6 py-4 bg-[#fff8f8]/80 backdrop-blur-xl z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-surface-container-lowest overflow-hidden">
+<img alt="Baby's portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyUsL7WccpsE1PmxVKWit9OXw5jkXOJcjzbpuiLvdAtpzke3NAv1_RdP_u7RGjHAq8dY9NJhQQ7PjrRpBKNU4E65mOB_XzSfHbLWOsCmbfdRwsrw25V9YhI4YmQ2uZvl4WXlo-BecpUpqwYUWtCSGSBC6ZgFOxm4JM5w3_l4lAXA8Cjr5v7mYbF1YOTY9o14d3SpKT5s0Uy81EQZ9vLOhKJuEx3iGVMQ4zfqj53dBS3ocokTYyfWtLc1jlHYuw_EF3fY1NVaPGgeI"/>
+</div>
+<span class="text-2xl font-extrabold tracking-tight text-[#a53361]">PETHUI</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center text-[#a53361] hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-6 space-y-8 max-w-2xl mx-auto">
+<!-- Hero Section: Progress Visualization -->
+<section class="relative bg-gradient-to-br from-primary-container to-primary p-8 rounded-xl text-white overflow-hidden shadow-[0px_20px_40px_rgba(165,51,97,0.15)]">
+<div class="relative z-10 flex justify-between items-center">
+<div class="space-y-1">
+<p class="text-sm font-medium opacity-90">Vaccination Progress</p>
+<h2 class="text-4xl font-bold">8 of 12</h2>
+<p class="text-xs font-light">4 doses remaining for Year 1</p>
+</div>
+<div class="w-20 h-20 relative flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="opacity-20" cx="40" cy="40" fill="transparent" r="34" stroke="currentColor" stroke-width="6"></circle>
+<circle class="stroke-white transition-all duration-1000 ease-out" cx="40" cy="40" fill="transparent" r="34" stroke="currentColor" stroke-dasharray="213.6" stroke-dashoffset="71.2" stroke-linecap="round" stroke-width="6"></circle>
+</svg>
+<span class="absolute text-sm font-bold">66%</span>
+</div>
+</div>
+<!-- Decorative organic shape -->
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+</section>
+<!-- Vaccination Schedule List -->
+<section class="space-y-10">
+<div class="flex items-center justify-between">
+<h3 class="text-xl font-bold text-primary">Vaccination Schedule</h3>
+<span class="material-symbols-outlined text-primary" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<!-- At Birth -->
+<div class="space-y-4">
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em] ml-1">At Birth</h4>
+<div class="space-y-3">
+<!-- BCG -->
+<div class="group relative flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-variant/50 transition-all hover:shadow-md">
+<div class="relative flex items-center justify-center">
+<input checked="" class="custom-checkbox w-6 h-6 rounded-full border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-transform group-active:scale-95" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h5 class="font-bold text-on-surface truncate">BCG</h5>
+<span class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary">COMPLETED</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5">Single Dose • Recommended: At birth</p>
+</div>
+</div>
+<!-- Hep B -->
+<div class="group relative flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-variant/50 transition-all hover:shadow-md">
+<div class="relative flex items-center justify-center">
+<input checked="" class="custom-checkbox w-6 h-6 rounded-full border-2 border-primary text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-transform group-active:scale-95" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h5 class="font-bold text-on-surface truncate">Hepatitis B - 1st Dose</h5>
+<span class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary">COMPLETED</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5">Dose 1 of 3 • Recommended: At birth</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 2 Months -->
+<div class="space-y-4">
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em] ml-1">2 Months</h4>
+<div class="space-y-3">
+<!-- DTaP - Overdue -->
+<div class="group relative flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border-l-4 border-l-error border-y border-r border-y-surface-variant/50 border-r-surface-variant/50 transition-all hover:shadow-md">
+<div class="relative flex items-center justify-center">
+<input class="custom-checkbox w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-transform group-active:scale-95" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h5 class="font-bold text-on-surface truncate">DTaP - 1st Dose</h5>
+<span class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-error/10 text-error">OVERDUE</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5">Dose 1 of 5 • Recommended: 2 months</p>
+</div>
+</div>
+<!-- Rotavirus -->
+<div class="group relative flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-variant/50 transition-all hover:shadow-md">
+<div class="relative flex items-center justify-center">
+<input class="custom-checkbox w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-transform group-active:scale-95" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h5 class="font-bold text-on-surface truncate">Rotavirus - 1st Dose</h5>
+<span class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-secondary/10 text-secondary">UPCOMING</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5">Dose 1 of 3 • Recommended: 2 months</p>
+</div>
+</div>
+<!-- Polio -->
+<div class="group relative flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-variant/50 transition-all hover:shadow-md">
+<div class="relative flex items-center justify-center">
+<input class="custom-checkbox w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-transform group-active:scale-95" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h5 class="font-bold text-on-surface truncate">Polio (IPV) - 1st Dose</h5>
+<span class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-secondary/10 text-secondary">UPCOMING</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5">Dose 1 of 4 • Recommended: 2 months</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 12-15 Months -->
+<div class="space-y-4">
+<h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-[0.15em] ml-1">12-15 Months</h4>
+<div class="space-y-3">
+<!-- MMR -->
+<div class="group relative flex items-center gap-4 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-surface-variant/50 transition-all hover:shadow-md">
+<div class="relative flex items-center justify-center">
+<input class="custom-checkbox w-6 h-6 rounded-full border-2 border-outline text-primary focus:ring-primary focus:ring-offset-0 bg-transparent transition-transform group-active:scale-95" type="checkbox"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-start justify-between gap-2">
+<h5 class="font-bold text-on-surface truncate">MMR - 1st Dose</h5>
+<span class="shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full bg-on-surface-variant/10 text-on-surface-variant">SCHEDULED</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-0.5">Dose 1 of 2 • Recommended: 12-15 months</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Vaccinations (Bento Style) -->
+<section class="space-y-4">
+<h3 class="text-xl font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="event_upcoming">event_upcoming</span>
+                Next Reminders
+            </h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-container-highest p-5 rounded-2xl border-l-4 border-secondary flex flex-col justify-between h-32 relative overflow-hidden shadow-sm">
+<div>
+<h4 class="font-bold text-on-surface">Hib Vaccine</h4>
+<p class="text-xs text-on-surface-variant">Due: Nov 15, 2023</p>
+</div>
+<div class="flex items-center gap-1.5 text-[10px] font-bold text-secondary uppercase tracking-widest">
+<span class="material-symbols-outlined text-base" data-icon="alarm">alarm</span>
+                        14 Days Left
+                    </div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-highest p-5 rounded-2xl border-l-4 border-secondary flex flex-col justify-between h-32 shadow-sm">
+<div>
+<h4 class="font-bold text-on-surface">PCV13</h4>
+<p class="text-xs text-on-surface-variant">Due: Dec 02, 2023</p>
+</div>
+<div class="flex items-center gap-1.5 text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">
+<span class="material-symbols-outlined text-base" data-icon="calendar_today">calendar_today</span>
+                        Scheduled
+                    </div>
+</div>
+</div>
+</section>
+<!-- Custom Vaccine CTA -->
+<section class="bg-primary/5 border-2 border-dashed border-primary/20 rounded-2xl p-8 flex items-center justify-center text-center">
+<div class="space-y-3">
+<p class="text-on-surface-variant text-sm font-medium">Need to log a travel or custom vaccine?</p>
+<button class="text-primary font-bold flex items-center gap-2 mx-auto hover:gap-3 transition-all group">
+                    Add Custom Vaccine 
+                    <span class="material-symbols-outlined transition-transform group-hover:scale-110" data-icon="add_circle">add_circle</span>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 pb-8 pt-3 bg-[#fff8f8]/90 backdrop-blur-2xl rounded-t-[2.5rem] z-50 shadow-[0px_-10px_40px_rgba(165,51,97,0.08)]">
+<a class="flex flex-col items-center justify-center text-[#a53361]/50 px-5 py-2 hover:bg-[#ffd9e2]/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#a53361]/50 px-5 py-2 hover:bg-[#ffd9e2]/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Growth</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#f06e9c] to-[#a53361] text-white rounded-2xl px-6 py-3 shadow-lg shadow-primary/20 -translate-y-1 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="vaccines">vaccines</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Health</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#a53361]/50 px-5 py-2 hover:bg-[#ffd9e2]/50 rounded-2xl transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Journal</span>
+</a>
+</nav>
+</body></html>

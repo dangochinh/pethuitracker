@@ -30,8 +30,10 @@ export async function GET(request) {
 
         return NextResponse.json({ success: true, data: profile });
     } catch (err) {
+        console.error('API Error in /api/profile:', err);
         return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
+
 }
 
 export async function POST(request) {

@@ -36,6 +36,7 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
                 })
             });
             onSave();
+            onClose();
         } catch (e) {
             setError('Lỗi kết nối đến máy chủ. Vui lòng thử lại.');
         } finally {
@@ -53,6 +54,7 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
             const json = await res.json();
             if (json.success) {
                 onSave();
+                onClose();
             } else {
                 setError('Lỗi khi xóa bản ghi.');
             }

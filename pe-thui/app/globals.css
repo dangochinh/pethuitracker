@@ -1,34 +1,118 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-pink: #ff6eb4;
-  --color-brand-pink-light: #ffdbee;
-  --color-brand-blue: #00bcd4;
-  --color-brand-blue-light: #e0f7fa;
-  --color-brand-yellow: #ffb703;
-  --color-brand-bg: #fdf5f8;
-  --color-brand-text: #4a4a4a;
+  /* Colors from design/Home/code.html */
+  --color-primary: #a53361;
+  --color-primary-container: #f06e9c;
+  --color-on-primary: #ffffff;
+  --color-primary-fixed: #ffd9e2;
+  --color-on-primary-fixed: #3e001d;
+  --color-on-primary-fixed-variant: #861949;
+  
+  --color-secondary: #006972;
+  --color-secondary-container: #6fefff;
+  --color-on-secondary: #ffffff;
+  --color-secondary-fixed-dim: #54d8e8;
+  
+  --color-tertiary: #655d4f;
+  --color-background: #fff8f8;
+  --color-surface: #fff8f8;
+  --color-surface-container: #fee9ee;
+  --color-surface-container-low: #fff0f3;
+  --color-surface-container-high: #f8e3e8;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-surface: #24191c;
+  --color-on-surface-variant: #554147;
+  --color-outline: #887177;
+  --color-outline-variant: #dbc0c6;
+  --color-error: #ba1a1a;
+
+  /* Tooth specific colors */
+  --color-tooth-red: #FFB2B2;
+  --color-tooth-orange: #FFE0B2;
+  --color-tooth-green: #B2FFD5;
+  --color-tooth-blue: #B2D5FF;
+  --color-tooth-purple: #D5B2FF;
+
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
+  
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
 }
 
-body {
-  background-color: var(--color-brand-bg);
-  color: var(--color-brand-text);
-  font-family: 'Quicksand', 'Nunito', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* Custom Utilities for cute UI */
-@layer components {
-  .cute-card {
-    @apply bg-white rounded-3xl shadow-[0_8px_30px_rgb(255,110,180,0.12)] border border-pink-50 overflow-hidden;
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    min-height: 100dvh;
+    @apply antialiased;
   }
   
-  .cute-button-primary {
-    @apply bg-gradient-to-r from-[#ff6eb4] to-[#ff8fce] text-white font-bold rounded-full py-3 px-6 shadow-md shadow-pink-200 active:scale-95 transition-transform;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headline);
   }
 
-  .cute-button-outline {
-    @apply border-2 border-brand-text text-brand-text font-bold rounded-full py-3 px-6 active:scale-95 transition-transform;
+  /* Force Material Symbols ligatures to render correctly despite parent text wrappers */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    line-height: 1 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    word-wrap: normal !important;
+    white-space: nowrap !important;
+    direction: ltr !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    font-feature-settings: 'liga' !important;
   }
 }
+
+@layer components {
+  .bento-card {
+    @apply bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant/20 transition-all active:scale-[0.98];
+  }
+
+  .bg-soft-gradient {
+    background: linear-gradient(135deg, var(--color-primary-container) 0%, var(--color-primary) 100%);
+  }
+
+  /* Dental Arch Layout */
+  .dental-arch {
+    @apply relative mx-auto;
+    width: 280px;
+    height: 160px;
+  }
+  .tooth-btn {
+    @apply absolute w-8 h-9 flex items-center justify-center transition-all bg-white border-2 border-white shadow-sm -translate-x-1/2 cursor-pointer;
+    border-radius: 8px 8px 14px 14px;
+  }
+  .tooth-lower .tooth-btn {
+    border-radius: 14px 14px 8px 8px;
+  }
+  .tooth-erupted {
+    @apply border-primary;
+  }
+  .tooth-erupted::after {
+    content: '✓';
+    @apply absolute -top-1.5 -right-1.5 bg-primary text-white w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold shadow-sm;
+  }
+
+  /* Symmetric Positions (Center is 140px) */
+  .u1-l { left: 122px; top: 10px; }
+  .u1-r { left: 158px; top: 10px; }
+  .u2-l { left: 92px; top: 20px; }
+  .u2-r { left: 188px; top: 20px; }
+  .u3-l { left: 68px; top: 45px; }
+  .u3-r { left: 212px; top: 45px; }
+  .u4-l { left: 52px; top: 80px; }
+  .u4-r { left: 228px; top: 80px; }
+  .u5-l { left: 48px; top: 120px; }
+  .u5-r { left: 232px; top: 120px; }
+
+}
+

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PETHUI - Teething Tracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#d0c5b3",
+              "surface-dim": "#e9d5da",
+              "surface-container-high": "#f8e3e8",
+              "surface-bright": "#fff8f8",
+              "on-primary-fixed": "#3e001d",
+              "on-primary-fixed-variant": "#861949",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#670033",
+              "inverse-on-surface": "#ffecf0",
+              "tertiary": "#655d4f",
+              "secondary-fixed-dim": "#54d8e8",
+              "primary": "#a53361",
+              "on-secondary-container": "#006b75",
+              "secondary-fixed": "#8ff2ff",
+              "surface-container": "#fee9ee",
+              "tertiary-fixed": "#ede1cf",
+              "on-background": "#24191c",
+              "surface-container-lowest": "#ffffff",
+              "surface-variant": "#f2dde2",
+              "on-secondary-fixed": "#001f23",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+              "on-surface-variant": "#554147",
+              "outline-variant": "#dbc0c6",
+              "on-surface": "#24191c",
+              "primary-fixed": "#ffd9e2",
+              "on-error-container": "#93000a",
+              "on-secondary-fixed-variant": "#004f56",
+              "primary-fixed-dim": "#ffb1c7",
+              "surface-container-low": "#fff0f3",
+              "surface": "#fff8f8",
+              "surface-tint": "#a53361",
+              "on-tertiary-fixed": "#201b10",
+              "primary-container": "#f06e9c",
+              "on-tertiary-fixed-variant": "#4d4638",
+              "background": "#fff8f8",
+              "surface-container-highest": "#f2dde2",
+              "secondary": "#006972",
+              "outline": "#887177",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#373124",
+              "inverse-primary": "#ffb1c7",
+              "error-container": "#ffdad6",
+              "secondary-container": "#6fefff",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#a29888",
+              "inverse-surface": "#3a2d31",
+              // Precise pastel colors from reference
+              "tooth-red": "#FFB2B2",
+              "tooth-orange": "#FFE0B2",
+              "tooth-green": "#B2FFD5",
+              "tooth-blue": "#B2D5FF",
+              "tooth-purple": "#D5B2FF"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dbc0c6;
+            border-radius: 10px;
+        }
+        
+        /* Dental Arch Layout - Enhanced Symmetries */
+        .dental-arch {
+            position: relative;
+            width: 280px;
+            height: 160px;
+            margin: 0 auto;
+        }
+        .tooth-btn {
+            position: absolute;
+            width: 32px;
+            height: 36px;
+            border-radius: 8px 8px 14px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid white;
+            box-shadow: 0 4px 10px -2px rgba(0,0,0,0.1);
+            transform: translateX(-50%);
+        }
+        .tooth-lower .tooth-btn {
+            border-radius: 14px 14px 8px 8px;
+        }
+        .tooth-erupted {
+            border-color: #a53361;
+        }
+        .tooth-erupted::after {
+            content: '✓';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #a53361;
+            color: white;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Symmetric Positions */
+        /* Center is 140px */
+        .u1-l { left: 122px; top: 10px; }
+        .u1-r { left: 158px; top: 10px; }
+        .u2-l { left: 92px; top: 20px; }
+        .u2-r { left: 188px; top: 20px; }
+        .u3-l { left: 68px; top: 45px; }
+        .u3-r { left: 212px; top: 45px; }
+        .u4-l { left: 52px; top: 80px; }
+        .u4-r { left: 228px; top: 80px; }
+        .u5-l { left: 48px; top: 120px; }
+        .u5-r { left: 232px; top: 120px; }
+
+        .arch-spacer {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-[#fff8f8] font-body text-on-surface antialiased custom-scrollbar">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-6 py-4 bg-[#fff8f8]/80 backdrop-blur-xl z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden shadow-sm">
+<img alt="Baby's portrait" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDiqaKWk1qROPeX1-XHo8yjeMMHKylY5njWM7qfPOVIv0C6dNieYX8AAOMutHjA7eMlsnEWrnWGiexp6rTjhvMFODJoJnJrPHRlhwuGloqbEDdWTVkei5_G3JeTHuthi-pcTfnISdZX5CosFxeqmP2Zyg8-8iucr-KJ6Isulkkhp9vF95i-SvQYIBalOiBrGY9jqVx2o4sPfadJq0GdCs5Ao0Ht7QbCrz5NJNzyshpuuWCjWmhqHVeiZ1VNlA0OsegpqaQS50Zt3A"/>
+</div>
+<h1 class="text-2xl font-extrabold tracking-tight text-[#a53361] font-headline uppercase">PETHUI</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#a53361]" data-icon="notifications">notifications</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-5 max-w-2xl mx-auto space-y-8">
+<!-- Interactive Dental Chart Section -->
+<section class="bg-[#fee9ee]/40 rounded-[2.5rem] p-8 shadow-sm border border-surface-container">
+<div class="text-center mb-10">
+<h2 class="text-3xl font-bold font-headline text-primary mb-1">Teething Chart</h2>
+<p class="text-sm text-on-surface-variant italic opacity-80">Tap a tooth to log eruption date</p>
+</div>
+<div class="flex flex-col items-center">
+<!-- Upper Jaw -->
+<div class="dental-arch">
+<div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-outline-variant/50 uppercase tracking-[0.2em] pointer-events-none">UPPER JAW</div>
+<button class="tooth-btn u1-l bg-tooth-red tooth-erupted" onclick="openLogModal('Upper Central Incisor (L)')"></button>
+<button class="tooth-btn u1-r bg-tooth-red tooth-erupted" onclick="openLogModal('Upper Central Incisor (R)')"></button>
+<button class="tooth-btn u2-l bg-tooth-orange" onclick="openLogModal('Upper Lateral Incisor (L)')"></button>
+<button class="tooth-btn u2-r bg-tooth-orange" onclick="openLogModal('Upper Lateral Incisor (R)')"></button>
+<button class="tooth-btn u3-l bg-tooth-green" onclick="openLogModal('Upper Canine (L)')"></button>
+<button class="tooth-btn u3-r bg-tooth-green" onclick="openLogModal('Upper Canine (R)')"></button>
+<button class="tooth-btn u4-l bg-tooth-blue" onclick="openLogModal('Upper 1st Molar (L)')"></button>
+<button class="tooth-btn u4-r bg-tooth-blue" onclick="openLogModal('Upper 1st Molar (R)')"></button>
+<button class="tooth-btn u5-l bg-tooth-purple" onclick="openLogModal('Upper 2nd Molar (L)')"></button>
+<button class="tooth-btn u5-r bg-tooth-purple" onclick="openLogModal('Upper 2nd Molar (R)')"></button>
+</div>
+<div class="arch-spacer"></div>
+<!-- Lower Jaw -->
+<div class="dental-arch tooth-lower rotate-180">
+<div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-outline-variant/50 uppercase tracking-[0.2em] pointer-events-none rotate-180">LOWER JAW</div>
+<button class="tooth-btn u1-l bg-tooth-red tooth-erupted" onclick="openLogModal('Lower Central Incisor (L)')"></button>
+<button class="tooth-btn u1-r bg-tooth-red tooth-erupted" onclick="openLogModal('Lower Central Incisor (R)')"></button>
+<button class="tooth-btn u2-l bg-tooth-orange" onclick="openLogModal('Lower Lateral Incisor (L)')"></button>
+<button class="tooth-btn u2-r bg-tooth-orange" onclick="openLogModal('Lower Lateral Incisor (R)')"></button>
+<button class="tooth-btn u3-l bg-tooth-green" onclick="openLogModal('Lower Canine (L)')"></button>
+<button class="tooth-btn u3-r bg-tooth-green" onclick="openLogModal('Lower Canine (R)')"></button>
+<button class="tooth-btn u4-l bg-tooth-blue" onclick="openLogModal('Lower 1st Molar (L)')"></button>
+<button class="tooth-btn u4-r bg-tooth-blue" onclick="openLogModal('Lower 1st Molar (R)')"></button>
+<button class="tooth-btn u5-l bg-tooth-purple" onclick="openLogModal('Lower 2nd Molar (L)')"></button>
+<button class="tooth-btn u5-r bg-tooth-purple" onclick="openLogModal('Lower 2nd Molar (R)')"></button>
+</div>
+</div>
+<!-- Legend -->
+<div class="mt-12 flex flex-wrap justify-center gap-x-4 gap-y-3">
+<div class="flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-outline-variant/20">
+<div class="w-3.5 h-3.5 rounded-full bg-tooth-red"></div>
+<span class="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Central</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-outline-variant/20">
+<div class="w-3.5 h-3.5 rounded-full bg-tooth-orange"></div>
+<span class="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Lateral</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-outline-variant/20">
+<div class="w-3.5 h-3.5 rounded-full bg-tooth-green"></div>
+<span class="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">Canines</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-outline-variant/20">
+<div class="w-3.5 h-3.5 rounded-full bg-tooth-blue"></div>
+<span class="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">1st Molars</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-outline-variant/20">
+<div class="w-3.5 h-3.5 rounded-full bg-tooth-purple"></div>
+<span class="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-wider">2nd Molars</span>
+</div>
+</div>
+</section>
+<!-- Eruption History Section - Refined List Style -->
+<section class="space-y-4">
+<div class="flex justify-between items-baseline px-2">
+<h3 class="text-2xl font-bold font-headline text-primary">Eruption History</h3>
+<span class="text-[10px] font-black text-secondary uppercase tracking-[0.15em]">4 Teeth Erupted</span>
+</div>
+<div class="space-y-3">
+<!-- History Card 1 -->
+<div class="group bg-white p-5 rounded-3xl flex items-center gap-5 border border-surface-container shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all">
+<div class="w-12 h-12 rounded-2xl bg-tooth-red/30 flex items-center justify-center font-black text-on-primary-fixed-variant text-lg">C</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface text-base">Lower Central Incisors</h4>
+<p class="text-xs text-on-surface-variant font-medium mt-0.5 opacity-70">Erupted at 6 months • Oct 12, 2023</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-50 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<!-- History Card 2 -->
+<div class="group bg-white p-5 rounded-3xl flex items-center gap-5 border border-surface-container shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all">
+<div class="w-12 h-12 rounded-2xl bg-tooth-red/30 flex items-center justify-center font-black text-on-primary-fixed-variant text-lg">C</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface text-base">Upper Central Incisors</h4>
+<p class="text-xs text-on-surface-variant font-medium mt-0.5 opacity-70">Erupted at 8 months • Dec 05, 2023</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant opacity-50 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Care Tips Card -->
+<section class="bg-[#e0f7fa] rounded-[2rem] p-6 border-l-[6px] border-[#006972] flex gap-5 items-start shadow-sm">
+<div class="bg-white/50 p-2.5 rounded-2xl">
+<span class="material-symbols-outlined text-[#006972] text-3xl" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+</div>
+<div>
+<h4 class="font-bold text-[#006972] font-headline text-lg">Teething Comfort</h4>
+<p class="text-sm text-on-secondary-fixed-variant mt-1.5 leading-relaxed font-medium">Try a chilled (not frozen) teething ring or a clean, damp washcloth to soothe Baby's sore gums.</p>
+</div>
+</section>
+</main>
+<!-- Interactive Selection Modal -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm hidden" id="logModal">
+<div class="bg-white rounded-[2.5rem] w-full max-w-sm p-8 space-y-6 shadow-2xl scale-95 transition-all">
+<div class="flex justify-between items-center">
+<h3 class="text-2xl font-bold text-primary font-headline" id="modalTitle">Log Eruption</h3>
+<button class="material-symbols-outlined text-outline" onclick="closeLogModal()">close</button>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] ml-1">Tooth Position</label>
+<div class="p-5 bg-surface-container-low rounded-2xl font-bold text-on-surface border border-surface-container text-lg" id="toothPosition"></div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-black text-on-surface-variant uppercase tracking-[0.2em] ml-1">Date Spotted</label>
+<input class="w-full bg-surface-container-low border-surface-container rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20" type="date" value="2023-12-28"/>
+</div>
+<button class="w-full bg-gradient-to-br from-primary-container to-primary text-white py-5 rounded-full font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all mt-4" onclick="closeLogModal()">
+                Save Milestone
+            </button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full flex justify-around items-center px-4 pb-8 pt-3 bg-white/90 backdrop-blur-xl rounded-t-[3.5rem] z-50 shadow-[0px_-10px_40px_rgba(165,51,97,0.08)]">
+<a class="flex flex-col items-center justify-center text-[#a53361]/40 px-5 py-2 hover:bg-primary/5 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#f06e9c] to-[#a53361] text-white rounded-full px-6 py-3 scale-110 shadow-xl shadow-primary/20" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring" style="font-variation-settings: 'FILL' 1;">monitoring</span>
+<span class="text-[10px] font-bold tracking-wide mt-0.5">Growth</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#a53361]/40 px-5 py-2 hover:bg-primary/5 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="vaccines">vaccines</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Health</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#a53361]/40 px-5 py-2 hover:bg-primary/5 rounded-full transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="text-[10px] font-bold tracking-wide mt-1">Journal</span>
+</a>
+</nav>
+<script>
+    function openLogModal(tooth) {
+        document.getElementById('toothPosition').innerText = tooth;
+        const modal = document.getElementById('logModal');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.querySelector('div').classList.remove('scale-95');
+            modal.querySelector('div').classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeLogModal() {
+        const modal = document.getElementById('logModal');
+        modal.querySelector('div').classList.add('scale-95');
+        modal.querySelector('div').classList.remove('scale-100');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 200);
+    }
+</script>
+</body></html>

@@ -18,13 +18,22 @@ export async function GET(request) {
             return NextResponse.json({ success: true, data: [] });
         }
 
+        const parseNum = (val) => {
+            if (!val) return 0;
+            // Handle comma as decimal separator and remove non-numeric chars except . and -
+            const sanitized = val.toString().replace(/,/g, '.').replace(/[^-0-9.]/g, '');
+            const num = parseFloat(sanitized);
+            return isNaN(num) ? 0 : num;
+        };
+
         const data = rows.map((row, index) => ({
             id: index + 7, // Physical row number in Sheets
             date: row[0],
-            ageMonths: Number(row[1]),
-            weight: Number(row[2]),
-            height: Number(row[3])
+            ageMonths: parseNum(row[1]),
+            weight: parseNum(row[2]),
+            height: parseNum(row[3])
         }));
+
 
         return NextResponse.json({ success: true, data });
     } catch (err) {

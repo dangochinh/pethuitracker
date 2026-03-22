@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { calculateAge, predictAdultHeight, assessWeight, assessHeight } from '../lib/calculations';
 import AddRecordModal from './AddRecordModal';
 import EditProfileModal from './EditProfileModal';
@@ -14,6 +15,7 @@ import TeethingChart from './health/TeethingChart';
 import BottomNav from './layout/BottomNav';
 
 export default function Dashboard({ profile, code }) {
+    const router = useRouter();
     const [records, setRecords] = useState([]);
     const [vaccineRecords, setVaccineRecords] = useState([]);
     const [teethingRecords, setTeethingRecords] = useState([]);
@@ -127,7 +129,7 @@ export default function Dashboard({ profile, code }) {
             <BottomNav view={view} setView={setView} />
 
             {showAdd && <AddRecordModal profile={profile} code={code} onClose={() => setShowAdd(false)} onSave={fetchAllData} />}
-            {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={() => window.location.reload()} />}
+            {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={(newCode) => { if (newCode && newCode !== code) { router.push(`/${newCode}`); } else { window.location.reload(); } }} />}
             {editingRecord && <EditRecordModal profile={profile} code={code} record={editingRecord} onClose={() => setEditingRecord(null)} onSave={fetchAllData} />}
             {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
         </div>
@@ -194,7 +196,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
 
                         <div className="mt-4 bg-white border border-primary/10 px-5 py-1.5 rounded-full shadow-sm flex items-center gap-2">
                             <span className="text-[9px] font-bold text-on-surface-variant/60 uppercase tracking-widest">Mã code:</span>
-                            <span className="font-black text-primary text-[13px] uppercase tracking-wider">{profile.code || 'PETHUI'}</span>
+                            <span className="font-black text-primary text-[13px] uppercase tracking-wider">{code}</span>
                         </div>
                     </div>
                 </div>

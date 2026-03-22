@@ -77,6 +77,14 @@
     @apply bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-outline-variant/20 transition-all active:scale-[0.98];
   }
 
+  .cute-card {
+    @apply bg-white rounded-[2.5rem] shadow-[0_8px_32px_rgba(165,51,97,0.08)] border border-pink-100;
+  }
+
+  .cute-button-primary {
+    @apply w-full bg-primary text-white font-bold rounded-2xl border-2 border-primary shadow-md hover:shadow-lg hover:bg-primary/90 active:scale-95 transition-all;
+  }
+
   .bg-soft-gradient {
     background: linear-gradient(135deg, var(--color-primary-container) 0%, var(--color-primary) 100%);
   }

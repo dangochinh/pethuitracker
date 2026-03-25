@@ -95,6 +95,7 @@ export default function Dashboard({ profile, code }) {
                         teethingRecords={teethingRecords} 
                         vaccineRecords={vaccineRecords} 
                         setShowEditProfile={setShowEditProfile}
+                        code={code}
                     />
                 );
         }
@@ -136,7 +137,7 @@ export default function Dashboard({ profile, code }) {
     );
 }
 
-function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords }) {
+function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords, code }) {
     const latestWeightRecord = records.find(r => r.weight > 0);
     const latestHeightRecord = records.find(r => r.height > 0);
 

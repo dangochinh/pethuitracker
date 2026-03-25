@@ -268,80 +268,77 @@ export default function VaccineList({ dob, records, code, onSave }) {
             </section>
 
             {/* 3. Vivid Dashboard Table */}
-            <section className="relative">
-                <div className="sticky top-[-1px] z-40 bg-white/95 backdrop-blur-md pb-4 pt-4 -mx-4 px-6 border-b border-primary/10 shadow-sm transition-all duration-300">
+            <section className="relative [--vaccine-table-sticky-top:76px]">
+                <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md pb-4 pt-4 -mx-4 px-6 border-b border-primary/10 shadow-sm transition-all duration-300">
                     <h3 className="text-xl font-headline font-black text-primary">Bảng Tổng Hợp</h3>
                     <p className="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest mt-1">Dễ dàng theo dõi tiến độ</p>
                 </div>
                 
-                <div className="bg-white rounded-b-[2rem] border-x border-b border-outline-variant/30 shadow-sm overflow-visible">
+                <div className="bg-white rounded-b-[2rem] border-x border-b border-outline-variant/30 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto custom-scrollbar">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr>
-                                    <th className="sticky top-[82px] left-0 z-[60] bg-surface-container-low/95 backdrop-blur-md p-4 text-left border-b border-outline-variant/20 min-w-[140px]">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Vắc xin</span>
-                                    </th>
-                                    {ageIntervals.map(age => (
-                                        <th key={age.val} className="sticky top-[82px] z-50 bg-surface-container-low/95 backdrop-blur-md p-4 text-center border-b border-outline-variant/20 min-w-[60px]">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">{age.label}</span>
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rowConfigs.map(row => (
-                                    <tr key={row.label} className="hover:bg-primary/[0.02] transition-colors border-b border-outline-variant/10 last:border-0">
-                                        <td className="sticky left-0 z-10 bg-white/90 backdrop-blur-md p-4 font-bold text-[11px] text-on-surface border-r border-outline-variant/10">
-                                            {row.label}
-                                        </td>
-                                        {ageIntervals.map(age => {
-                                            const vAtAge = ALL_VACCINES.find(v => {
-                                                const matchesPrefix = Array.isArray(row.prefix) 
-                                                    ? row.prefix.some(p => v.id.startsWith(p))
-                                                    : v.id.startsWith(row.prefix);
-                                                return matchesPrefix && v.recommendedAge === age.val;
-                                            });
-
-                                            if (!vAtAge) return <td key={age.val} className="p-4"></td>;
-
-                                            const isDone = completedIds.has(vAtAge.id);
-                                            const status = calculateStatus(vAtAge);
-                                            const countdown = getCountdown(vAtAge.id);
-                                            
-                                            return (
-                                                <td key={age.val} className="p-4 text-center">
-                                                    <div 
-                                                        onClick={() => handleToggle(vAtAge)}
-                                                        className={`
-                                                            w-8 h-8 rounded-xl mx-auto flex items-center justify-center transition-all cursor-pointer relative
-                                                            ${isDone ? 'bg-primary text-white shadow-md shadow-primary/20' : 
-                                                              status === 'OVERDUE' ? 'bg-error/10 text-error animate-pulse' :
-                                                              countdown !== null ? 'bg-secondary text-white shadow-md shadow-secondary/20' :
-                                                              status === 'UPCOMING' ? 'bg-secondary/10 text-secondary border border-secondary/20' :
-                                                              'bg-surface-container/50 text-outline/30'}
-                                                        `}
-                                                    >
-                                                        {savingId === vAtAge.id ? (
-                                                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                                                        ) : isDone ? (
-                                                            <span className="material-symbols-outlined text-sm">done</span>
-                                                        ) : countdown !== null ? (
-                                                            <span className="text-[10px] font-black">{countdown}d</span>
-                                                        ) : (
-                                                            <span className="text-[8px] font-black opacity-40">M{vAtAge.id.split('-').pop()}</span>
-                                                        )}
-                                                        {countdown !== null && !isDone && (
-                                                            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-error rounded-full border-2 border-white"></div>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
+                        <div className="min-w-max">
+                            <div className="sticky z-50 grid border-b border-outline-variant/20 bg-surface-container-low/95 backdrop-blur-md" style={{ top: 'var(--vaccine-table-sticky-top)', gridTemplateColumns: '140px repeat(11, minmax(60px, 1fr))' }}>
+                                <div className="sticky left-0 z-[60] flex items-center bg-surface-container-low/95 p-4 text-left border-r border-outline-variant/10">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Vắc xin</span>
+                                </div>
+                                {ageIntervals.map(age => (
+                                    <div key={age.val} className="flex items-center justify-center p-4 text-center">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">{age.label}</span>
+                                    </div>
                                 ))}
-                            </tbody>
-                        </table>
+                            </div>
+
+                            {rowConfigs.map(row => (
+                                <div key={row.label} className="grid border-b border-outline-variant/10 last:border-0 hover:bg-primary/[0.02] transition-colors" style={{ gridTemplateColumns: '140px repeat(11, minmax(60px, 1fr))' }}>
+                                    <div className="sticky left-0 z-10 flex items-center bg-white/95 backdrop-blur-md p-4 font-bold text-[11px] text-on-surface border-r border-outline-variant/10">
+                                        {row.label}
+                                    </div>
+                                    {ageIntervals.map(age => {
+                                        const vAtAge = ALL_VACCINES.find(v => {
+                                            const matchesPrefix = Array.isArray(row.prefix)
+                                                ? row.prefix.some(p => v.id.startsWith(p))
+                                                : v.id.startsWith(row.prefix);
+                                            return matchesPrefix && v.recommendedAge === age.val;
+                                        });
+
+                                        if (!vAtAge) return <div key={age.val} className="min-h-[68px]"></div>;
+
+                                        const isDone = completedIds.has(vAtAge.id);
+                                        const status = calculateStatus(vAtAge);
+                                        const countdown = getCountdown(vAtAge.id);
+
+                                        return (
+                                            <div key={age.val} className="flex min-h-[68px] items-center justify-center p-4 text-center">
+                                                <div
+                                                    onClick={() => handleToggle(vAtAge)}
+                                                    className={`
+                                                        w-8 h-8 rounded-xl mx-auto flex items-center justify-center transition-all cursor-pointer relative
+                                                        ${isDone ? 'bg-primary text-white shadow-md shadow-primary/20' :
+                                                          status === 'OVERDUE' ? 'bg-error/10 text-error animate-pulse' :
+                                                          countdown !== null ? 'bg-secondary text-white shadow-md shadow-secondary/20' :
+                                                          status === 'UPCOMING' ? 'bg-secondary/10 text-secondary border border-secondary/20' :
+                                                          'bg-surface-container/50 text-outline/30'}
+                                                    `}
+                                                >
+                                                    {savingId === vAtAge.id ? (
+                                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                                    ) : isDone ? (
+                                                        <span className="material-symbols-outlined text-sm">done</span>
+                                                    ) : countdown !== null ? (
+                                                        <span className="text-[10px] font-black">{countdown}d</span>
+                                                    ) : (
+                                                        <span className="text-[8px] font-black opacity-40">M{vAtAge.id.split('-').pop()}</span>
+                                                    )}
+                                                    {countdown !== null && !isDone && (
+                                                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-error rounded-full border-2 border-white"></div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>

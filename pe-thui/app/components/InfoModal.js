@@ -27,18 +27,27 @@ export default function InfoModal({ onClose }) {
         {
             id: 'release',
             title: 'Nhật ký cập nhật',
-            icon: 'update',
+            icon: 'history',
             iconColor: 'text-tertiary',
             bg: 'bg-tertiary-container',
             content: (
-                <div className="space-y-3 mt-1">
-                    <div className="border-l-2 border-primary/20 pl-3">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">v1.2.0 - 22/03/2026</p>
+                <div className="space-y-4 mt-2">
+                    <div className="border-l-2 border-primary pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v1.3.0 - 25/03/2026</p>
+                        <p className="text-sm font-bold">Tối ưu hóa giao diện & Trải nghiệm</p>
+                        <ul className="text-xs mt-1 space-y-1 opacity-80">
+                            <li>• Tinh chỉnh vị trí nút Thêm (+) tối ưu cho di động.</li>
+                            <li>• Tự động ẩn nút chức năng trên Tab Tiêm chủng & Mọc răng.</li>
+                            <li>• Cải thiện hiển thị biểu đồ và đồng bộ hóa giao diện.</li>
+                        </ul>
+                    </div>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1 opacity-60">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.2.0 - 22/03/2026</p>
                         <p className="text-sm">Redesign toàn diện Dashboard. Nâng cấp sổ tiêm chủng và sổ mọc răng.</p>
                     </div>
-                    <div className="border-l-2 border-outline-variant/30 pl-3">
+                    <div className="border-l-2 border-outline-variant/30 pl-4 py-1 opacity-40">
                         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">v1.0.0 - 20/02/2026</p>
-                        <p className="text-sm opacity-60">Ra mắt phiên bản đầu tiên theo chuẩn WHO.</p>
+                        <p className="text-sm">Ra mắt phiên bản đầu tiên theo chuẩn WHO.</p>
                     </div>
                 </div>
             )
@@ -50,13 +59,18 @@ export default function InfoModal({ onClose }) {
             iconColor: 'text-error',
             bg: 'bg-error-container',
             content: (
-                <div className="text-center mt-2">
-                    <p className="text-sm mb-3 font-medium">Nếu app hữu ích, mời chú một ly cafe nha! ☕</p>
-                    <div className="bg-white p-2 inline-block rounded-2xl border border-outline-variant/30 shadow-sm mb-2">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STB:12342467:DANG%20NGOC%20CHINH" alt="QR Donate" className="w-28 h-28" />
+                <div className="mt-2">
+                    <p className="text-sm mb-4 font-medium italic opacity-80">Nếu app hữu ích, mời chú một ly cafe nha! ☕</p>
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white p-2 inline-block rounded-2xl border border-primary/10 shadow-sm">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STB:12342467:DANG%20NGOC%20CHINH" alt="QR Donate" className="w-24 h-24" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-black tracking-tight text-primary">Đặng Ngọc Chính</p>
+                            <p className="text-[10px] font-bold text-on-surface-variant/60">STK: 12342467</p>
+                            <p className="text-[10px] uppercase font-bold text-on-surface-variant/40">Ngân hàng Sacombank</p>
+                        </div>
                     </div>
-                    <p className="text-[10px] font-black tracking-widest text-on-surface-variant/70 mt-1">Đặng Ngọc Chính</p>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">STK: 12342467 • Sacombank</p>
                 </div>
             )
         }
@@ -64,32 +78,33 @@ export default function InfoModal({ onClose }) {
 
     return (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
-            <div className="w-full max-w-md bg-surface p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 relative flex flex-col max-h-[85vh] animate-in slide-in-from-bottom duration-500">
+            <div className="w-full max-w-md bg-white p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/10 relative flex flex-col max-h-[90vh] animate-in slide-in-from-bottom duration-500">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-6 shrink-0">
-                    <h2 className="text-2xl font-black font-headline text-primary tracking-tight">THÔNG TIN ✨</h2>
-                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
-                        <span className="material-symbols-outlined text-on-surface-variant">close</span>
+                <div className="flex justify-between items-center mb-8 shrink-0">
+                    <h2 className="text-2xl font-black font-headline text-primary tracking-tighter">THÔNG TIN ✨</h2>
+                    <button onClick={onClose} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-primary-container text-primary hover:scale-105 transition-all active:scale-95">
+                        <span className="material-symbols-outlined font-black">close</span>
                     </button>
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto space-y-10 pr-2 custom-scrollbar">
                     {sections.map((section) => (
-                        <div key={section.id} className="bg-surface-container-lowest p-5 rounded-3xl border border-outline-variant/20 shadow-sm">
-                            <div className="flex items-center gap-3 mb-2">
-                                <div className={`w-8 h-8 rounded-full ${section.bg} ${section.iconColor} flex items-center justify-center`}>
-                                    <span className="material-symbols-outlined text-sm">{section.icon}</span>
+                        <div key={section.id} className="relative">
+                            <div className="flex items-center gap-4 mb-3">
+                                <div className={`w-10 h-10 rounded-2xl ${section.bg} ${section.iconColor} flex items-center justify-center shadow-sm`}>
+                                    <span className="material-symbols-outlined text-lg">{section.icon}</span>
                                 </div>
-                                <h3 className="font-black text-on-surface uppercase tracking-wider text-xs">{section.title}</h3>
+                                <h3 className="font-extrabold text-on-surface uppercase tracking-[2px] text-[11px]">{section.title}</h3>
                             </div>
-                            <div className="text-sm text-on-surface-variant font-medium leading-relaxed pl-11">
+                            <div className="text-[13px] text-on-surface font-medium leading-[1.6] pl-14">
                                 {section.content}
                             </div>
                         </div>
                     ))}
-                    <div className="pt-2 pb-6 text-center shrink-0">
-                        <p className="text-[10px] text-on-surface-variant/40 font-black tracking-widest uppercase">From Pe Thúi Tracker with ❤️</p>
+                    <div className="pt-8 pb-10 text-center shrink-0 border-t border-dashed border-outline-variant/30">
+                        <p className="text-[10px] text-primary/40 font-black tracking-[3px] uppercase">From Pe Thúi Tracker with ❤️</p>
+                        <p className="text-[8px] text-on-surface-variant/30 uppercase mt-2">© 2026 All Rights Reserved</p>
                     </div>
                 </div>
             </div>

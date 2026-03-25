@@ -274,16 +274,16 @@ export default function VaccineList({ dob, records, code, onSave }) {
                     <p className="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest mt-1">Dễ dàng theo dõi tiến độ</p>
                 </div>
                 
-                <div className="bg-white rounded-[2rem] border border-outline-variant/30 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-[2rem] border border-outline-variant/30 shadow-sm overflow-visible">
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full border-collapse">
                             <thead>
                                 <tr className="bg-surface-container-low/50">
-                                    <th className="sticky left-0 z-20 bg-surface-container-low/90 backdrop-blur-md p-4 text-left border-b border-outline-variant/20 min-w-[140px]">
+                                    <th className="sticky top-[81px] left-0 z-50 bg-surface-container-low/95 backdrop-blur-md p-4 text-left border-b border-outline-variant/20 min-w-[140px]">
                                         <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Vắc xin</span>
                                     </th>
                                     {ageIntervals.map(age => (
-                                        <th key={age.val} className="p-4 text-center border-b border-outline-variant/20 min-w-[60px]">
+                                        <th key={age.val} className="sticky top-[81px] z-30 bg-surface-container-low/95 backdrop-blur-md p-4 text-center border-b border-outline-variant/20 min-w-[60px]">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">{age.label}</span>
                                         </th>
                                     ))}

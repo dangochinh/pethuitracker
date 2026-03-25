@@ -123,7 +123,7 @@ export default function Dashboard({ profile, code }) {
             </div>
             <button 
                 onClick={() => setShowAdd(true)}
-                className="fixed bottom-40 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-3xl shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-42"
+                className="fixed bottom-20 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-3xl shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-22"
             >
                 <span className="material-symbols-outlined text-3xl">add</span>
             </button>

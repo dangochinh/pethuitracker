@@ -17,7 +17,7 @@
 - **Growth Dashboard** — View comprehensive stats on weight, height, and other tracked metrics at a glance.
 - **Growth Charts** — Beautiful, interactive charts to visualize progress over time using Recharts.
 - **Add / Edit Records** — Log new health records and update or correct previous entries anytime.
-- **Mobile-Optimized** — Designed for use on phones with smooth keyboard-aware scrolling.
+- **Mobile-Optimized** — Designed for use on phones with smooth keyboar d-aware scrolling.
 
 ## 🛠️ Tech Stack
 

@@ -278,12 +278,12 @@ export default function VaccineList({ dob, records, code, onSave }) {
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full border-collapse">
                             <thead>
-                                <tr className="bg-surface-container-low/50">
-                                    <th className="sticky top-[81px] left-0 z-50 bg-surface-container-low/95 backdrop-blur-md p-4 text-left border-b border-outline-variant/20 min-w-[140px]">
+                                <tr className="sticky top-[81px] z-50 bg-surface-container-low/95 backdrop-blur-md">
+                                    <th className="sticky left-0 z-[60] bg-surface-container-low p-4 text-left border-b border-outline-variant/20 min-w-[140px]">
                                         <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Vắc xin</span>
                                     </th>
                                     {ageIntervals.map(age => (
-                                        <th key={age.val} className="sticky top-[81px] z-30 bg-surface-container-low/95 backdrop-blur-md p-4 text-center border-b border-outline-variant/20 min-w-[60px]">
+                                        <th key={age.val} className="p-4 text-center border-b border-outline-variant/20 min-w-[60px]">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">{age.label}</span>
                                         </th>
                                     ))}

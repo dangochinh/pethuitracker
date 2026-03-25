@@ -74,12 +74,12 @@ export async function POST(request) {
                 }
             });
         } else {
-            // Append new row
-            await sheets.spreadsheets.values.append({
+            // Add as new row at the end
+            const rowNumber = rows.length + 7;
+            await sheets.spreadsheets.values.update({
                 spreadsheetId: SHEET_ID,
-                range: `${code}!J7:L`,
+                range: `${code}!J${rowNumber}:L${rowNumber}`,
                 valueInputOption: 'USER_ENTERED',
-                insertDataOption: 'INSERT_ROWS',
                 requestBody: {
                     values: [newRow]
                 }

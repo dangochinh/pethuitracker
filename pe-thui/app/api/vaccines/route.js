@@ -72,13 +72,13 @@ export async function POST(request) {
                 }
             });
         } else {
-            // Append new row
+            // Add as new row at the end
+            const rowNumber = rows.length + 7;
             const newRow = [vaccineId, date || '', scheduledDate || '', note || ''];
-            await sheets.spreadsheets.values.append({
+            await sheets.spreadsheets.values.update({
                 spreadsheetId: SHEET_ID,
-                range: `${code}!F7:I`,
+                range: `${code}!F${rowNumber}:I${rowNumber}`,
                 valueInputOption: 'USER_ENTERED',
-                insertDataOption: 'INSERT_ROWS',
                 requestBody: {
                     values: [newRow]
                 }

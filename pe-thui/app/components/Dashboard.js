@@ -29,10 +29,11 @@ export default function Dashboard({ profile, code }) {
     const fetchAllData = async () => {
         try {
             setLoading(true);
+            const t = Date.now();
             const [growthRes, vaccineRes, teethRes] = await Promise.all([
-                fetch(`/api/growth?code=${code}`),
-                fetch(`/api/vaccines?code=${code}`),
-                fetch(`/api/teeth?code=${code}`)
+                fetch(`/api/growth?code=${code}&t=${t}`, { cache: 'no-store' }),
+                fetch(`/api/vaccines?code=${code}&t=${t}`, { cache: 'no-store' }),
+                fetch(`/api/teeth?code=${code}&t=${t}`, { cache: 'no-store' })
             ]);
 
             const [growthJson, vaccineJson, teethJson] = await Promise.all([

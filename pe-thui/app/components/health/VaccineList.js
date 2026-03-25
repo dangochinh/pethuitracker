@@ -269,7 +269,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
             {/* 3. Vivid Dashboard Table */}
             <section className="space-y-6">
-                <div className="px-2">
+                <div className="bg-white/60 p-5 rounded-[2rem] flex flex-col gap-1 mb-4 border border-white/40 shadow-sm backdrop-blur-md transition-all">
                     <h3 className="text-xl font-headline font-black text-primary">Bảng Tổng Hợp</h3>
                     <p className="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest mt-1">Dễ dàng theo dõi tiến độ</p>
                 </div>
@@ -348,7 +348,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
             {/* 4. Detailed Schedule */}
             <section className="space-y-8">
-                <div className="flex justify-between items-center px-2">
+                <div className="bg-white/60 p-5 rounded-[2rem] flex justify-between items-center mb-4 border border-white/40 shadow-sm backdrop-blur-md transition-all">
                     <h3 className="text-xl font-headline font-black text-primary">Chi tiết mũi tiêm</h3>
                     <button 
                         onClick={() => setHideCompleted(!hideCompleted)}

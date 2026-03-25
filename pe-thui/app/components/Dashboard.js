@@ -116,14 +116,14 @@ export default function Dashboard({ profile, code }) {
                 </div>
             )}
 
-            <div className="pt-8 flex flex-col items-center overflow-x-hidden min-h-[calc(100vh-80px)]">
-                <div className="w-full max-w-lg px-4 space-y-8">
+            <div className="pt-8 min-h-[calc(100vh-80px)]">
+                <div className="w-full max-w-lg px-4 space-y-8 mx-auto">
                     {renderView()}
                 </div>
             </div>
             <button 
                 onClick={() => setShowAdd(true)}
-                className="fixed bottom-28 right-6 w-14 h-14 bg-soft-gradient text-on-primary rounded-2xl shadow-[0_12px_24px_rgba(165,51,97,0.3)] flex items-center justify-center z-50 hover:scale-110 active:scale-95 transition-all"
+                className="fixed bottom-64 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-3xl shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-68"
             >
                 <span className="material-symbols-outlined text-3xl">add</span>
             </button>
@@ -146,7 +146,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
     const heightStatus = latestHeightRecord ? assessHeight(latestHeightRecord.height, latestHeightRecord.ageMonths) : null;
 
     return (
-        <main className="pb-32 space-y-8 animate-in fade-in duration-500">
+        <main className="pb-32 space-y-8">
             {/* New Bento Profile Card */}
             <section className="relative mt-[4.5rem] px-2">
                 <div className="bg-[#fffbf0] rounded-[2rem] p-5 pt-16 relative shadow-sm border-[3px] border-dashed border-primary/30">

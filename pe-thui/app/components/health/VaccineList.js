@@ -269,16 +269,16 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
             {/* 3. Vivid Dashboard Table */}
             <section className="relative">
-                <div className="sticky top-[-1px] z-40 bg-white/95 backdrop-blur-md pb-4 pt-4 -mx-4 px-6 rounded-b-2xl border-b border-primary/10 shadow-sm transition-all duration-300">
+                <div className="sticky top-[-1px] z-40 bg-white/95 backdrop-blur-md pb-4 pt-4 -mx-4 px-6 border-b border-primary/10 shadow-sm transition-all duration-300">
                     <h3 className="text-xl font-headline font-black text-primary">Bảng Tổng Hợp</h3>
                     <p className="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest mt-1">Dễ dàng theo dõi tiến độ</p>
                 </div>
                 
-                <div className="bg-white rounded-[2rem] border border-outline-variant/30 shadow-sm overflow-visible mt-4">
+                <div className="bg-white rounded-b-[2rem] border-x border-b border-outline-variant/30 shadow-sm overflow-visible">
                     <div className="overflow-x-auto custom-scrollbar">
                         <table className="w-full border-collapse">
                             <thead>
-                                <tr className="sticky top-[72px] z-50 bg-surface-container-low/95 backdrop-blur-md">
+                                <tr className="sticky top-[82px] z-50 bg-surface-container-low/95 backdrop-blur-md">
                                     <th className="sticky left-0 z-[60] bg-surface-container-low p-4 text-left border-b border-outline-variant/20 min-w-[140px]">
                                         <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Vắc xin</span>
                                     </th>

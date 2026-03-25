@@ -63,12 +63,12 @@ export default function InfoModal({ onClose }) {
                     <p className="text-sm mb-4 font-medium italic opacity-80">Nếu app hữu ích, mời chú một ly cafe nha! ☕</p>
                     <div className="flex items-center gap-4">
                         <div className="bg-white p-2 inline-block rounded-2xl border border-primary/10 shadow-sm">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=STB:12342467:DANG%20NGOC%20CHINH" alt="QR Donate" className="w-24 h-24" />
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ACB:12342467:DANG%20NGOC%20CHINH" alt="QR Donate" className="w-24 h-24" />
                         </div>
                         <div>
                             <p className="text-sm font-black tracking-tight text-primary">Đặng Ngọc Chính</p>
                             <p className="text-[10px] font-bold text-on-surface-variant/60">STK: 12342467</p>
-                            <p className="text-[10px] uppercase font-bold text-on-surface-variant/40">Ngân hàng Sacombank</p>
+                            <p className="text-[10px] uppercase font-bold text-on-surface-variant/40">Ngân hàng ACB</p>
                         </div>
                     </div>
                 </div>

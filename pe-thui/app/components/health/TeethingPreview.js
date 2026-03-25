@@ -8,13 +8,13 @@ export default function TeethingPreview({ records }) {
     const totalCount = TEETH.length;
 
     return (
-        <div className="bento-card bg-secondary-fixed/20 flex-1">
-            <div className="flex justify-between items-start mb-4">
+        <div className="bento-card bg-secondary-fixed/20 flex-1 min-h-[170px] flex flex-col justify-center items-center text-center">
+            <div className="flex justify-center items-start mb-4">
                 <div className="bg-secondary/10 p-2 rounded-xl text-secondary">
-                    <span className="material-symbols-outlined text-xl">child_care</span>
+                    <span className="material-symbols-outlined text-xl">dentistry</span>
                 </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 text-center flex flex-col items-center">
                 <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Mọc răng</p>
                 <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-black font-headline text-secondary">{sproutedCount}</span>

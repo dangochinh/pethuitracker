@@ -3,8 +3,8 @@
 export default function BottomNav({ view, setView }) {
     const navItems = [
         { id: 'home', label: 'Trang chủ', icon: 'home' },
-        { id: 'teething', label: 'Mọc răng', icon: 'child_care' },
-        { id: 'health', label: 'Sức khỏe', icon: 'medical_services' },
+        { id: 'teething', label: 'Mọc răng', icon: 'dentistry' },
+        { id: 'health', label: 'Tiêm chủng', icon: 'medical_services' },
         { id: 'growth', label: 'Phát triển', icon: 'trending_up' },
     ];
 

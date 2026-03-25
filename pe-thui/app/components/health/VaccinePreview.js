@@ -9,13 +9,13 @@ export default function VaccinePreview({ records, dob }) {
     const percentage = Math.round((completedCount / totalCount) * 100);
 
     return (
-        <div className="bento-card bg-primary-fixed/30 flex-1">
-            <div className="flex justify-between items-start mb-4">
+        <div className="bento-card bg-primary-fixed/30 flex-1 min-h-[170px] flex flex-col justify-center items-center text-center">
+            <div className="flex justify-center items-start mb-4">
                 <div className="bg-primary/10 p-2 rounded-xl text-primary">
                     <span className="material-symbols-outlined text-xl">medical_services</span>
                 </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 text-center flex flex-col items-center">
                 <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Tiêm chủng</p>
                 <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-black font-headline text-primary">{percentage}%</span>

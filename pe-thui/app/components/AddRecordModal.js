@@ -14,7 +14,6 @@ export default function AddRecordModal({ onClose, onSave, profile, code }) {
     const ageMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
     const years = Math.floor(Math.max(0, ageMonths) / 12);
     const months = Math.max(0, ageMonths) % 12;
-    const ageText = years > 0 ? `${years} tuổi ${months} tháng` : `${months} tháng`;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -114,7 +113,7 @@ export default function AddRecordModal({ onClose, onSave, profile, code }) {
                             </>
                         )}
                     </button>
-                    <p className="text-center text-[10px] text-on-surface-variant opacity-60 font-medium">Bé {ageText} vào ngày này</p>
+
                 </form>
             </div>
         </div>

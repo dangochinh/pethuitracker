@@ -45,10 +45,11 @@ export default function GrowthCharts({ records, profile, onBack }) {
     const heightRecords = data.filter(d => d.height > 0);
     const latestHeightRecord = heightRecords.length > 0 ? heightRecords[heightRecords.length - 1] : null;
     const predictedHeight = latestHeightRecord ? predictAdultHeight(latestHeightRecord.height, profile.gender, latestHeightRecord.ageMonths) : 0;
-    const latestHeightDate = latestHeightRecord ? new Date(latestHeightRecord.createdAt || latestHeightRecord.date || Date.now()).toLocaleDateString('vi-VN') : '--/--/----';
+    const latestHeightDateSource = latestHeightRecord?.createdAt || latestHeightRecord?.date;
+    const latestHeightDate = latestHeightDateSource ? new Date(latestHeightDateSource).toLocaleDateString('vi-VN') : '--/--/----';
 
     return (
-        <div className="min-h-screen bg-[#fff5f8] pb-20 pt-6">
+        <div className="bg-[#fff5f8] pb-8 pt-6">
             <div className="p-4 space-y-8 animate-in fade-in duration-500">
                 {/* Prediction Card */}
                 {predictedHeight > 0 && (

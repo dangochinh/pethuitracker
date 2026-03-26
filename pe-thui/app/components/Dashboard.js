@@ -103,7 +103,7 @@ export default function Dashboard({ profile, code }) {
     };
 
     return (
-        <div className="min-h-screen bg-background pb-32 relative">
+        <div className="min-h-screen bg-background pb-24 relative">
             {/* Global Floating Buttons */}
             {view === 'home' && (
                 <div className="absolute top-6 right-6 z-50 flex gap-2">
@@ -116,7 +116,7 @@ export default function Dashboard({ profile, code }) {
                 </div>
             )}
 
-            <div className="pt-8 min-h-[calc(100vh-80px)]">
+            <div className="pt-8">
                 <div className="w-full max-w-lg px-4 space-y-8 mx-auto">
                     {renderView()}
                 </div>
@@ -148,7 +148,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
     const heightStatus = latestHeightRecord ? assessHeight(latestHeightRecord.height, latestHeightRecord.ageMonths) : null;
 
     return (
-        <main className="pb-32 space-y-8">
+        <main className="pb-8 space-y-8">
             {/* New Bento Profile Card */}
             <section className="relative mt-[4.5rem] px-2">
                 <div className="bg-[#fffbf0] rounded-[2rem] p-5 pt-16 relative shadow-sm border-[3px] border-dashed border-primary/30">

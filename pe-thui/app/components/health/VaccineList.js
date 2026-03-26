@@ -1,10 +1,13 @@
+// Được thay thế từ VaccineList1.js
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { VACCINES } from '../../lib/data/vaccines';
 
 export default function VaccineList({ dob, records, code, onSave }) {
     const [savingId, setSavingId] = useState(null);
+    const summaryHeaderScrollRef = useRef(null);
+    const summaryBodyScrollRef = useRef(null);
     const [schedulingVaccine, setSchedulingVaccine] = useState(null);
     const [scheduledDate, setScheduledDate] = useState('');
     const [untickVaccine, setUntickVaccine] = useState(null);
@@ -15,6 +18,304 @@ export default function VaccineList({ dob, records, code, onSave }) {
     const [customDisease, setCustomDisease] = useState('');
     const [customDate, setCustomDate] = useState(new Date().toISOString().split('T')[0]);
     const [savingCustom, setSavingCustom] = useState(false);
+
+    // Filter UI State
+    const [hideCompleted, setHideCompleted] = useState(true);
+
+    // Parse custom vaccines from records
+    const validRecords = records.filter(r => r.vaccineId);
+    const customVaccines = validRecords
+        .filter(r => r.vaccineId.startsWith('custom-'))
+        .map(r => {
+            try {
+                const noteObj = JSON.parse(r.note || '{}');
+                return {
+                    id: r.vaccineId,
+                    name: noteObj.name || 'Mũi dịch vụ',
+                    disease: noteObj.disease || 'Khác',
+                    recommendedAge: 999,
+                    category: 'Mũi tiêm dịch vụ ngoài'
+                };
+            } catch (e) { return null; }
+        }).filter(Boolean);
+
+    // Filter duplicates if any (just in case)
+    const uniqueCustomVaccines = customVaccines.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+    const ALL_VACCINES = [...VACCINES, ...uniqueCustomVaccines];
+
+    const completedIds = new Set(validRecords.filter(r => r.date).map(r => r.vaccineId));
+    const scheduledRecords = validRecords.reduce((acc, r) => {
+        if (r.scheduledDate) acc[r.vaccineId] = r.scheduledDate;
+        return acc;
+    }, {});
+
+    const totalCount = ALL_VACCINES.length;
+    const completedCount = completedIds.size;
+    const percentage = Math.round((completedCount / totalCount) * 100);
+
+    const calculateStatus = (v) => {
+        if (completedIds.has(v.id)) return 'COMPLETED';
+        const birthDate = new Date(dob);
+        const today = new Date();
+        const diffMonths = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+        
+        if (diffMonths > v.recommendedAge + 1) return 'OVERDUE';
+        if (diffMonths >= v.recommendedAge) return 'UPCOMING';
+        return 'SCHEDULED';
+    };
+
+    const getCountdown = (vId) => {
+        const dateStr = scheduledRecords[vId];
+        if (!dateStr) return null;
+        const target = new Date(dateStr);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const diffTime = target - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
+    const handleToggle = async (vaccine) => {
+        if (completedIds.has(vaccine.id)) {
+            // Uncheck logic
+            setUntickVaccine(vaccine);
+            return;
+        }
+        
+        // If not completed, show scheduling primary action
+        setSchedulingVaccine(vaccine);
+        setScheduledDate(scheduledRecords[vaccine.id] || new Date().toISOString().split('T')[0]);
+    };
+
+    const handleConfirmUntick = async () => {
+        if (!untickVaccine) return;
+        setSavingId(untickVaccine.id);
+        try {
+            await fetch(`/api/vaccines?code=${code}&vaccineId=${untickVaccine.id}`, {
+                method: 'DELETE'
+            });
+            onSave();
+            setUntickVaccine(null);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setSavingId(null);
+        }
+    };
+
+    const handleSaveDate = async (type) => {
+        if (!schedulingVaccine) return;
+        setSavingId(schedulingVaccine.id);
+        const vId = schedulingVaccine.id;
+        const payload = {
+            code,
+            vaccineId: vId,
+            date: type === 'COMPLETE' ? new Date().toISOString().split('T')[0] : '',
+            scheduledDate: type === 'SCHEDULE' ? scheduledDate : (scheduledRecords[vId] || ''),
+            note: ''
+        };
+
+        try {
+            await fetch('/api/vaccines', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            onSave();
+            setSchedulingVaccine(null);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setSavingId(null);
+        }
+    };
+
+    const handleSaveCustom = async () => {
+        if (!customName.trim()) return;
+        setSavingCustom(true);
+        const vId = `custom-${Date.now()}`;
+        const noteData = JSON.stringify({ name: customName, disease: customDisease || 'Khác', category: 'Mũi tiêm dịch vụ ngoài' });
+        
+        try {
+            await fetch('/api/vaccines', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code,
+                    vaccineId: vId,
+                    date: customDate,
+                    scheduledDate: '',
+                    note: noteData
+                })
+            });
+            onSave();
+            setShowAddCustom(false);
+            setCustomName('');
+            setCustomDisease('');
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setSavingCustom(false);
+        }
+    };
+
+    const upcoming = ALL_VACCINES.filter(v => !completedIds.has(v.id))
+        .sort((a, b) => a.recommendedAge - b.recommendedAge)
+        .slice(0, 2);
+
+    const groups = ALL_VACCINES.reduce((acc, v) => {
+        const cat = v.category;
+        if (!acc[cat]) acc[cat] = [];
+        acc[cat].push(v);
+        return acc;
+    }, {});
+
+    const ageIntervals = [
+        { label: 'Sơ sinh', val: 0 },
+        { label: '2 TH', val: 2 },
+        { label: '3 TH', val: 3 },
+        { label: '4 TH', val: 4 },
+        { label: '6 TH', val: 6 },
+        { label: '9 TH', val: 9 },
+        { label: '12 TH', val: 12 },
+        { label: '18 TH', val: 18 },
+        { label: '2 tuổi', val: 24 },
+        { label: '3 tuổi', val: 36 },
+        { label: '4-8 T', val: 48 }
+    ];
+
+    const rowConfigs = [
+        { label: 'Lao', prefix: 'bcg' },
+        { label: 'Viêm gan B', prefix: 'hepb' },
+        { label: '6 trong 1 / DPT', prefix: ['6in1', 'dpt'] },
+        { label: 'Phế cầu', prefix: 'pneumo' },
+        { label: 'Rota virus', prefix: 'rota' },
+        { label: 'Não mô cầu B', prefix: 'meningo-b' },
+        { label: 'Não mô cầu BC', prefix: 'meningo-bc' },
+        { label: 'Cúm mùa', prefix: 'flu' },
+        { label: 'Não mô cầu ACYW', prefix: 'meningo-acyw' },
+        { label: 'Viêm não Nhật Bản', prefix: 'je' },
+        { label: 'Sởi, Quai bị, Rubella', prefix: 'mmr' },
+        { label: 'Thủy đậu', prefix: 'chickenpox' },
+        { label: 'Viêm gan A', prefix: 'hepa' },
+        { label: 'Thương hàn / Tả', prefix: ['typhoid', 'tả'] },
+        { label: 'Sốt xuất huyết', prefix: 'dengue' }
+    ];
+
+    const summaryGridTemplate = '180px repeat(11, minmax(72px, 1fr))';
+
+    useEffect(() => {
+        const headerEl = summaryHeaderScrollRef.current;
+        const bodyEl = summaryBodyScrollRef.current;
+
+        if (!headerEl || !bodyEl) return;
+
+        let syncSource = null;
+        let rafId = null;
+
+        const releaseSyncLock = () => {
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+            }
+            rafId = requestAnimationFrame(() => {
+                syncSource = null;
+                rafId = null;
+            });
+        };
+
+        const syncHeaderToBody = () => {
+            if (syncSource === 'body') {
+                return;
+            }
+            syncSource = 'header';
+            if (bodyEl.scrollLeft !== headerEl.scrollLeft) {
+                bodyEl.scrollLeft = headerEl.scrollLeft;
+            }
+            releaseSyncLock();
+        };
+
+        const syncBodyToHeader = () => {
+            if (syncSource === 'header') {
+                return;
+            }
+            syncSource = 'body';
+            if (headerEl.scrollLeft !== bodyEl.scrollLeft) {
+                headerEl.scrollLeft = bodyEl.scrollLeft;
+            }
+            releaseSyncLock();
+        };
+
+        // Align both tracks on mount/re-render.
+        headerEl.scrollLeft = bodyEl.scrollLeft;
+        headerEl.addEventListener('scroll', syncHeaderToBody);
+        bodyEl.addEventListener('scroll', syncBodyToHeader);
+
+        return () => {
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+            }
+            headerEl.removeEventListener('scroll', syncHeaderToBody);
+            bodyEl.removeEventListener('scroll', syncBodyToHeader);
+        };
+    }, []);
+
+    const renderSummaryTable = () => (
+        <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0px_20px_40px_rgba(165,51,97,0.08)] overflow-hidden">
+            <div ref={summaryBodyScrollRef} className="-mx-2 overflow-x-auto summary-body-scroll px-2">
+                <div className="min-w-max bg-surface-container-lowest">
+                    <div className="bg-surface-container-lowest">
+                        {rowConfigs.map((row, index) => (
+                            <div
+                                key={row.label}
+                                className={`grid hover:bg-surface-container-low/50 transition-colors ${index === 0 ? '' : 'border-t border-surface-container'}`}
+                                style={{ gridTemplateColumns: summaryGridTemplate }}
+                            >
+                                <div className="sticky left-0 z-20 bg-surface-container-lowest px-6 py-4 font-medium text-on-surface shadow-[8px_0_16px_rgba(255,248,248,0.95)]">
+                                    {row.label}
+                                </div>
+                                {ageIntervals.map(age => {
+                                    const vAtAge = ALL_VACCINES.find(v => {
+                                        const matchesPrefix = Array.isArray(row.prefix)
+                                            ? row.prefix.some(p => v.id.startsWith(p))
+                                            : v.id.startsWith(row.prefix);
+                                        return matchesPrefix && v.recommendedAge === age.val;
+                                    });
+
+                                    if (!vAtAge) return <div key={age.val} className="px-4 py-4"></div>;
+
+                                    const isDone = completedIds.has(vAtAge.id);
+                                    const countdown = getCountdown(vAtAge.id);
+                                    const status = calculateStatus(vAtAge);
+
+                                    return (
+                                        <div key={age.val} className="flex items-center justify-center px-4 py-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => handleToggle(vAtAge)}
+                                                className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform hover:scale-105 ${
+                                                    isDone
+                                                        ? 'text-primary'
+                                                        : countdown !== null || status === 'UPCOMING'
+                                                          ? 'text-secondary'
+                                                          : 'text-outline'
+                                                }`}
+                                            >
+                                                <span className="material-symbols-outlined" style={{ fontVariationSettings: `'FILL' ${isDone ? 1 : 0}, 'wght' 500, 'GRAD' 0, 'opsz' 24` }}>
+                                                    {isDone ? 'check_circle' : 'radio_button_unchecked'}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    /*
 
     // Filter UI State
     const [hideCompleted, setHideCompleted] = useState(true);
@@ -200,8 +501,10 @@ export default function VaccineList({ dob, records, code, onSave }) {
         { label: 'Sốt xuất huyết', prefix: 'dengue' }
     ];
 
+    */
+
     return (
-        <div className="space-y-10 pb-20">
+        <div className="space-y-10 pb-8">
             {/* 1. Progress Hero */}
             <section className="relative bg-soft-gradient p-8 rounded-[2.5rem] text-white overflow-hidden shadow-lg shadow-primary/20">
                 <div className="relative z-10 flex justify-between items-center">
@@ -267,81 +570,33 @@ export default function VaccineList({ dob, records, code, onSave }) {
                 </div>
             </section>
 
-            {/* 3. Vivid Dashboard Table */}
-            <section className="relative [--vaccine-table-sticky-top:0px]">
-                <div className="bg-white/95 pb-4 pt-4 -mx-4 px-6 border-b border-primary/10 shadow-sm transition-all duration-300">
-                    <h3 className="text-xl font-headline font-black text-primary">Bảng Tổng Hợp</h3>
-                    <p className="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-widest mt-1">Dễ dàng theo dõi tiến độ</p>
-                </div>
-                
-                <div className="bg-white rounded-b-[2rem] border-x border-b border-outline-variant/30 shadow-sm overflow-hidden">
-                    <div className="overflow-x-auto custom-scrollbar">
-                        <div className="min-w-max">
-                            <div className="sticky z-50 grid border-b border-outline-variant/20 bg-surface-container-low/95 backdrop-blur-md" style={{ top: 'var(--vaccine-table-sticky-top)', gridTemplateColumns: '140px repeat(11, minmax(60px, 1fr))' }}>
-                                <div className="sticky left-0 z-[60] flex items-center bg-surface-container-low/95 p-4 text-left border-r border-outline-variant/10">
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">Vắc xin</span>
-                                </div>
-                                {ageIntervals.map(age => (
-                                    <div key={age.val} className="flex items-center justify-center p-4 text-center">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">{age.label}</span>
-                                    </div>
-                                ))}
-                            </div>
+            <section className="space-y-0 pb-0">
+                <div className="sticky top-0 z-50 bg-[#fff8f8] px-2 pt-2 pb-1 backdrop-blur-none">
+                    <div className="space-y-4">
+                        <div>
+                            <h3 className="text-xl font-headline font-black text-primary">Bảng Tổng Hợp</h3>
+                            <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40">Dễ dàng theo dõi tiến độ</p>
+                        </div>
 
-                            <div>
-                                {rowConfigs.map(row => (
-                                    <div key={row.label} className="grid border-b border-outline-variant/10 last:border-0 hover:bg-primary/[0.02] transition-colors" style={{ gridTemplateColumns: '140px repeat(11, minmax(60px, 1fr))' }}>
-                                        <div className="sticky left-0 z-10 flex items-center bg-white/95 backdrop-blur-md p-4 font-bold text-[11px] text-on-surface border-r border-outline-variant/10">
-                                            {row.label}
+                        <div ref={summaryHeaderScrollRef} className="-mx-2 overflow-x-auto summary-header-scroll px-2">
+                            <div className="min-w-max">
+                                <div className="grid bg-surface-container-low text-on-surface-variant shadow-sm rounded-t-[2rem]" style={{ gridTemplateColumns: summaryGridTemplate }}>
+                                    <div className="sticky left-0 z-50 bg-surface-container-low px-6 py-4 text-left font-headline font-black text-primary rounded-tl-[2rem]">
+                                        Vaccine
+                                    </div>
+                                    {ageIntervals.map(age => (
+                                        <div key={age.val} className="px-3 py-4 text-center font-headline text-xs font-black whitespace-nowrap">
+                                            {age.label}
                                         </div>
-                                        {ageIntervals.map(age => {
-                                            const vAtAge = ALL_VACCINES.find(v => {
-                                                const matchesPrefix = Array.isArray(row.prefix)
-                                                    ? row.prefix.some(p => v.id.startsWith(p))
-                                                    : v.id.startsWith(row.prefix);
-                                                return matchesPrefix && v.recommendedAge === age.val;
-                                            });
-
-                                            if (!vAtAge) return <div key={age.val} className="min-h-[68px]"></div>;
-
-                                            const isDone = completedIds.has(vAtAge.id);
-                                            const status = calculateStatus(vAtAge);
-                                            const countdown = getCountdown(vAtAge.id);
-
-                                            return (
-                                                <div key={age.val} className="flex min-h-[68px] items-center justify-center p-4 text-center">
-                                                    <div
-                                                        onClick={() => handleToggle(vAtAge)}
-                                                        className={`
-                                                            w-8 h-8 rounded-xl mx-auto flex items-center justify-center transition-all cursor-pointer relative
-                                                            ${isDone ? 'bg-primary text-white shadow-md shadow-primary/20' :
-                                                              status === 'OVERDUE' ? 'bg-error/10 text-error animate-pulse' :
-                                                              countdown !== null ? 'bg-secondary text-white shadow-md shadow-secondary/20' :
-                                                              status === 'UPCOMING' ? 'bg-secondary/10 text-secondary border border-secondary/20' :
-                                                              'bg-surface-container/50 text-outline/30'}
-                                                        `}
-                                                    >
-                                                        {savingId === vAtAge.id ? (
-                                                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                                                        ) : isDone ? (
-                                                            <span className="material-symbols-outlined text-sm">done</span>
-                                                        ) : countdown !== null ? (
-                                                            <span className="text-[10px] font-black">{countdown}d</span>
-                                                        ) : (
-                                                            <span className="text-[8px] font-black opacity-40">M{vAtAge.id.split('-').pop()}</span>
-                                                        )}
-                                                        {countdown !== null && !isDone && (
-                                                            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-error rounded-full border-2 border-white"></div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="-mt-px">
+                    {renderSummaryTable()}
                 </div>
             </section>
 
@@ -558,3 +813,4 @@ export default function VaccineList({ dob, records, code, onSave }) {
         </div>
     );
 }
+

@@ -8,12 +8,12 @@
   --color-primary-fixed: #ffd9e2;
   --color-on-primary-fixed: #3e001d;
   --color-on-primary-fixed-variant: #861949;
-  
+
   --color-secondary: #006972;
   --color-secondary-container: #6fefff;
   --color-on-secondary: #ffffff;
   --color-secondary-fixed-dim: #54d8e8;
-  
+
   --color-tertiary: #655d4f;
   --color-background: #fff8f8;
   --color-surface: #fff8f8;
@@ -36,7 +36,7 @@
 
   --font-headline: "Plus Jakarta Sans", sans-serif;
   --font-body: "Be Vietnam Pro", sans-serif;
-  
+
   --radius-lg: 2rem;
   --radius-xl: 3rem;
 }
@@ -49,14 +49,14 @@
     min-height: 100dvh;
     @apply antialiased;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-headline);
   }
 
   /* Force Material Symbols ligatures to render correctly despite parent text wrappers */
   .material-symbols-outlined {
-    font-family: 'Material Symbols Outlined' !important;
+    font-family: "Material Symbols Outlined" !important;
     font-weight: normal !important;
     font-style: normal !important;
     line-height: 1 !important;
@@ -68,7 +68,7 @@
     -webkit-font-smoothing: antialiased !important;
     text-rendering: optimizeLegibility !important;
     -moz-osx-font-smoothing: grayscale !important;
-    font-feature-settings: 'liga' !important;
+    font-feature-settings: "liga" !important;
   }
 }
 
@@ -95,18 +95,22 @@
     width: 280px;
     height: 160px;
   }
+
   .tooth-btn {
     @apply absolute w-8 h-9 flex items-center justify-center transition-all bg-white border-2 border-white shadow-sm -translate-x-1/2 cursor-pointer;
     border-radius: 8px 8px 14px 14px;
   }
+
   .tooth-lower .tooth-btn {
     border-radius: 14px 14px 8px 8px;
   }
+
   .tooth-erupted {
     @apply border-primary;
   }
+
   .tooth-erupted::after {
-    content: '✓';
+    content: "\2713";
     @apply absolute -top-1.5 -right-1.5 bg-primary text-white w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold shadow-sm;
   }
 
@@ -122,5 +126,14 @@
   .u5-l { left: 48px; top: 120px; }
   .u5-r { left: 232px; top: 120px; }
 
-}
+  .summary-header-scroll,
+  .summary-body-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
+  .summary-header-scroll::-webkit-scrollbar,
+  .summary-body-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}

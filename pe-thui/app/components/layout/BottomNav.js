@@ -1,3 +1,4 @@
+// Được thay thế từ BottomNav1.js
 'use client';
 
 export default function BottomNav({ view, setView }) {
@@ -9,7 +10,7 @@ export default function BottomNav({ view, setView }) {
     ];
 
     return (
-        <nav className="fixed bottom-0 w-full max-w-lg left-1/2 -translate-x-1/2 z-50 flex justify-around items-center px-4 pb-8 pt-4 backdrop-blur-2xl bg-white/80 rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] border-t border-white/20">
+        <nav className="fixed bottom-0 w-full max-w-lg left-1/2 -translate-x-1/2 z-50 flex justify-around items-center px-4 pt-4 pb-[15px] backdrop-blur-2xl bg-white/80 rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.05)] border-t border-white/20">
 
             {navItems.map(item => (
                 <button 

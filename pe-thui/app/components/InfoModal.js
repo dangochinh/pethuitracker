@@ -62,13 +62,13 @@ export default function InfoModal({ onClose }) {
                             <li>• Đồng bộ thêm ngôn ngữ, nhãn hiển thị và một số chi tiết giao diện trong ứng dụng.</li>
                         </ul>
                     </div>
-                    <div className="border-l-2 border-primary/20 pl-4 py-1 opacity-60">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.1 - 27/03/2026</p>
-                        <p className="text-sm">Sửa lỗi biểu đồ mobile, cập nhật hướng dẫn nhanh và đồng bộ hiển thị phiên bản.</p>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.2 - 27/03/2026</p>
+                        <p className="text-sm">Thêm timeline kỹ năng phát triển theo độ tuổi, tự động focus đúng độ tuổi hiện tại.</p>
                     </div>
-                    <div className="border-l-2 border-outline-variant/30 pl-4 py-1 opacity-40">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.0 - 25/03/2026</p>
-                        <p className="text-sm">Tối ưu hóa giao diện và trải nghiệm.</p>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.1 - 27/03/2026</p>
+                        <p className="text-sm">Cập nhật phiên bản động, thêm QR donate phóng to và tinh chỉnh footer.</p>
                     </div>
                 </div>
             )

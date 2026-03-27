@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import ProfileSetup from './components/ProfileSetup';
 import InfoModal from './components/InfoModal';
-import { FaBaby, FaInfoCircle } from 'react-icons/fa';
+import { FaBaby } from 'react-icons/fa';
 import packageJson from '../package.json';
 
 export default function Home() {
@@ -91,7 +91,7 @@ export default function Home() {
         </div>
 
         <p className="mt-6 text-[10px] text-primary/50 font-bold tracking-wide relative z-10 text-center">
-          From Pe Thui Tracker with &lt;3 | ver {APP_VERSION}
+          From Pe Thui Tracker with ❤️ | ver {APP_VERSION}
         </p>
       </div>
 
@@ -100,7 +100,7 @@ export default function Home() {
         onClick={() => setShowInfo(true)}
         className="fixed bottom-6 right-6 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-400 hover:text-pink-500 transition-all active:scale-90 z-[90] border border-pink-50"
       >
-        <FaInfoCircle size={24} />
+        <span className="material-symbols-outlined text-[24px]">help</span>
       </button>
 
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}

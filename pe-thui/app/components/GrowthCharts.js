@@ -48,7 +48,7 @@ export default function GrowthCharts({ records, profile, onBack }) {
     const latestHeightDate = latestHeightDateSource ? new Date(latestHeightDateSource).toLocaleDateString('vi-VN') : '--/--/----';
 
     return (
-        <div className="bg-[#fff5f8] pb-8 pt-6">
+        <div className="bg-[#fff5f8] pb-8">
             <div className="p-4 space-y-8 animate-in fade-in duration-500">
                 {/* Prediction Card */}
                 {predictedHeight > 0 && (

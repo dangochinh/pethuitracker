@@ -129,8 +129,8 @@ export default function TeethingChart({ dob, records, code, onSave }) {
                         { color: 'bg-tooth-red', label: 'Cửa giữa' },
                         { color: 'bg-tooth-orange', label: 'Cửa bên' },
                         { color: 'bg-tooth-green', label: 'Răng nanh' },
-                        { color: 'bg-tooth-blue', label: 'Cối 1' },
-                        { color: 'bg-tooth-purple', label: 'Cối 2' }
+                        { color: 'bg-tooth-blue', label: 'Hàm 1' },
+                        { color: 'bg-tooth-purple', label: 'Hàm 2' }
                     ].map(item => (
                         <div key={item.label} className="flex items-center gap-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-outline-variant/20">
                             <div className={`w-3 h-3 rounded-full ${item.color}`}></div>
@@ -200,7 +200,7 @@ export default function TeethingChart({ dob, records, code, onSave }) {
                         </svg>
                     </div>
                     <div>
-                        <h4 className="font-bold text-primary text-sm mb-0.5 font-headline">Teething Comfort</h4>
+                        <h4 className="font-bold text-primary text-sm mb-0.5 font-headline">Mẹo giảm khó chịu mọc răng</h4>
                         <p className="text-[11px] text-on-surface-variant font-medium leading-relaxed opacity-80">
                             Thử dùng vòng ngậm nướu ướp lạnh (không đông đá) hoặc khăn sạch, ẩm để làm dịu nướu cho bé nhé.
                         </p>

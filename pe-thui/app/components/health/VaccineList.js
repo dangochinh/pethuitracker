@@ -535,10 +535,8 @@ export default function VaccineList({ dob, records, code, onSave }) {
             {/* 2. Upcoming Reminders */}
             <section className="space-y-5">
                 <div className="flex items-center justify-between px-2">
-                    <h3 className="text-xl font-headline font-black text-on-surface flex items-center gap-3">
-                        <div className="bg-secondary/10 p-2.5 rounded-2xl text-secondary">
-                            <span className="material-symbols-outlined text-2xl">event_upcoming</span>
-                        </div>
+                    <h3 className="text-xl font-headline font-extrabold text-primary flex items-center gap-2">
+                        <span className="material-symbols-outlined text-lg">event_upcoming</span>
                         Nhắc lịch sắp tới
                     </h3>
                     <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">{upcoming.length} mũi tiếp theo</span>
@@ -547,7 +545,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
                     {upcoming.map((v, i) => {
                         const countdown = getCountdown(v.id);
                         return (
-                            <div key={v.id} onClick={() => handleToggle(v)} className={`bg-white p-5 rounded-[2.5rem] border-l-4 ${i === 0 ? 'border-primary' : 'border-secondary'} flex flex-col justify-between h-40 shadow-sm relative overflow-hidden group active:scale-[0.98] transition-all cursor-pointer hover:shadow-md`}>
+                            <div key={v.id} onClick={() => handleToggle(v)} className="bg-white p-5 rounded-[2.5rem] border border-outline-variant/20 flex flex-col justify-between h-40 shadow-sm relative overflow-hidden group active:scale-[0.98] transition-all cursor-pointer hover:shadow-md">
                                 <div className="absolute -right-6 -bottom-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                                     <span className="material-symbols-outlined text-[100px]">vaccines</span>
                                 </div>
@@ -574,8 +572,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
                 <div className="sticky top-0 z-50 bg-[#fff8f8] px-2 pt-2 pb-1 backdrop-blur-none">
                     <div className="space-y-4">
                         <div>
-                            <h3 className="text-xl font-headline font-black text-primary">Bảng Tổng Hợp</h3>
-                            <p className="mt-1 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40">Dễ dàng theo dõi tiến độ</p>
+                            <h3 className="text-xl font-headline font-black text-primary">Bảng tổng hợp</h3>
                         </div>
 
                         <div ref={summaryHeaderScrollRef} className="-mx-2 overflow-x-auto summary-header-scroll px-2">

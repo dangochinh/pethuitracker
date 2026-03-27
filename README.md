@@ -8,16 +8,19 @@
 
 ## 📖 About
 
-**Pe Thúi Tracker** is a mobile-friendly web application designed to help parents track and visualize their baby's growth journey — including weight, height, and other milestones over time. Each baby gets a unique code-based profile, and all data is stored securely in Google Sheets, making it simple to manage without a dedicated database.
+**Pe Thúi Tracker** is a mobile-friendly web application designed to help parents track and visualize their baby's growth journey — including weight, height, vaccination schedules, teething progress, and developmental milestones over time. Each baby gets a unique code-based profile, and all data is stored securely in Google Sheets, making it simple to manage without a dedicated database.
 
 ## ✨ Features
 
 - **Code-based Access** — Enter your baby's personal code to instantly access their profile. No login required.
 - **Profile Creation** — Set up a new baby profile in seconds with name, birth date, and other details.
 - **Growth Dashboard** — View comprehensive stats on weight, height, and other tracked metrics at a glance.
-- **Growth Charts** — Beautiful, interactive charts to visualize progress over time using Recharts.
+- **WHO Standard Growth Charts** — Interactive charts following WHO standards for weight and height tracking with percentile visualization.
+- **Vaccination Schedule** — Complete vaccination tracking with age-based milestones and reminders.
+- **Teething Tracker** — Monitor tooth eruption progress with age-appropriate milestones.
+- **Development Skills Timeline** — Age-based skills development tracking that automatically focuses on the current age range.
 - **Add / Edit Records** — Log new health records and update or correct previous entries anytime.
-- **Mobile-Optimized** — Designed for use on phones with smooth keyboard-aware scrolling.
+- **Mobile-Optimized** — Designed for use on phones with smooth keyboard-aware scrolling and touch interactions.
 
 ## 🛠️ Tech Stack
 

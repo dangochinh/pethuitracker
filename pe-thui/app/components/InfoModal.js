@@ -145,7 +145,7 @@ export default function InfoModal({ onClose }) {
                         <div key={section.id} className="relative">
                             <div className="flex items-center gap-4 mb-3">
                                 <div className={`w-10 h-10 rounded-2xl ${section.bg} ${section.iconColor} flex items-center justify-center shadow-sm`}>
-                                    <span className="material-icons text-lg">{section.icon}</span>
+                                    <span className="material-symbols-outlined text-lg">{section.icon}</span>
                                 </div>
                                 <h3 className="font-extrabold text-on-surface uppercase tracking-[2px] text-[11px]">{section.title}</h3>
                             </div>

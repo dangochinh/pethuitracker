@@ -17,12 +17,12 @@ export const metadata = {
   title: 'Pe Thúi Tracker',
   description: 'Trợ lý theo dõi phát triển của bé',
   icons: {
-    icon: '/Logoo.png',
-    shortcut: '/Logoo.png',
-    apple: '/Logoo.png',
+    icon: '/Logo.png',
+    shortcut: '/Logo.png',
+    apple: '/Logo.png',
     other: [
-      { rel: 'apple-touch-icon', url: '/Logoo.png' },
-      { rel: 'shortcut icon', url: '/Logoo.png' }
+      { rel: 'apple-touch-icon', url: '/Logo.png' },
+      { rel: 'shortcut icon', url: '/Logo.png' }
     ]
   },
 };
@@ -34,8 +34,8 @@ export default function RootLayout({ children }) {
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#E91E63" />
-            <link rel="icon" href="/Logoo.png" />
-            <link rel="apple-touch-icon" sizes="180x180" href="/Logoo.png" />
+            <link rel="icon" href="/Logo.png" />
+            <link rel="apple-touch-icon" sizes="180x180" href="/Logo.png" />
         </head>
         <body className="font-body">
         <main className="min-h-screen max-w-md mx-auto bg-background shadow-2xl relative">

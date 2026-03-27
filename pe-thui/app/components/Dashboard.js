@@ -13,6 +13,7 @@ import TeethingPreview from './health/TeethingPreview';
 import VaccineList from './health/VaccineList';
 import TeethingChart from './health/TeethingChart';
 import BottomNav from './layout/BottomNav';
+import DevelopmentSkillsSection from './DevelopmentSkillsSection';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
@@ -148,7 +149,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
     const heightStatus = latestHeightRecord ? assessHeight(latestHeightRecord.height, latestHeightRecord.ageMonths) : null;
 
     return (
-        <main className="pb-8 space-y-8">
+        <main className="pb-30 md:pb-12 space-y-8">
             {/* New Bento Profile Card */}
             <section className="relative mt-[4.5rem] px-2">
                 <div className="bg-[#fffbf0] rounded-[2rem] p-5 pt-16 relative shadow-sm border-[3px] border-dashed border-primary/30">
@@ -259,6 +260,8 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
                     </div>
                 </div>
             </section>
+
+            <DevelopmentSkillsSection ageMonths={ageInfo.totalMonths} ageDays={ageInfo.days} />
         </main>
     );
 }

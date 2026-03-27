@@ -41,11 +41,12 @@ export default function InfoModal({ onClose }) {
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 27/03/2026</p>
-                        <p className="text-sm font-bold">Sửa lỗi biểu đồ mobile & đồng bộ phiên bản</p>
+                        <p className="text-sm font-bold">Nâng cấp mục kỹ năng theo độ tuổi</p>
                         <ul className="text-xs mt-1 space-y-1 opacity-80">
-                            <li>• Loại bỏ viền đen/cam khi chạm vào 2 biểu đồ tăng trưởng trên web mobile.</li>
-                            <li>• Cập nhật hướng dẫn nhanh trong modal Info cho luồng tạo hồ sơ mới và đổi Mã Code.</li>
-                            <li>• Footer màn hình đăng nhập hiển thị đúng version app theo package hiện tại.</li>
+                            <li>• Thêm section “Có thể bạn chưa biết” lấy fact theo tuổi bé từ sheet MASTER.</li>
+                            <li>• Thêm modal timeline kỹ năng, tự focus đúng độ tuổi hiện tại và cuộn xem mốc trước/sau.</li>
+                            <li>• Chuẩn hóa cột Thang_Tuoi dạng x-y, hiển thị theo tháng (ví dụ: 15 - 18 tháng).</li>
+                            <li>• Tối ưu UI card home, màu sắc timeline và khoảng tránh nút Thêm (+) trên mobile.</li>
                         </ul>
                     </div>
                     <div className="border-l-2 border-primary/20 pl-4 py-1 opacity-60">

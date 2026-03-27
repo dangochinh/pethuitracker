@@ -13,7 +13,7 @@ export default function InfoModal({ onClose }) {
             title: 'Giới thiệu',
             icon: 'info',
             iconColor: 'text-primary',
-            bg: 'bg-primary-container',
+            bg: 'bg-transparent',
             content: (
                 <div className="space-y-2">
                     <p>
@@ -34,15 +34,37 @@ export default function InfoModal({ onClose }) {
             title: 'Hướng dẫn nhanh',
             icon: 'menu_book',
             iconColor: 'text-secondary',
-            bg: 'bg-secondary-container',
+            bg: 'bg-transparent',
             content: (
                 <ul className="list-disc pl-5 space-y-1 mt-1">
                     <li>Nhập đúng <strong>Mã Code</strong> để xem hồ sơ của bé.</li>
                     <li>Nếu bé mới, hãy tạo <strong>hồ sơ mới</strong> ngay tại màn hình khởi tạo.</li>
                     <li>Muốn truy cập dễ nhớ hơn: vào <strong>Cài đặt</strong>, đổi <strong>Mã Code</strong> rồi lưu lại.</li>
-                    <li>Biểu đồ chuẩn WHO tự động cập nhật khi có dữ liệu mới.</li>
-                    <li>Sổ tiêm chủng và mọc răng có nhắc lịch trực quan, dễ theo dõi.</li>
                 </ul>
+            )
+        },
+        {
+            id: 'homescreen',
+            title: 'Thêm vào màn hình chính',
+            icon: 'install_mobile',
+            iconColor: 'text-success',
+            bg: 'bg-transparent',
+            content: (
+                <div className="space-y-3 mt-1">
+                    <p className="text-sm">
+                        Thêm app vào màn hình chính để sử dụng nhanh chóng như ứng dụng native, không cần cài đặt!
+                    </p>
+                    <div className="space-y-2">
+                        <div>
+                            <p className="font-semibold text-sm text-success">iPhone/iPad:</p>
+                            <p className="text-xs opacity-80">Nhấn biểu tượng Chia sẻ → Chọn "Thêm vào MH chính"</p>
+                        </div>
+                        <div>
+                            <p className="font-semibold text-sm text-success">Android:</p>
+                            <p className="text-xs opacity-80">Nhấn menu 3 chấm → Chọn "Thêm vào Màn hình chính"</p>
+                        </div>
+                    </div>
+                </div>
             )
         },
         {
@@ -50,7 +72,7 @@ export default function InfoModal({ onClose }) {
             title: 'Nhật ký cập nhật',
             icon: 'history',
             iconColor: 'text-tertiary',
-            bg: 'bg-tertiary-container',
+            bg: 'bg-transparent',
             content: (
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
@@ -78,7 +100,7 @@ export default function InfoModal({ onClose }) {
             title: 'Thêm vào màn hình chính',
             icon: 'install_mobile',
             iconColor: 'text-success',
-            bg: 'bg-success-container',
+            bg: 'bg-transparent',
             content: (
                 <div className="space-y-3 mt-1">
                     <p className="text-sm">
@@ -102,7 +124,7 @@ export default function InfoModal({ onClose }) {
             title: 'Ủng hộ tác giả',
             icon: 'favorite',
             iconColor: 'text-error',
-            bg: 'bg-error-container',
+            bg: 'bg-transparent',
             content: (
                 <div className="mt-2">
                     <p className="text-sm mb-4 font-medium italic opacity-80">Nếu app hữu ích, mời tác giả ly cafe nha! ☕</p>
@@ -144,7 +166,7 @@ export default function InfoModal({ onClose }) {
                     {sections.map((section) => (
                         <div key={section.id} className="relative">
                             <div className="flex items-center gap-4 mb-3">
-                                <div className={`w-10 h-10 rounded-2xl ${section.bg} ${section.iconColor} flex items-center justify-center shadow-sm`}>
+                                <div className={`w-10 h-10 rounded-2xl ${section.iconColor} flex items-center justify-center shadow-sm`}>
                                     <span className="material-symbols-outlined text-lg">{section.icon}</span>
                                 </div>
                                 <h3 className="font-extrabold text-on-surface uppercase tracking-[2px] text-[11px]">{section.title}</h3>

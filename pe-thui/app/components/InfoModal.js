@@ -19,6 +19,8 @@ export default function InfoModal({ onClose }) {
             content: (
                 <ul className="list-disc list-inside space-y-1 mt-1">
                     <li>Nhập đúng <strong>Mã Code</strong> để xem hồ sơ của bé.</li>
+                    <li>Nếu bé mới, hãy tạo <strong>hồ sơ mới</strong> (tên, ngày sinh, giới tính, ảnh) ngay tại màn hình khởi tạo.</li>
+                    <li>Muốn truy cập dễ nhớ hơn: vào <strong>Cài đặt</strong> → đổi <strong>Mã Code</strong> → lưu lại và dùng mã mới.</li>
                     <li>Biểu đồ chuẩn WHO tự động cập nhật khi mẹ tải dữ liệu lên.</li>
                     <li>Sổ tiêm chủng và mọc răng nhắc lịch thông minh.</li>
                 </ul>

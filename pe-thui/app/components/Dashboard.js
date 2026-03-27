@@ -63,6 +63,10 @@ export default function Dashboard({ profile, code }) {
         fetchAllData();
     }, []);
 
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    }, [view]);
+
 
     const ageInfo = calculateAge(profile.dob);
     const latest = records[0];
@@ -125,7 +129,7 @@ export default function Dashboard({ profile, code }) {
             {view !== 'teething' && view !== 'health' && (
                 <button 
                     onClick={() => setShowAdd(true)}
-                    className="fixed bottom-32 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-3xl shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-34"
+                    className="fixed bottom-32 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-full shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-34"
                 >
                     <span className="material-symbols-outlined text-3xl">add</span>
                 </button>
@@ -208,14 +212,15 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
             </section>
 
             <section className="space-y-6">
-                <h2 className="font-headline text-xl font-extrabold text-primary flex items-center gap-2 px-2">Tổng quan Dashboard</h2>
+                <h2 className="font-headline text-xl font-extrabold text-primary flex items-center gap-2 px-2">
+                    <span className="material-symbols-outlined text-lg">dashboard</span>
+                    Tổng quan
+                </h2>
                 <div className="grid grid-cols-2 gap-4">
                     {/* Weight Card */}
                     <div onClick={() => setView('growth')} className="bg-white rounded-[2.5rem] p-5 flex flex-col items-center justify-center gap-2 shadow-sm border border-outline-variant/20 relative cursor-pointer overflow-hidden transition-transform active:scale-95 text-center min-h-[170px]">
-                        <div className="w-12 h-12 bg-[#f4f6fa] rounded-full flex items-center justify-center mb-1 z-10 shadow-inner">
-                            <span className="text-2xl drop-shadow-sm">⚖️</span>
-                        </div>
-                        <span className="text-[11px] font-black tracking-widest text-[#5e6b7c] uppercase z-10">Cân nặng</span>
+                        <span className="material-symbols-outlined text-secondary mb-1 z-10" style={{ fontSize: '32px' }}>weight</span>
+                        <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest z-10">Cân nặng</span>
                         <div className="flex items-baseline gap-1 z-10 mt-1">
                             <span className="text-[28px] font-black font-headline text-[#334155] tracking-tighter shadow-sm-text">{latestWeightRecord ? latestWeightRecord.weight : '--'}</span>
                             <span className="text-sm font-bold text-[#94a3b8]">kg</span>
@@ -233,10 +238,8 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
 
                     {/* Height Card */}
                     <div onClick={() => setView('growth')} className="bg-white rounded-[2.5rem] p-5 flex flex-col items-center justify-center gap-2 shadow-sm border border-outline-variant/20 relative cursor-pointer overflow-hidden transition-transform active:scale-95 text-center min-h-[170px]">
-                        <div className="w-12 h-12 bg-[#fdf2f8] rounded-full flex items-center justify-center mb-1 z-10 shadow-inner">
-                            <span className="text-2xl drop-shadow-sm">📏</span>
-                        </div>
-                        <span className="text-[11px] font-black tracking-widest text-[#5e6b7c] uppercase z-10">Chiều cao</span>
+                        <span className="material-symbols-outlined text-primary mb-1 z-10" style={{ fontSize: '32px' }}>height</span>
+                        <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest z-10">Chiều cao</span>
                         <div className="flex items-baseline gap-1 z-10 mt-1">
                             <span className="text-[28px] font-black font-headline text-[#334155] tracking-tighter shadow-sm-text">{latestHeightRecord ? latestHeightRecord.height : '--'}</span>
                             <span className="text-sm font-bold text-[#94a3b8]">cm</span>

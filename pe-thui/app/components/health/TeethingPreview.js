@@ -10,9 +10,7 @@ export default function TeethingPreview({ records }) {
     return (
         <div className="bento-card bg-secondary-fixed/20 flex-1 min-h-[170px] flex flex-col justify-center items-center text-center">
             <div className="flex justify-center items-start mb-4">
-                <div className="bg-secondary/10 p-2 rounded-xl text-secondary">
-                    <span className="material-symbols-outlined text-xl">dentistry</span>
-                </div>
+                <span className="material-symbols-outlined text-secondary" style={{ fontSize: '32px' }}>dentistry</span>
             </div>
             <div className="space-y-2 text-center flex flex-col items-center">
                 <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Mọc răng</p>

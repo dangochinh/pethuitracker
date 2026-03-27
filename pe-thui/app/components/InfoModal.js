@@ -1,6 +1,11 @@
 'use client';
 
+import { useState } from 'react';
+import packageJson from '../../package.json';
+
 export default function InfoModal({ onClose }) {
+    const APP_VERSION = packageJson.version;
+    const [isQrZoomOpen, setIsQrZoomOpen] = useState(false);
     const sections = [
         {
             id: 'about',
@@ -35,19 +40,23 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v1.3.0 - 25/03/2026</p>
-                        <p className="text-sm font-bold">Tối ưu hóa giao diện & Trải nghiệm</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 27/03/2026</p>
+                        <p className="text-sm font-bold">Sửa lỗi biểu đồ mobile & đồng bộ phiên bản</p>
                         <ul className="text-xs mt-1 space-y-1 opacity-80">
-                            <li>• Tinh chỉnh vị trí nút Thêm (+) tối ưu cho di động.</li>
-                            <li>• Tự động ẩn nút chức năng trên Tab Tiêm chủng & Mọc răng.</li>
-                            <li>• Cải thiện hiển thị biểu đồ và đồng bộ hóa giao diện.</li>
+                            <li>• Loại bỏ viền đen/cam khi chạm vào 2 biểu đồ tăng trưởng trên web mobile.</li>
+                            <li>• Cập nhật hướng dẫn nhanh trong modal Info cho luồng tạo hồ sơ mới và đổi Mã Code.</li>
+                            <li>• Footer màn hình đăng nhập hiển thị đúng version app theo package hiện tại.</li>
                         </ul>
                     </div>
                     <div className="border-l-2 border-primary/20 pl-4 py-1 opacity-60">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.2.0 - 22/03/2026</p>
-                        <p className="text-sm">Redesign toàn diện Dashboard. Nâng cấp sổ tiêm chủng và sổ mọc răng.</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.0 - 25/03/2026</p>
+                        <p className="text-sm">Tối ưu hóa giao diện & Trải nghiệm.</p>
                     </div>
                     <div className="border-l-2 border-outline-variant/30 pl-4 py-1 opacity-40">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">v1.2.0 - 22/03/2026</p>
+                        <p className="text-sm">Redesign toàn diện Dashboard. Nâng cấp sổ tiêm chủng và sổ mọc răng.</p>
+                    </div>
+                    <div className="border-l-2 border-outline-variant/30 pl-4 py-1 opacity-30">
                         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/40">v1.0.0 - 20/02/2026</p>
                         <p className="text-sm">Ra mắt phiên bản đầu tiên theo chuẩn WHO.</p>
                     </div>
@@ -65,12 +74,21 @@ export default function InfoModal({ onClose }) {
                     <p className="text-sm mb-4 font-medium italic opacity-80">Nếu app hữu ích, mời chú một ly cafe nha! ☕</p>
                     <div className="flex items-center gap-4">
                         <div className="bg-white p-2 inline-block rounded-2xl border border-primary/10 shadow-sm">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=ACB:12342467:DANG%20NGOC%20CHINH" alt="QR Donate" className="w-24 h-24" />
+                            <button
+                                type="button"
+                                onClick={() => setIsQrZoomOpen(true)}
+                                className="block rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                aria-label="Phóng to mã QR donate"
+                            >
+                                <img src="/donate-qr.jpg" alt="QR Donate ACB" className="w-24 h-24 object-cover rounded-xl" />
+                            </button>
+                            <p className="text-[9px] font-bold text-on-surface-variant/50 mt-1 text-center">Chạm để phóng to</p>
                         </div>
                         <div>
                             <p className="text-sm font-black tracking-tight text-primary">Đặng Ngọc Chính</p>
                             <p className="text-[10px] font-bold text-on-surface-variant/60">STK: 12342467</p>
                             <p className="text-[10px] uppercase font-bold text-on-surface-variant/40">Ngân hàng ACB</p>
+                            <p className="text-[10px] font-bold text-on-surface-variant/70 mt-1">MoMo: 0363839007</p>
                         </div>
                     </div>
                 </div>
@@ -110,6 +128,32 @@ export default function InfoModal({ onClose }) {
                     </div>
                 </div>
             </div>
+
+            {isQrZoomOpen && (
+                <div
+                    className="fixed inset-0 z-[120] bg-black/75 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in duration-200"
+                    onClick={() => setIsQrZoomOpen(false)}
+                >
+                    <div
+                        className="relative w-full max-w-sm"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            onClick={() => setIsQrZoomOpen(false)}
+                            className="absolute -top-4 -right-4 w-10 h-10 rounded-full bg-white text-on-surface shadow-lg flex items-center justify-center"
+                            aria-label="Đóng ảnh QR"
+                        >
+                            <span className="material-symbols-outlined">close</span>
+                        </button>
+                        <img
+                            src="/donate-qr.jpg"
+                            alt="QR Donate ACB Zoom"
+                            className="w-full rounded-2xl shadow-2xl border border-white/20"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

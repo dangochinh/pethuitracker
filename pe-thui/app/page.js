@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import ProfileSetup from './components/ProfileSetup';
 import InfoModal from './components/InfoModal';
 import { FaBaby, FaInfoCircle } from 'react-icons/fa';
+import packageJson from '../package.json';
 
 export default function Home() {
+  const APP_VERSION = packageJson.version;
   const [code, setCode] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -40,9 +42,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-pink-50 relative flex flex-col justify-center overflow-x-hidden">
+    <div className="min-h-screen bg-pink-50 relative flex flex-col justify-center overflow-x-hidden overflow-y-auto login-scroll">
       {/* Scrollable container for keyboard accessibility */}
-      <div className="flex-1 w-full flex flex-col items-center justify-center p-6 py-12 pb-[40vh] md:pb-12">
+      <div className={`flex-1 w-full flex flex-col items-center justify-center p-6 py-12 ${isFocused ? 'pb-[24vh]' : 'pb-8'} md:pb-12`}>
         {/* Decorative blobs */}
         <div className="absolute top-0 left-0 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
@@ -87,6 +89,10 @@ export default function Home() {
             Tạo hồ sơ mới
           </button>
         </div>
+
+        <p className="mt-6 text-[10px] text-primary/50 font-bold tracking-wide relative z-10 text-center">
+          From Pe Thui Tracker with &lt;3 | ver {APP_VERSION}
+        </p>
       </div>
 
       {/* Info Button - Bottom Right */}

@@ -13,7 +13,6 @@ import TeethingPreview from './health/TeethingPreview';
 import VaccineList from './health/VaccineList';
 import TeethingChart from './health/TeethingChart';
 import BottomNav from './layout/BottomNav';
-import packageJson from '../../package.json';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
@@ -104,7 +103,7 @@ export default function Dashboard({ profile, code }) {
     };
 
     return (
-        <div className={`min-h-screen bg-background relative ${view === 'home' ? 'pb-[6.5rem] overflow-y-auto home-scroll' : 'pb-24'}`}>
+        <div className="min-h-screen bg-background pb-24 relative">
             {/* Global Floating Buttons */}
             {view === 'home' && (
                 <div className="absolute top-6 right-6 z-50 flex gap-2">
@@ -117,8 +116,8 @@ export default function Dashboard({ profile, code }) {
                 </div>
             )}
 
-            <div className={view === 'home' ? 'pt-4' : 'pt-8'}>
-                <div className={`w-full max-w-lg px-4 mx-auto ${view === 'home' ? 'space-y-6' : 'space-y-8'}`}>
+            <div className="pt-8">
+                <div className="w-full max-w-lg px-4 space-y-8 mx-auto">
                     {renderView()}
                 </div>
             </div>
@@ -142,7 +141,6 @@ export default function Dashboard({ profile, code }) {
 }
 
 function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords, code }) {
-    const APP_VERSION = packageJson.version;
     const latestWeightRecord = records.find(r => r.weight > 0);
     const latestHeightRecord = records.find(r => r.height > 0);
 
@@ -150,7 +148,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
     const heightStatus = latestHeightRecord ? assessHeight(latestHeightRecord.height, latestHeightRecord.ageMonths) : null;
 
     return (
-        <main className="pb-2 space-y-6">
+        <main className="pb-8 space-y-8">
             {/* New Bento Profile Card */}
             <section className="relative mt-[4.5rem] px-2">
                 <div className="bg-[#fffbf0] rounded-[2rem] p-5 pt-16 relative shadow-sm border-[3px] border-dashed border-primary/30">
@@ -261,12 +259,6 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
                     </div>
                 </div>
             </section>
-
-            <footer className="pt-1 text-center">
-                <p className="text-[10px] text-primary/50 font-bold tracking-wide">
-                    From Pe Thui Tracker with &lt;3 | ver {APP_VERSION}
-                </p>
-            </footer>
         </main>
     );
 }

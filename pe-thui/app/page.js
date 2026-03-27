@@ -26,7 +26,7 @@ export default function Home() {
 
   const formatCode = (str) => {
     const noAccents = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
-    const alphanumeric = noAccents.replace(/[^a-zA-Z0-9]/g, '');
+    const alphanumeric = noAccents.replace(/[^a-zA-Z0-9.]/g, '');
     return alphanumeric.toUpperCase().slice(0, 30);
   };
 

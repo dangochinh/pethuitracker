@@ -153,4 +153,15 @@
     fill: transparent !important;
     pointer-events: none;
   }
+
+  .growth-chart :is(.recharts-wrapper, .recharts-surface):focus,
+  .growth-chart :is(.recharts-wrapper, .recharts-surface):focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .growth-chart :is(.recharts-rectangle, .recharts-active-dot, .recharts-tooltip-cursor) {
+    stroke: transparent !important;
+    fill: transparent !important;
+  }
 }

@@ -14,7 +14,7 @@ const beVietnam = Be_Vietnam_Pro({
 });
 
 export const metadata = {
-  title: 'Pe Thúi Tracker',
+  title: 'Babie Tracker',
   description: 'Trợ lý theo dõi phát triển của bé',
   icons: {
     icon: '/Logo.png',

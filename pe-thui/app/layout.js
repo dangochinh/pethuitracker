@@ -17,12 +17,12 @@ export const metadata = {
   title: 'Pe Thúi Tracker',
   description: 'Trợ lý theo dõi phát triển của bé',
   icons: {
-    icon: '/baby-default.png',
-    shortcut: '/baby-default.png',
-    apple: '/baby-default.png',
+    icon: '/Logoo.png',
+    shortcut: '/Logoo.png',
+    apple: '/Logoo.png',
     other: [
-      { rel: 'apple-touch-icon', url: '/baby-default.png' },
-      { rel: 'shortcut icon', url: '/baby-default.png' }
+      { rel: 'apple-touch-icon', url: '/Logoo.png' },
+      { rel: 'shortcut icon', url: '/Logoo.png' }
     ]
   },
 };

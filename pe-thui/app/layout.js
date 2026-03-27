@@ -16,6 +16,15 @@ const beVietnam = Be_Vietnam_Pro({
 export const metadata = {
   title: 'Pe Thúi Tracker',
   description: 'Trợ lý theo dõi phát triển của bé',
+  icons: {
+    icon: '/baby-default.png',
+    shortcut: '/baby-default.png',
+    apple: '/baby-default.png',
+    other: [
+      { rel: 'apple-touch-icon', url: '/baby-default.png' },
+      { rel: 'shortcut icon', url: '/baby-default.png' }
+    ]
+  },
 };
 
 export default function RootLayout({ children }) {

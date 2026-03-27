@@ -2,7 +2,7 @@
 
 > *Lưu giữ hành trình khôn lớn* — A personal baby growth tracking application backed by Google Sheets.
 
-**Live App:** [https://pethuitracker.vercel.app/](https://pethuitracker.vercel.app/)
+**Live App:** [https://pethui.vercel.app/](https://pethui.vercel.app/)
 
 ---
 

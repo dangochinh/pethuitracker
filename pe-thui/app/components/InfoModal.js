@@ -17,15 +17,11 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-2">
                     <p>
-                        Pe Thúi Tracker là ứng dụng cá nhân hóa giúp ba mẹ theo dõi hành trình khôn lớn của bé yêu.
-                        Giao diện nhẹ nhàng, dễ dùng và tối ưu cho mobile.
+                        Pe Thúi Tracker giúp ba mẹ theo dõi cân nặng, chiều cao, tiêm chủng, mọc răng và kỹ năng phát triển của bé.
                     </p>
-                    <ul className="list-disc pl-5 space-y-1">
-                        <li>Biểu đồ tăng trưởng theo chuẩn WHO cho cân nặng và chiều cao.</li>
-                        <li>Sổ tiêm chủng và mọc răng với các mốc theo độ tuổi.</li>
-                        <li>Timeline kỹ năng phát triển, tự focus đúng độ tuổi hiện tại.</li>
-                        <li>Mã code cá nhân hóa giúp truy cập hồ sơ nhanh và đồng bộ.</li>
-                    </ul>
+                    <p>
+                        Dùng mã code nhanh, không cần đăng nhập, giao diện mobile thân thiện.
+                    </p>
                 </div>
             )
         },

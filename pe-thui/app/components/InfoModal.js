@@ -74,6 +74,30 @@ export default function InfoModal({ onClose }) {
             )
         },
         {
+            id: 'homescreen',
+            title: 'Thêm vào màn hình chính',
+            icon: 'smartphone',
+            iconColor: 'text-success',
+            bg: 'bg-success-container',
+            content: (
+                <div className="space-y-3 mt-1">
+                    <p className="text-sm">
+                        Thêm app vào màn hình chính để sử dụng nhanh chóng như ứng dụng native, không cần cài đặt!
+                    </p>
+                    <div className="space-y-2">
+                        <div>
+                            <p className="font-semibold text-sm text-success">iPhone/iPad:</p>
+                            <p className="text-xs opacity-80">Nhấn biểu tượng Chia sẻ → Chọn "Thêm vào MH chính"</p>
+                        </div>
+                        <div>
+                            <p className="font-semibold text-sm text-success">Android:</p>
+                            <p className="text-xs opacity-80">Nhấn menu 3 chấm → Chọn "Thêm vào Màn hình chính"</p>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
             id: 'donate',
             title: 'Ủng hộ tác giả',
             icon: 'favorite',

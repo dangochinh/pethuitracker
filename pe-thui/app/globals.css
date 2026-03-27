@@ -136,4 +136,21 @@
   .summary-body-scroll::-webkit-scrollbar {
     display: none;
   }
+
+  /* Remove Recharts tap/focus border artifact on mobile charts */
+  .growth-chart .recharts-wrapper,
+  .growth-chart .recharts-wrapper * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .growth-chart :is(.recharts-wrapper, .recharts-surface, .recharts-layer, .recharts-dot):focus,
+  .growth-chart :is(.recharts-wrapper, .recharts-surface, .recharts-layer, .recharts-dot):focus-visible {
+    outline: none !important;
+  }
+
+  .growth-chart .recharts-tooltip-cursor {
+    stroke: transparent !important;
+    fill: transparent !important;
+    pointer-events: none;
+  }
 }

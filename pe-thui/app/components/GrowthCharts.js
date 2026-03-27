@@ -87,7 +87,7 @@ export default function GrowthCharts({ records, profile, onBack }) {
                     </div>
                     <div className="growth-chart h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart accessibilityLayer={false} data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} style={{ outline: 'none' }}>
+                            <ComposedChart accessibilityLayer={false} tabIndex={-1} data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} style={{ outline: 'none' }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                                 <XAxis dataKey="ageMonths" tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 'bold' }} tickLine={false} axisLine={false} />
                                 <YAxis tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 'bold' }} tickLine={false} axisLine={false} />
@@ -101,7 +101,7 @@ export default function GrowthCharts({ records, profile, onBack }) {
                                 <Area type="monotone" dataKey="wUpper" stroke="none" fill="#ffe0b2" isAnimationActive={false} name="Béo phì" />
                                 <Area type="monotone" dataKey="wNormal" stroke="none" fill="#b2ebf2" isAnimationActive={false} name="Bình thường" />
                                 <Area type="monotone" dataKey="wLower" stroke="none" fill="#f8bbd0" isAnimationActive={false} name="Suy dinh dưỡng" />
-                                <Line connectNulls type="monotone" dataKey="weight" stroke="#00bcd4" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} name="Cân nặng của con" />
+                                <Line connectNulls type="monotone" dataKey="weight" stroke="#00bcd4" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={false} name="Cân nặng của con" />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>
@@ -116,7 +116,7 @@ export default function GrowthCharts({ records, profile, onBack }) {
                     </div>
                     <div className="growth-chart h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart accessibilityLayer={false} data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} style={{ outline: 'none' }}>
+                            <ComposedChart accessibilityLayer={false} tabIndex={-1} data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} style={{ outline: 'none' }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                                 <XAxis dataKey="ageMonths" tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 'bold' }} tickLine={false} axisLine={false} />
                                 <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 'bold' }} tickLine={false} axisLine={false} />
@@ -130,7 +130,7 @@ export default function GrowthCharts({ records, profile, onBack }) {
                                 <Area type="monotone" dataKey="hUpper" stroke="none" fill="#ffe0b2" isAnimationActive={false} name="Cao" />
                                 <Area type="monotone" dataKey="hNormal" stroke="none" fill="#b2ebf2" isAnimationActive={false} name="Bình thường" />
                                 <Area type="monotone" dataKey="hLower" stroke="none" fill="#f8bbd0" isAnimationActive={false} name="Thấp còi" />
-                                <Line connectNulls type="monotone" dataKey="height" stroke="#e91e63" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} name="Chiều cao của con" />
+                                <Line connectNulls type="monotone" dataKey="height" stroke="#e91e63" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={false} name="Chiều cao của con" />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>
@@ -139,3 +139,4 @@ export default function GrowthCharts({ records, profile, onBack }) {
         </div>
     );
 }
+

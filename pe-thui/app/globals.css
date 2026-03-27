@@ -137,12 +137,12 @@
     display: none;
   }
 
-  .home-scroll {
+  .login-scroll {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
-  .home-scroll::-webkit-scrollbar {
+  .login-scroll::-webkit-scrollbar {
     display: none;
   }
 

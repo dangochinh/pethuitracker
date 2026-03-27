@@ -76,7 +76,7 @@ export default function InfoModal({ onClose }) {
         {
             id: 'homescreen',
             title: 'Thêm vào màn hình chính',
-            icon: 'smartphone',
+            icon: 'install_mobile',
             iconColor: 'text-success',
             bg: 'bg-success-container',
             content: (

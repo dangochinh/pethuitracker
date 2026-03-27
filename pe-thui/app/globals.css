@@ -137,6 +137,15 @@
     display: none;
   }
 
+  .home-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .home-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Remove Recharts tap/focus border artifact on mobile charts */
   .growth-chart .recharts-wrapper,
   .growth-chart .recharts-wrapper * {

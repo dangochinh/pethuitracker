@@ -14,6 +14,8 @@ import VaccineList from './health/VaccineList';
 import TeethingChart from './health/TeethingChart';
 import BottomNav from './layout/BottomNav';
 import DevelopmentSkillsSection from './DevelopmentSkillsSection';
+import useBackHandler from '../hooks/useBackHandler';
+import ExitConfirmDialog from './ExitConfirmDialog';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
@@ -26,6 +28,19 @@ export default function Dashboard({ profile, code }) {
     const [showInfo, setShowInfo] = useState(false);
     const [editingRecord, setEditingRecord] = useState(null);
     const [view, setView] = useState('home'); // home, growth, health, teething
+    const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+    // Intercept the browser / hardware back button:
+    //  • If any modal is open → close that modal (priority order).
+    //  • If no modal is open → show the exit confirmation sheet.
+    useBackHandler(() => {
+        if (showAdd)         { setShowAdd(false);         return; }
+        if (showEditProfile) { setShowEditProfile(false); return; }
+        if (editingRecord)   { setEditingRecord(null);    return; }
+        if (showInfo)        { setShowInfo(false);        return; }
+        if (showExitConfirm) { setShowExitConfirm(false); return; }
+        setShowExitConfirm(true);
+    });
 
     const fetchAllData = async () => {
         try {
@@ -141,6 +156,18 @@ export default function Dashboard({ profile, code }) {
             {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={(newCode) => { if (newCode && newCode !== code) { router.push(`/${newCode}`); } else { window.location.reload(); } }} />}
             {editingRecord && <EditRecordModal profile={profile} code={code} record={editingRecord} onClose={() => setEditingRecord(null)} onSave={fetchAllData} />}
             {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
+            {showExitConfirm && (
+                <ExitConfirmDialog
+                    onConfirm={() => {
+                        // Flag this session so auto-redirect is skipped on login page.
+                        // sessionStorage clears when app is closed, so next cold open
+                        // still auto-redirects to the baby's profile.
+                        sessionStorage.setItem('pe_thui_logout', '1');
+                        router.push('/');
+                    }}
+                    onCancel={() => setShowExitConfirm(false)}
+                />
+            )}
         </div>
     );
 }

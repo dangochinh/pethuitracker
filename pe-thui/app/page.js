@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProfileSetup from './components/ProfileSetup';
 import InfoModal from './components/InfoModal';
@@ -13,8 +13,43 @@ export default function Home() {
   const [isCreating, setIsCreating] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const cardRef = useRef(null);
   const router = useRouter();
+
+  // PWA auto-login: if user has a saved code, redirect straight to their profile.
+  // Skipped when user explicitly chose "Về trang chủ" (sessionStorage flag).
+  // sessionStorage clears on app close, so next cold open auto-redirects again.
+  useEffect(() => {
+    if (sessionStorage.getItem('pe_thui_logout')) {
+      sessionStorage.removeItem('pe_thui_logout');
+      return;
+    }
+    const savedCode = localStorage.getItem('pe_thui_last_code');
+    if (savedCode) {
+      setRedirecting(true);
+      router.replace(`/${savedCode}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Intercept the back button ONLY while a modal / sub-view is open.
+  // When the login screen is idle we leave back-navigation untouched so the
+  // user can still exit the browser tab / return to the previous URL normally.
+  useEffect(() => {
+    const isGuardNeeded = showInfo || isCreating;
+    if (!isGuardNeeded) return;
+
+    history.pushState({ __loginGuard: true }, '');
+
+    const handle = () => {
+      if (showInfo)    { setShowInfo(false);    return; }
+      if (isCreating) { setIsCreating(false); return; }
+    };
+
+    window.addEventListener('popstate', handle);
+    return () => window.removeEventListener('popstate', handle);
+  }, [showInfo, isCreating]);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -36,6 +71,19 @@ export default function Home() {
       router.push(`/${code}`);
     }
   };
+
+  // Show a minimal loading screen while the auto-redirect is in flight so the
+  // login form never flashes before the profile page appears.
+  if (redirecting) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50">
+        <div className="animate-bounce">
+          <FaBaby size={52} className="text-pink-300" />
+        </div>
+        <p className="mt-4 text-pink-400 font-bold tracking-wide">Đang tải hồ sơ bé...</p>
+      </div>
+    );
+  }
 
   if (isCreating) {
     return <ProfileSetup onComplete={(newCode) => router.push(`/${newCode}`)} />;
@@ -71,6 +119,7 @@ export default function Home() {
             <button
               type="submit"
               disabled={!code}
+              onMouseDown={(e) => e.preventDefault()}
               className="w-full cute-button-primary py-4 text-lg disabled:opacity-50 shadow-md hover:shadow-lg transition-all"
             >
               Vào trang / Tra cứu

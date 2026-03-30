@@ -23,6 +23,8 @@ export default function ProfilePage() {
                 const json = await res.json();
                 if (json.success && json.data) {
                     setProfile(json.data);
+                    // Remember this code so the PWA can auto-login next time.
+                    localStorage.setItem('pe_thui_last_code', code);
                 } else {
                     setError(true);
                 }

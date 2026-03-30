@@ -72,7 +72,17 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 27/03/2026</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 30/03/2026</p>
+                        <p className="text-sm font-bold">Cải thiện điều hướng & trải nghiệm PWA</p>
+                        <ul className="text-xs mt-1 space-y-1 opacity-80">
+                            <li>• Nút Back (quay lại) giờ sẽ đóng modal thay vì thoát ứng dụng.</li>
+                            <li>• Khi bấm Back ở trang chính, hiện xác nhận "Thoát ứng dụng?" thay vì thoát ngay.</li>
+                            <li>• PWA tự động mở lại hồ sơ bé lần cuối khi khởi động từ màn hình chính.</li>
+                            <li>• Sửa lỗi phải nhấn 2 lần nút đăng nhập trên mobile.</li>
+                        </ul>
+                    </div>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.3 - 27/03/2026</p>
                         <p className="text-sm font-bold">Tinh chỉnh giao diện và trải nghiệm</p>
                         <ul className="text-xs mt-1 space-y-1 opacity-80">
                             <li>• Làm mượt điều hướng tab và đồng bộ cuộn về đầu trang khi chuyển màn hình.</li>
@@ -82,7 +92,7 @@ export default function InfoModal({ onClose }) {
                     </div>
                     <div className="border-l-2 border-primary/20 pl-4 py-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.2 - 27/03/2026</p>
-                        <p className="text-sm">Thêm timeline kỹ năng phát triển theo độ tuổi, tự động focus đúng độ tuổi hiện tại.</p>
+                        <p className="text-sm">Thêm timeline kỹ năng phát triển theo độ tuổi.</p>
                     </div>
                     <div className="border-l-2 border-primary/20 pl-4 py-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.1 - 27/03/2026</p>

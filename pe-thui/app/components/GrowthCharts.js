@@ -81,9 +81,9 @@ export default function GrowthCharts({ records, profile, onBack }) {
                 <div className="cute-card rounded-[2.5rem] p-6 bg-white border border-pink-100 shadow-sm">
                     <h2 className="text-center font-extrabold text-gray-800 mb-6 uppercase tracking-wider text-sm">BIỂU ĐỒ CÂN NẶNG</h2>
                     <div className="flex justify-center gap-4 mb-6 text-[10px] font-bold uppercase text-gray-500">
-                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#ffe0b2]"></span> Béo phì</span>
-                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#b2ebf2]"></span> Bình thường</span>
-                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#f8bbd0]"></span> Suy dinh dưỡng</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#ffe0b2]"></span> Vượt chuẩn</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#b2ebf2]"></span> Đạt chuẩn</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#f8bbd0]"></span> Dưới chuẩn</span>
                     </div>
                     <div className="growth-chart h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
@@ -98,9 +98,9 @@ export default function GrowthCharts({ records, profile, onBack }) {
                                     itemStyle={{ fontWeight: 'bold' }}
                                     labelFormatter={(label) => `${label} Tháng`}
                                 />
-                                <Area type="monotone" dataKey="wUpper" stroke="none" fill="#ffe0b2" isAnimationActive={false} name="Béo phì" />
-                                <Area type="monotone" dataKey="wNormal" stroke="none" fill="#b2ebf2" isAnimationActive={false} name="Bình thường" />
-                                <Area type="monotone" dataKey="wLower" stroke="none" fill="#f8bbd0" isAnimationActive={false} name="Suy dinh dưỡng" />
+                                <Area type="monotone" dataKey="wUpper" stroke="none" fill="#ffe0b2" isAnimationActive={false} name="Vượt chuẩn" />
+                                <Area type="monotone" dataKey="wNormal" stroke="none" fill="#b2ebf2" isAnimationActive={false} name="Đạt chuẩn" />
+                                <Area type="monotone" dataKey="wLower" stroke="none" fill="#f8bbd0" isAnimationActive={false} name="Dưới chuẩn" />
                                 <Line connectNulls type="monotone" dataKey="weight" stroke="#00bcd4" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={false} name="Cân nặng của con" />
                             </ComposedChart>
                         </ResponsiveContainer>
@@ -110,9 +110,9 @@ export default function GrowthCharts({ records, profile, onBack }) {
                 <div className="cute-card rounded-[2.5rem] p-6 bg-white border border-pink-100 shadow-sm">
                     <h2 className="text-center font-extrabold text-gray-800 mb-6 uppercase tracking-wider text-sm">BIỂU ĐỒ CHIỀU CAO</h2>
                     <div className="flex justify-center gap-4 mb-6 text-[10px] font-bold uppercase text-gray-500">
-                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#ffe0b2]"></span> Cao</span>
-                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#b2ebf2]"></span> Bình thường</span>
-                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#f8bbd0]"></span> Thấp còi</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#ffe0b2]"></span> Vượt chuẩn</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#b2ebf2]"></span> Đạt chuẩn</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#f8bbd0]"></span> Dưới chuẩn</span>
                     </div>
                     <div className="growth-chart h-64 w-full">
                         <ResponsiveContainer width="100%" height="100%">
@@ -127,9 +127,9 @@ export default function GrowthCharts({ records, profile, onBack }) {
                                     itemStyle={{ fontWeight: 'bold' }}
                                     labelFormatter={(label) => `${label} Tháng`}
                                 />
-                                <Area type="monotone" dataKey="hUpper" stroke="none" fill="#ffe0b2" isAnimationActive={false} name="Cao" />
-                                <Area type="monotone" dataKey="hNormal" stroke="none" fill="#b2ebf2" isAnimationActive={false} name="Bình thường" />
-                                <Area type="monotone" dataKey="hLower" stroke="none" fill="#f8bbd0" isAnimationActive={false} name="Thấp còi" />
+                                <Area type="monotone" dataKey="hUpper" stroke="none" fill="#ffe0b2" isAnimationActive={false} name="Vượt chuẩn" />
+                                <Area type="monotone" dataKey="hNormal" stroke="none" fill="#b2ebf2" isAnimationActive={false} name="Đạt chuẩn" />
+                                <Area type="monotone" dataKey="hLower" stroke="none" fill="#f8bbd0" isAnimationActive={false} name="Dưới chuẩn" />
                                 <Line connectNulls type="monotone" dataKey="height" stroke="#e91e63" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={false} name="Chiều cao của con" />
                             </ComposedChart>
                         </ResponsiveContainer>

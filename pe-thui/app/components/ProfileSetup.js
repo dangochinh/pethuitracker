@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaBaby, FaMars, FaVenus } from 'react-icons/fa6';
+import ChangeCodeModal from './ChangeCodeModal';
 
 export default function ProfileSetup({ onComplete }) {
     const [name, setName] = useState('');
@@ -8,6 +9,7 @@ export default function ProfileSetup({ onComplete }) {
     const [avatarUrl, setAvatarUrl] = useState('');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+    const [showChangeCode, setShowChangeCode] = useState(false);
     const [successCode, setSuccessCode] = useState(null);
 
     const removeAccents = (str) => {
@@ -76,7 +78,7 @@ export default function ProfileSetup({ onComplete }) {
                         </div>
 
                         <button
-                            onClick={() => onComplete(successCode)}
+                            onClick={() => setShowChangeCode(true)}
                             className="w-full cute-button-primary py-4 text-lg"
                         >
                             Vào Trang Của Bé
@@ -157,6 +159,15 @@ export default function ProfileSetup({ onComplete }) {
                     </>
                 )}
             </div>
+
+            {/* Pop-up đổi mã sau khi tạo hồ sơ lần đầu */}
+            {showChangeCode && successCode && (
+                <ChangeCodeModal
+                    autoCode={successCode}
+                    profile={{ name, gender, dob, avatar: avatarUrl }}
+                    onComplete={(finalCode) => onComplete(finalCode)}
+                />
+            )}
         </div>
     );
 }

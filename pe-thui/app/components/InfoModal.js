@@ -72,7 +72,15 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 30/03/2026</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 01/04/2026</p>
+                        <p className="text-sm font-bold">Đặt mã dễ nhớ khi tạo hồ sơ</p>
+                        <ul className="text-xs mt-1 space-y-1 opacity-80">
+                            <li>• Sau khi tạo hồ sơ bé, app gợi ý đổi mã tự sinh sang mã ngắn gọn dễ nhớ hơn (VD: PEPE, BONGBONG...).</li>
+                            <li>• Hỗ trợ bỏ qua nếu muốn giữ mã mặc định.</li>
+                        </ul>
+                    </div>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.4.0 - 30/03/2026</p>
                         <p className="text-sm font-bold">Cải thiện điều hướng & trải nghiệm PWA</p>
                         <ul className="text-xs mt-1 space-y-1 opacity-80">
                             <li>• Nút Back (quay lại) giờ sẽ đóng modal thay vì thoát ứng dụng.</li>

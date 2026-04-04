@@ -13,7 +13,7 @@ export async function GET(request) {
         const sheets = await getGoogleSheets();
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: SHEET_ID,
-            range: `${code}!A1:B4`, // Row 1 to 4
+            range: `${code}!A1:B5`, // Row 1 to 5 (includes Telegram Chat ID)
         });
 
         const rows = response.data.values;
@@ -26,6 +26,7 @@ export async function GET(request) {
             gender: rows[1] ? rows[1][1] || '' : '',
             dob: rows[2] ? rows[2][1] || '' : '',
             avatar: rows[3] ? rows[3][1] || '' : '',
+            telegramChatId: rows[4] ? rows[4][1] || '' : '',
         };
 
         return NextResponse.json({ success: true, data: profile });
@@ -63,12 +64,13 @@ export async function POST(request) {
             ['Tên bé', body.name || ''],
             ['Giới tính', body.gender || ''],
             ['Ngày sinh', body.dob || ''],
-            ['Avatar URL', body.avatar || '']
+            ['Avatar URL', body.avatar || ''],
+            ['Telegram Chat ID', body.telegramChatId || '']
         ];
 
         await sheets.spreadsheets.values.update({
             spreadsheetId: SHEET_ID,
-            range: `${code}!A1:B4`,
+            range: `${code}!A1:B5`,
             valueInputOption: 'USER_ENTERED',
             requestBody: { values }
         });

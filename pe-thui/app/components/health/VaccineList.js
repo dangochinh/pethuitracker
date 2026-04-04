@@ -67,11 +67,12 @@ export default function VaccineList({ dob, records, code, onSave }) {
     const getCountdown = (vId) => {
         const dateStr = scheduledRecords[vId];
         if (!dateStr) return null;
-        const target = new Date(dateStr);
+        const [year, month, day] = dateStr.split('-');
+        const target = new Date(year, month - 1, day);
         const today = new Date();
         today.setHours(0,0,0,0);
         const diffTime = target - today;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     };
 

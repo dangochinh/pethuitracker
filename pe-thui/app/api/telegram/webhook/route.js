@@ -60,7 +60,7 @@ function daysUntil(dateStr) {
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   d.setHours(0, 0, 0, 0);
-  return Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+  return Math.round((d - now) / (1000 * 60 * 60 * 24));
 }
 
 // Lookup code linked to a chatId — scan all sheets with this chatId

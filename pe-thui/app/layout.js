@@ -41,6 +41,15 @@ export default function RootLayout({ children }) {
         <main className="min-h-screen max-w-md mx-auto bg-background shadow-2xl relative">
           {children}
         </main>
+        <script dangerouslySetInnerHTML={{ __html: `
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+              navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                console.log('SW registration failed:', err);
+              });
+            });
+          }
+        ` }} />
       </body>
     </html>
   );

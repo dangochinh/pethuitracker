@@ -16,6 +16,7 @@ import BottomNav from './layout/BottomNav';
 import DevelopmentSkillsSection from './DevelopmentSkillsSection';
 import useBackHandler from '../hooks/useBackHandler';
 import ExitConfirmDialog from './ExitConfirmDialog';
+import NotificationBanner from './NotificationBanner';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
@@ -172,7 +173,7 @@ export default function Dashboard({ profile, code }) {
     );
 }
 
-function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords, code }) {
+function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords, code, setShowEditProfile }) {
     const latestWeightRecord = records.find(r => r.weight > 0);
     const latestHeightRecord = records.find(r => r.height > 0);
 
@@ -181,6 +182,9 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
 
     return (
         <main className="pb-30 md:pb-12 space-y-8">
+            {/* Notification Banner */}
+            <NotificationBanner code={code} />
+
             {/* New Bento Profile Card */}
             <section className="relative mt-[4.5rem] px-2">
                 <div className="bg-[#fffbf0] rounded-[2rem] p-5 pt-16 relative shadow-sm border-[3px] border-dashed border-primary/30">

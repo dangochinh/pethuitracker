@@ -39,6 +39,10 @@
 
 ## 📋 Release Notes
 
+### v1.5.1 — Logic & Bug Fixes (2026-04-04)
+- 🐛 **Timezone Issue** — Fixed UTC calculation rules to ensure exact calendar day countdowns without off-by-one errors across App UI, Cron Jobs (App Push & Telegram Reminders), and Telegram Bot commands.
+- ✨ **Growth Bot Command** — Telegram bot now supports `/phattrien` (`/pt`) to instantly log weight and height.
+
 ### v1.5.0 — Notification System (2026-04-04)
 - ✅ **Web Push Notifications** — PWA push reminders with VAPID keys
 - ✅ **Telegram Bot** — Interactive bot with commands: `/lichtiem`, `/datiem`, `/info`, `/help`

@@ -64,6 +64,37 @@ export default function InfoModal({ onClose }) {
             )
         },
         {
+            id: 'donate',
+            title: 'Ủng hộ tác giả',
+            icon: 'favorite',
+            iconColor: 'text-error',
+            bg: 'bg-transparent',
+            content: (
+                <div className="mt-2">
+                    <p className="text-sm mb-4 font-medium italic opacity-80">Nếu app hữu ích, mời tác giả ly cafe nha! ☕</p>
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white p-2 inline-block rounded-2xl border border-primary/10 shadow-sm">
+                            <button
+                                type="button"
+                                onClick={() => setIsQrZoomOpen(true)}
+                                className="block rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40"
+                                aria-label="Phóng to mã QR donate"
+                            >
+                                <img src="/donate-qr.jpg" alt="QR Donate ACB" className="w-24 h-24 object-cover rounded-xl" />
+                            </button>
+                            <p className="text-[9px] font-bold text-on-surface-variant/50 mt-1 text-center">Chạm để phóng to</p>
+                        </div>
+                        <div>
+                            <p className="text-sm font-black tracking-tight text-primary">Đặng Ngọc Chinh</p>
+                            <p className="text-[10px] font-bold text-on-surface-variant/60">STK: 12342467</p>
+                            <p className="text-[10px] uppercase font-bold text-on-surface-variant/40">Ngân hàng ACB</p>
+                            <p className="text-[10px] font-bold text-on-surface-variant/70 mt-1">MoMo: 0363839007</p>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
             id: 'release',
             title: 'Nhật ký cập nhật',
             icon: 'history',
@@ -116,37 +147,6 @@ export default function InfoModal({ onClose }) {
                     <div className="border-l-2 border-primary/20 pl-4 py-1">
                         <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.3.1 - 27/03/2026</p>
                         <p className="text-sm">Cập nhật phiên bản động, thêm QR donate phóng to và tinh chỉnh footer.</p>
-                    </div>
-                </div>
-            )
-        },
-        {
-            id: 'donate',
-            title: 'Ủng hộ tác giả',
-            icon: 'favorite',
-            iconColor: 'text-error',
-            bg: 'bg-transparent',
-            content: (
-                <div className="mt-2">
-                    <p className="text-sm mb-4 font-medium italic opacity-80">Nếu app hữu ích, mời tác giả ly cafe nha! ☕</p>
-                    <div className="flex items-center gap-4">
-                        <div className="bg-white p-2 inline-block rounded-2xl border border-primary/10 shadow-sm">
-                            <button
-                                type="button"
-                                onClick={() => setIsQrZoomOpen(true)}
-                                className="block rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/40"
-                                aria-label="Phóng to mã QR donate"
-                            >
-                                <img src="/donate-qr.jpg" alt="QR Donate ACB" className="w-24 h-24 object-cover rounded-xl" />
-                            </button>
-                            <p className="text-[9px] font-bold text-on-surface-variant/50 mt-1 text-center">Chạm để phóng to</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-black tracking-tight text-primary">Đặng Ngọc Chinh</p>
-                            <p className="text-[10px] font-bold text-on-surface-variant/60">STK: 12342467</p>
-                            <p className="text-[10px] uppercase font-bold text-on-surface-variant/40">Ngân hàng ACB</p>
-                            <p className="text-[10px] font-bold text-on-surface-variant/70 mt-1">MoMo: 0363839007</p>
-                        </div>
                     </div>
                 </div>
             )

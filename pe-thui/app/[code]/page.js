@@ -57,7 +57,11 @@ export default function ProfilePage() {
                     <div className="text-5xl mb-4">😢</div>
                     <h2 className="text-xl font-bold text-gray-800 mb-2">Không tìm thấy mã bé!</h2>
                     <p className="text-gray-500 text-sm mb-6">Mã <b>{code}</b> không tồn tại hoặc bạn nhập sai.</p>
-                    <button onClick={() => router.push('/')} className="w-full cute-button-primary py-3">
+                    <button onClick={() => {
+                        localStorage.removeItem('pe_thui_last_code');
+                        sessionStorage.setItem('pe_thui_logout', 'true');
+                        router.push('/');
+                    }} className="w-full cute-button-primary py-3">
                         Quay lại trang chủ
                     </button>
                 </div>

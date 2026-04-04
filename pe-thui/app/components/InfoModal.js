@@ -72,7 +72,18 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 01/04/2026</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 04/04/2026</p>
+                        <p className="text-sm font-bold">🔔 Hệ thống nhắc lịch tiêm</p>
+                        <ul className="text-xs mt-1 space-y-1 opacity-80">
+                            <li>• Thêm thông báo đẩy (Push Notification) nhắc trước ngày tiêm 7, 3, 1, 0 ngày.</li>
+                            <li>• Tích hợp Telegram Bot <strong>@pethuitrackerbot</strong> — gõ /lichtiem, /datiem, /info để tra cứu.</li>
+                            <li>• Cron Job tự động quét lịch tiêm mỗi ngày lúc 7h sáng.</li>
+                            <li>• Giao diện Cài đặt mới: chia 2 mục Thông tin bé & Thiết lập chung.</li>
+                            <li>• Chọn phương thức nhận thông báo: App hoặc Telegram.</li>
+                        </ul>
+                    </div>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.4.1 - 01/04/2026</p>
                         <p className="text-sm font-bold">Đặt mã dễ nhớ khi tạo hồ sơ</p>
                         <ul className="text-xs mt-1 space-y-1 opacity-80">
                             <li>• Sau khi tạo hồ sơ bé, app gợi ý đổi mã tự sinh sang mã ngắn gọn dễ nhớ hơn (VD: PEPE, BONGBONG...).</li>

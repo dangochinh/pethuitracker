@@ -160,7 +160,17 @@ export default function VaccineList({ dob, records, code, onSave }) {
     };
 
     const upcoming = ALL_VACCINES.filter(v => !completedIds.has(v.id))
-        .sort((a, b) => a.recommendedAge - b.recommendedAge)
+        .sort((a, b) => {
+            const aDate = scheduledRecords[a.id];
+            const bDate = scheduledRecords[b.id];
+            // Both have scheduled dates: sort by date (nearest first)
+            if (aDate && bDate) return new Date(aDate) - new Date(bDate);
+            // One has scheduled date: it comes first
+            if (aDate) return -1;
+            if (bDate) return 1;
+            // Neither has scheduled date: sort by recommendedAge
+            return a.recommendedAge - b.recommendedAge;
+        })
         .slice(0, 2);
 
     const groups = ALL_VACCINES.reduce((acc, v) => {
@@ -613,7 +623,19 @@ export default function VaccineList({ dob, records, code, onSave }) {
                 </div>
 
                 {Object.entries(groups).map(([cat, vaccines]) => {
-                    const displayList = hideCompleted ? vaccines.filter(v => !completedIds.has(v.id)) : vaccines;
+                    const filteredList = hideCompleted ? vaccines.filter(v => !completedIds.has(v.id)) : [...vaccines];
+                    // Sort by scheduled date (nearest first) within each category
+                    const displayList = filteredList.sort((a, b) => {
+                        const aDate = scheduledRecords[a.id];
+                        const bDate = scheduledRecords[b.id];
+                        // Both have scheduled dates: nearest first
+                        if (aDate && bDate) return new Date(aDate) - new Date(bDate);
+                        // One has scheduled date: it comes first
+                        if (aDate) return -1;
+                        if (bDate) return 1;
+                        // Neither: keep default order
+                        return 0;
+                    });
                     if (displayList.length === 0) return null;
 
                     return (

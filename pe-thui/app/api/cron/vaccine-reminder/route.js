@@ -126,7 +126,8 @@ export async function GET(request) {
           // Skip completed or no scheduled date
           if (completedDate || !scheduledDate) continue;
 
-          const target = new Date(scheduledDate);
+          const [year, month, day] = scheduledDate.split('-');
+          const target = new Date(year, month - 1, day);
           target.setHours(0, 0, 0, 0);
           const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
 

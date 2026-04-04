@@ -86,8 +86,9 @@ async function findCodeByChatId(sheets, chatId) {
       const rows = valueRanges[i].values || [];
       // rows[4] is A5:B5 (Telegram Chat ID)
       if (rows[4] && rows[4][1] === String(chatId)) {
-        const babyName = rows[0] ? rows[0][1] || 'bé' : 'bé';
-        return { code: sheetNames[i], babyName };
+        const babyName = rows[0] ? rows[0][1] || 'b\u00e9' : 'b\u00e9';
+        const dob = rows[2] ? rows[2][1] || '' : '';
+        return { code: sheetNames[i], babyName, dob };
       }
     }
     return null;
@@ -333,6 +334,100 @@ export async function POST(request) {
     }
 
     // ==========================================
+    // /phattrien or /pt - Cập nhật chiều cao, cân nặng
+    // ==========================================
+    if (text.startsWith('/phattri') || text.startsWith('/pt')) {
+      const parts = text.split(/\s+/);
+      if (parts.length < 3) {
+        await sendTelegramMessage(chatId,
+          `❌ Cú pháp không hợp lệ.\n\n` +
+          `Vui lòng nhập theo định dạng:\n` +
+          `<b>/phattrien {cân_nặng} {chiều_cao} [ngày_đo]</b>\n\n` +
+          `Ví dụ: <code>/phattrien 10.8 77 04/04/2026</code>`
+        );
+        return NextResponse.json({ ok: true });
+      }
+
+      const weight = parseFloat(parts[1].replace(',', '.'));
+      const height = parseFloat(parts[2].replace(',', '.'));
+      const dateStrInput = parts[3];
+
+      if (isNaN(weight) || isNaN(height)) {
+        await sendTelegramMessage(chatId, `❌ Cân nặng và chiều cao phải là số hợp lệ.`);
+        return NextResponse.json({ ok: true });
+      }
+
+      const sheets = await getGoogleSheets();
+      const profile = await findCodeByChatId(sheets, chatId);
+
+      if (!profile) {
+        await sendTelegramMessage(chatId,
+          `❌ Bạn chưa liên kết tài khoản.\n\nGửi <b>/start MÃ_CODE</b> để bắt đầu.`
+        );
+        return NextResponse.json({ ok: true });
+      }
+
+      const { code, babyName, dob } = profile;
+
+      let measureDate = new Date();
+      if (dateStrInput) {
+        const pDate = parseDate(dateStrInput);
+        if (pDate) {
+           measureDate = pDate;
+        } else {
+           await sendTelegramMessage(chatId, `❌ Định dạng ngày không hợp lệ. Vui lòng dùng định dạng DD/MM/YYYY.`);
+           return NextResponse.json({ ok: true });
+        }
+      }
+
+      // format to DD/MM/YYYY
+      const dd = String(measureDate.getDate()).padStart(2, '0');
+      const mm = String(measureDate.getMonth() + 1).padStart(2, '0');
+      const yyyy = measureDate.getFullYear();
+      const measureDateStr = `${dd}/${mm}/${yyyy}`;
+
+      let ageMonths = 0;
+      const dobDate = parseDate(dob);
+      if (dobDate) {
+        ageMonths = (measureDate.getFullYear() - dobDate.getFullYear()) * 12 + (measureDate.getMonth() - dobDate.getMonth());
+        if (measureDate.getDate() < dobDate.getDate()) {
+            ageMonths -= 1;
+        }
+        ageMonths = Math.max(0, ageMonths);
+      }
+
+      // Check header
+      const headerResp = await sheets.spreadsheets.values.get({ spreadsheetId: SHEET_ID, range: `${code}!A6:D6` });
+      if (!headerResp.data.values || headerResp.data.values.length === 0) {
+          await sheets.spreadsheets.values.update({
+              spreadsheetId: SHEET_ID,
+              range: `${code}!A6:D6`,
+              valueInputOption: 'USER_ENTERED',
+              requestBody: { values: [['Ngày đo', 'Tháng tuổi', 'Cân nặng', 'Chiều cao']] }
+          });
+      }
+
+      // Append
+      await sheets.spreadsheets.values.append({
+          spreadsheetId: SHEET_ID,
+          range: `${code}!A7:D`,
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+          requestBody: {
+              values: [[measureDateStr, ageMonths, weight, height]]
+          }
+      });
+
+      await sendTelegramMessage(chatId,
+        `✅ Đã cập nhật chỉ số phát triển cho <b>${babyName}</b>:\n\n` +
+        `⚖️ Cân nặng: <b>${weight} kg</b>\n` +
+        `📏 Chiều cao: <b>${height} cm</b>\n` +
+        `📅 Ngày đo: <b>${measureDateStr}</b> (${ageMonths} tháng tuổi)`
+      );
+      return NextResponse.json({ ok: true });
+    }
+
+    // ==========================================
     // /stop [CODE] — Ngừng nhận thông báo
     // ==========================================
     if (text.startsWith('/stop')) {
@@ -380,13 +475,14 @@ export async function POST(request) {
       await sendTelegramMessage(chatId,
         `🤖 <b>Pe Thui Tracker Bot</b>\n\n` +
         `📋 <b>Các lệnh:</b>\n\n` +
-        `• /start MÃ_CODE — Liên kết tài khoản\n` +
-        `• /lichtiem — 📅 Xem lịch tiêm sắp tới\n` +
-        `• /datiem — ✅ Xem mũi đã tiêm  \n` +
-        `• /info — 👶 Thông tin bé\n` +
-        `• /stop — 🔕 Ngừng nhận thông báo\n` +
-        `• /help — ❓ Trợ giúp\n\n` +
-        `<b>Phím tắt:</b> /lt /dt /i /h`
+        `\u2022 /start M\u00c3_CODE \u2014 Li\u00ean k\u1ebft t\u00e0i kho\u1ea3n\n` +
+        `\u2022 /lichtiem \u2014 \ud83d\udcc5 Xem l\u1ecbch ti\u00eam s\u1eafp t\u1edbi\n` +
+        `\u2022 /datiem \u2014 \u2705 Xem m\u0169i \u0111\u00e3 ti\u00eam  \n` +
+        `\u2022 /info \u2014 \ud83d\udc76 Th\u00f4ng tin b\u00e9\n` +
+        `\u2022 /phattrien \u2014 \ud83d\udcc8 C\u1eadp nh\u1eadt chi\u1ec1u cao, c\u00e2n n\u1eb7ng\n` +
+        `\u2022 /stop \u2014 \ud83d\udd15 Ng\u1eebng nh\u1eadn th\u00f4ng b\u00e1o\n` +
+        `\u2022 /help \u2014 \u2753 Tr\u1ee3 gi\u00fap\n\n` +
+        `<b>Ph\u00edm t\u1eaft:</b> /lt /dt /i /pt /h`
       );
       return NextResponse.json({ ok: true });
     }

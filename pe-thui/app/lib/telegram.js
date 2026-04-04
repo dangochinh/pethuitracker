@@ -1,10 +1,13 @@
 // Telegram Bot helper for Pe Thui Tracker
 
-const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+function getTelegramApi() {
+  return `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+}
 
 export async function sendTelegramMessage(chatId, text) {
+  const apiUrl = getTelegramApi();
   try {
-    const res = await fetch(`${TELEGRAM_API}/sendMessage`, {
+    const res = await fetch(`${apiUrl}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -14,6 +17,9 @@ export async function sendTelegramMessage(chatId, text) {
       })
     });
     const json = await res.json();
+    if (!json.ok) {
+      console.error('Telegram API error:', json);
+    }
     return json.ok;
   } catch (err) {
     console.error('Telegram send error:', err);
@@ -22,7 +28,8 @@ export async function sendTelegramMessage(chatId, text) {
 }
 
 export async function setWebhook(url) {
-  const res = await fetch(`${TELEGRAM_API}/setWebhook`, {
+  const apiUrl = getTelegramApi();
+  const res = await fetch(`${apiUrl}/setWebhook`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url })

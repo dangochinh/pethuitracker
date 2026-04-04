@@ -1,9 +1,21 @@
 import webpush from 'web-push';
 
-webpush.setVapidDetails(
-  'mailto:dangochinh@gmail.com',
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+let initialized = false;
 
-export default webpush;
+function getWebPush() {
+  if (!initialized) {
+    const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    const privateKey = process.env.VAPID_PRIVATE_KEY;
+    if (publicKey && privateKey) {
+      webpush.setVapidDetails(
+        'mailto:dangochinh@gmail.com',
+        publicKey,
+        privateKey
+      );
+      initialized = true;
+    }
+  }
+  return webpush;
+}
+
+export default getWebPush;

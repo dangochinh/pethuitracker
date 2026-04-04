@@ -1,5 +1,5 @@
 import { getGoogleSheets, SHEET_ID } from '../../../lib/google-sheets';
-import webpush from '../../../lib/web-push';
+import getWebPush from '../../../lib/web-push';
 import { sendTelegramMessage } from '../../../lib/telegram';
 import { VACCINES } from '../../../lib/data/vaccines';
 import { NextResponse } from 'next/server';
@@ -146,7 +146,7 @@ export async function GET(request) {
           const expiredEndpoints = [];
           for (const sub of pushSubscriptions) {
             try {
-              await webpush.sendNotification(sub, JSON.stringify({
+              await getWebPush().sendNotification(sub, JSON.stringify({
                 title: msg.title,
                 body: msg.body,
                 tag: `vaccine-${vaccineId}-${diffDays}`,

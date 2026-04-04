@@ -33,12 +33,19 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
         // Check current noti state
         const hasTelegram = !!profile.telegramChatId;
 
+        // Quick sync check: if browser permission is granted, likely subscribed
+        const hasPermission = typeof Notification !== 'undefined' && Notification.permission === 'granted';
+
         if (hasTelegram) {
             setNotiEnabled(true);
             setNotiMethod('telegram');
+        } else if (hasPermission) {
+            // User granted permission (e.g. via banner) — show enabled immediately
+            setNotiEnabled(true);
+            setNotiMethod('app');
         }
 
-        // Check web push subscription
+        // Async check for actual push subscription
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.ready.then(reg => {
                 reg.pushManager.getSubscription().then(sub => {
@@ -50,6 +57,11 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
                         }
                     } else {
                         setPushStatus('not_subscribed');
+                        // If permission granted but no sub, still show enabled so user can subscribe in modal
+                        if (hasPermission && !hasTelegram) {
+                            setNotiEnabled(true);
+                            setNotiMethod('app');
+                        }
                     }
                 });
             }).catch(() => setPushStatus('not_subscribed'));

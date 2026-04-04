@@ -72,23 +72,23 @@ async function findCodeByChatId(sheets, chatId) {
       .map(s => s.properties.title)
       .filter(t => t !== 'Template' && t !== 'README');
 
-    for (const name of sheetNames) {
-      try {
-        const resp = await sheets.spreadsheets.values.get({
-          spreadsheetId: SHEET_ID,
-          range: `${name}!A5:B5`,
-        });
-        const row = resp.data.values?.[0];
-        if (row && row[1] === String(chatId)) {
-          // Also get baby name
-          const profileResp = await sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${name}!A1:B1`,
-          });
-          const babyName = profileResp.data.values?.[0]?.[1] || 'bé';
-          return { code: name, babyName };
-        }
-      } catch (e) { /* skip */ }
+    if (sheetNames.length === 0) return null;
+
+    // Use batchGet to fetch A1:B5 of all sheets in a single API call (much faster, prevents Vercel 10s timeout)
+    const ranges = sheetNames.map(name => `${name}!A1:B5`);
+    const batchResp = await sheets.spreadsheets.values.batchGet({
+      spreadsheetId: SHEET_ID,
+      ranges,
+    });
+
+    const valueRanges = batchResp.data.valueRanges || [];
+    for (let i = 0; i < valueRanges.length; i++) {
+      const rows = valueRanges[i].values || [];
+      // rows[4] is A5:B5 (Telegram Chat ID)
+      if (rows[4] && rows[4][1] === String(chatId)) {
+        const babyName = rows[0] ? rows[0][1] || 'bé' : 'bé';
+        return { code: sheetNames[i], babyName };
+      }
     }
     return null;
   } catch (e) {

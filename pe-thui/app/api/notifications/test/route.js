@@ -1,5 +1,5 @@
 import { getGoogleSheets, SHEET_ID } from '../../../lib/google-sheets';
-import webpush from '../../../lib/web-push';
+import getWebPush from '../../../lib/web-push';
 import { sendTelegramMessage } from '../../../lib/telegram';
 import { NextResponse } from 'next/server';
 
@@ -53,7 +53,7 @@ export async function GET(request) {
     // === SEND WEB PUSH ===
     for (const sub of pushSubscriptions) {
       try {
-        await webpush.sendNotification(sub, JSON.stringify({
+        await getWebPush().sendNotification(sub, JSON.stringify({
           title: `🧪 Test thông báo — ${now}`,
           body: `Bé ${babyName} sẽ nhận nhắc lịch tiêm qua App. Thông báo hoạt động tốt! ✅`,
           tag: `test-${Date.now()}`,

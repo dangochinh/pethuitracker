@@ -2,7 +2,7 @@
 
 > *Lưu giữ hành trình khôn lớn* — A personal baby growth tracking application backed by Google Sheets.
 
-**Live App:** [https://pethui.vercel.app/](https://pethui.vercel.app/)
+**Live App:** [https://pethui.vercel.app/](https://pethuit.vercel.app/)
 
 ---
 
@@ -17,6 +17,8 @@
 - **Growth Dashboard** — View comprehensive stats on weight, height, and other tracked metrics at a glance.
 - **WHO Standard Growth Charts** — Interactive charts following WHO standards for weight and height tracking with percentile visualization.
 - **Vaccination Schedule** — Complete vaccination tracking with age-based milestones and reminders.
+- **🔔 Push Notifications** — Web Push reminders before vaccination dates (7, 3, 1, 0 days).
+- **🤖 Telegram Bot** — Interactive bot (`@pethuitrackerbot`) for vaccine schedule queries and reminders.
 - **Teething Tracker** — Monitor tooth eruption progress with age-appropriate milestones.
 - **Development Skills Timeline** — Age-based skills development tracking that automatically focuses on the current age range.
 - **Add / Edit Records** — Log new health records and update or correct previous entries anytime.
@@ -31,8 +33,26 @@
 | **Styling** | Tailwind CSS v4 |
 | **Charts** | [Recharts](https://recharts.org/) |
 | **Backend / Database** | Google Sheets via [Google APIs](https://googleapis.dev/) |
+| **Notifications** | Web Push (VAPID), Telegram Bot API |
 | **Icons** | React Icons |
 | **Deployment** | [Vercel](https://vercel.com/) |
+
+## 📋 Release Notes
+
+### v1.5.1 — Logic & Bug Fixes (2026-04-04)
+- 🐛 **Timezone Issue** — Fixed UTC calculation rules to ensure exact calendar day countdowns without off-by-one errors across App UI, Cron Jobs (App Push & Telegram Reminders), and Telegram Bot commands.
+- ✨ **Growth Bot Command** — Telegram bot now supports `/phattrien` (`/pt`) to instantly log weight and height.
+
+### v1.5.0 — Notification System (2026-04-04)
+- ✅ **Web Push Notifications** — PWA push reminders with VAPID keys
+- ✅ **Telegram Bot** — Interactive bot with commands: `/lichtiem`, `/datiem`, `/info`, `/help`
+- ✅ **Daily Cron Job** — Automated daily scan at 7AM VN for upcoming vaccinations
+- ✅ **Settings UI** — 2-section profile modal with notification preferences (App/Telegram toggle)
+- ✅ **Test API** — `/api/notifications/test?code=CODE` for instant notification testing
+
+### v1.4.1 — Vaccination Ordering
+- Ordered upcoming vaccinations by nearest scheduled date
+- Improved vaccination detail view sorting
 
 ## 🚀 Getting Started (Local Development)
 

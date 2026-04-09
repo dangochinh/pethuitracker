@@ -152,13 +152,17 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
 
     return (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
-            <div className="w-full max-w-lg bg-surface p-6 sm:p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500 overflow-y-auto max-h-[95dvh]">
-                <div className="flex justify-between items-center mb-6">
+            <div className="w-full max-w-lg bg-surface rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500 max-h-[95dvh] flex flex-col">
+                {/* ===== HEADER PINNED ===== */}
+                <div className="flex justify-between items-center px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sticky top-0 bg-surface z-10 rounded-t-[3rem] sm:rounded-t-[3rem] border-b border-outline-variant/10">
                     <h2 className="text-xl font-black font-headline text-primary tracking-tight uppercase">Cài Đặt</h2>
                     <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
                         <span className="material-symbols-outlined text-on-surface-variant">close</span>
                     </button>
                 </div>
+
+                {/* ===== SCROLLABLE CONTENT ===== */}
+                <div className="overflow-y-auto flex-1 px-6 sm:px-8 pb-6 sm:pb-8 pt-4">
 
                 {error && (
                     <div className="bg-error/10 border border-error/20 text-error px-4 py-3 rounded-2xl mb-5 text-xs font-bold flex items-center gap-3">
@@ -351,6 +355,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
                         )}
                     </button>
                 </form>
+                </div>
             </div>
         </div>
     );

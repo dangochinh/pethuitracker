@@ -1,0 +1,456 @@
+{
+  "meta": {
+    "project": "Pe Thui Tracker",
+    "version": "1.5.0",
+    "framework": "Next.js 16 (App Router)",
+    "language": "JavaScript (React 19)",
+    "generatedAt": "2026-04-21T13:57:00+07:00"
+  },
+  "nodes": [
+    {
+      "id": "page-home",
+      "type": "page",
+      "label": "Home",
+      "file": "app/page.js",
+      "description": "Login/landing page with PWA auto-redirect and profile creation flow",
+      "rendering": "client"
+    },
+    {
+      "id": "page-profile",
+      "type": "page",
+      "label": "ProfilePage",
+      "file": "app/[code]/page.js",
+      "description": "Dynamic route that loads a baby profile by code and renders Dashboard",
+      "rendering": "client"
+    },
+    {
+      "id": "layout-root",
+      "type": "layout",
+      "label": "RootLayout",
+      "file": "app/layout.js",
+      "description": "Root layout with Google Fonts (Plus Jakarta Sans, Be Vietnam Pro), PWA manifest, service worker registration"
+    },
+    {
+      "id": "comp-dashboard",
+      "type": "component",
+      "label": "Dashboard",
+      "file": "app/components/Dashboard.js",
+      "description": "Main orchestrator component with view switching (home/growth/health/teething), modal management, and data fetching",
+      "props": ["profile", "code"]
+    },
+    {
+      "id": "comp-homeview",
+      "type": "component",
+      "label": "HomeView",
+      "file": "app/components/Dashboard.js",
+      "description": "Internal component: bento-grid home view with profile card, 4 metric cards, and development skills section",
+      "internal": true
+    },
+    {
+      "id": "comp-profile-setup",
+      "type": "component",
+      "label": "ProfileSetup",
+      "file": "app/components/ProfileSetup.js",
+      "description": "New baby registration form with auto-generated code (name + DOB + date)",
+      "props": ["onComplete"]
+    },
+    {
+      "id": "comp-change-code",
+      "type": "component",
+      "label": "ChangeCodeModal",
+      "file": "app/components/ChangeCodeModal.js",
+      "description": "Modal to customize the auto-generated code after initial profile creation",
+      "props": ["autoCode", "profile", "onComplete"]
+    },
+    {
+      "id": "comp-edit-profile",
+      "type": "component",
+      "label": "EditProfileModal",
+      "file": "app/components/EditProfileModal.js",
+      "description": "Settings modal: edit profile (name, DOB, gender, avatar, code), configure notifications (push/telegram)",
+      "props": ["profile", "code", "onClose", "onSave"]
+    },
+    {
+      "id": "comp-add-record",
+      "type": "component",
+      "label": "AddRecordModal",
+      "file": "app/components/AddRecordModal.js",
+      "description": "Modal to add a new growth record (date, weight, height)",
+      "props": ["profile", "code", "onClose", "onSave"]
+    },
+    {
+      "id": "comp-edit-record",
+      "type": "component",
+      "label": "EditRecordModal",
+      "file": "app/components/EditRecordModal.js",
+      "description": "Modal to edit an existing growth measurement record",
+      "props": ["profile", "code", "record", "onClose", "onSave"]
+    },
+    {
+      "id": "comp-growth-charts",
+      "type": "component",
+      "label": "GrowthCharts",
+      "file": "app/components/GrowthCharts.js",
+      "description": "Recharts-based weight/height charts with standard deviation bands and adult height prediction",
+      "props": ["records", "profile", "onBack"]
+    },
+    {
+      "id": "comp-vaccine-list",
+      "type": "component",
+      "label": "VaccineList",
+      "file": "app/components/health/VaccineList.js",
+      "description": "Full vaccine management view with 33 vaccines, scheduling, and completion tracking",
+      "props": ["dob", "records", "code", "onSave"]
+    },
+    {
+      "id": "comp-vaccine-preview",
+      "type": "component",
+      "label": "VaccinePreview",
+      "file": "app/components/health/VaccinePreview.js",
+      "description": "Compact summary card showing vaccine progress for the home dashboard",
+      "props": ["records", "dob"]
+    },
+    {
+      "id": "comp-teething-chart",
+      "type": "component",
+      "label": "TeethingChart",
+      "file": "app/components/health/TeethingChart.js",
+      "description": "Interactive visual jaw chart for tracking 20 deciduous teeth eruptions",
+      "props": ["dob", "records", "code", "onSave"]
+    },
+    {
+      "id": "comp-teething-preview",
+      "type": "component",
+      "label": "TeethingPreview",
+      "file": "app/components/health/TeethingPreview.js",
+      "description": "Compact summary card for teething progress (teeth count) on home dashboard",
+      "props": ["records"]
+    },
+    {
+      "id": "comp-dev-skills",
+      "type": "component",
+      "label": "DevelopmentSkillsSection",
+      "file": "app/components/DevelopmentSkillsSection.js",
+      "description": "Auto-rotating age-appropriate milestone fact cards with flip animation and full timeline modal",
+      "props": ["ageMonths", "ageDays"]
+    },
+    {
+      "id": "comp-notification-banner",
+      "type": "component",
+      "label": "NotificationBanner",
+      "file": "app/components/NotificationBanner.js",
+      "description": "Dismissable banner prompting users to enable push notifications",
+      "props": ["code"]
+    },
+    {
+      "id": "comp-info-modal",
+      "type": "component",
+      "label": "InfoModal",
+      "file": "app/components/InfoModal.js",
+      "description": "App information / about / help popup with donation QR",
+      "props": ["onClose"]
+    },
+    {
+      "id": "comp-exit-confirm",
+      "type": "component",
+      "label": "ExitConfirmDialog",
+      "file": "app/components/ExitConfirmDialog.js",
+      "description": "Bottom sheet confirmation dialog when back button is pressed on home view",
+      "props": ["onConfirm", "onCancel"]
+    },
+    {
+      "id": "comp-telegram-link",
+      "type": "component",
+      "label": "TelegramLinkSection",
+      "file": "app/components/TelegramLinkSection.js",
+      "description": "Telegram bot linking UI with QR code and link instructions within EditProfileModal",
+      "props": ["code", "telegramChatId", "onSave"]
+    },
+    {
+      "id": "comp-bottom-nav",
+      "type": "component",
+      "label": "BottomNav",
+      "file": "app/components/layout/BottomNav.js",
+      "description": "4-tab bottom navigation bar (home, teething, health, growth)",
+      "props": ["view", "setView"]
+    },
+    {
+      "id": "comp-header",
+      "type": "component",
+      "label": "Header",
+      "file": "app/components/layout/Header.js",
+      "description": "Fixed top header with avatar and action buttons (currently unused by Dashboard)",
+      "props": ["profile"]
+    },
+    {
+      "id": "hook-back-handler",
+      "type": "hook",
+      "label": "useBackHandler",
+      "file": "app/hooks/useBackHandler.js",
+      "description": "Custom hook to intercept browser/hardware back button via History API pushState"
+    },
+    {
+      "id": "lib-google-sheets",
+      "type": "library",
+      "label": "google-sheets",
+      "file": "app/lib/google-sheets.js",
+      "description": "Google Sheets API v4 authentication and CRUD operations (getGoogleSheets, SHEET_ID, getSheetExists, renameSheet, createNewSheet)",
+      "exports": ["getGoogleSheets", "SHEET_ID", "getSheetExists", "renameSheet", "createNewSheet"]
+    },
+    {
+      "id": "lib-calculations",
+      "type": "library",
+      "label": "calculations",
+      "file": "app/lib/calculations.js",
+      "description": "Growth metric computation: age calculation, adult height prediction, weight/height assessment against standards",
+      "exports": ["calculateAge", "predictAdultHeight", "assessWeight", "assessHeight"]
+    },
+    {
+      "id": "lib-telegram",
+      "type": "library",
+      "label": "telegram",
+      "file": "app/lib/telegram.js",
+      "description": "Telegram Bot API wrapper for sending messages and setting webhooks",
+      "exports": ["sendTelegramMessage", "setWebhook"]
+    },
+    {
+      "id": "lib-web-push",
+      "type": "library",
+      "label": "web-push",
+      "file": "app/lib/web-push.js",
+      "description": "VAPID-based Web Push singleton with lazy initialization",
+      "exports": ["getWebPush"]
+    },
+    {
+      "id": "data-vaccines",
+      "type": "data",
+      "label": "VACCINES",
+      "file": "app/lib/data/vaccines.js",
+      "description": "Reference array of 33 vaccines from birth to 10 years with id, name, disease, recommendedAge, category",
+      "itemCount": 33
+    },
+    {
+      "id": "data-teeth",
+      "type": "data",
+      "label": "TEETH",
+      "file": "app/lib/data/teeth.js",
+      "description": "Reference array of 20 deciduous teeth with id, name, vnName, minAge, maxAge, jaw, group",
+      "itemCount": 20
+    },
+    {
+      "id": "api-profile",
+      "type": "api-route",
+      "label": "/api/profile",
+      "file": "app/api/profile/route.js",
+      "methods": ["GET", "POST"],
+      "description": "Profile CRUD: read profile by code, create/update/rename profile",
+      "sheetRange": "A1:B5"
+    },
+    {
+      "id": "api-growth",
+      "type": "api-route",
+      "label": "/api/growth",
+      "file": "app/api/growth/route.js",
+      "methods": ["GET", "POST", "PUT", "DELETE"],
+      "description": "Growth records CRUD: read, add, update, delete weight/height measurements",
+      "sheetRange": "A7:D"
+    },
+    {
+      "id": "api-vaccines",
+      "type": "api-route",
+      "label": "/api/vaccines",
+      "file": "app/api/vaccines/route.js",
+      "methods": ["GET", "POST", "DELETE"],
+      "description": "Vaccine records: read, upsert (by vaccineId), delete vaccination records",
+      "sheetRange": "F7:I"
+    },
+    {
+      "id": "api-teeth",
+      "type": "api-route",
+      "label": "/api/teeth",
+      "file": "app/api/teeth/route.js",
+      "methods": ["GET", "POST", "DELETE"],
+      "description": "Teething records: read, upsert (by toothId), delete tooth eruption records",
+      "sheetRange": "J7:L"
+    },
+    {
+      "id": "api-skills",
+      "type": "api-route",
+      "label": "/api/skills",
+      "file": "app/api/skills/route.js",
+      "methods": ["GET"],
+      "description": "Reads developmental milestones from MASTER sheet, parses flexible column headers, returns age-grouped sections with facts"
+    },
+    {
+      "id": "api-notifications-subscribe",
+      "type": "api-route",
+      "label": "/api/notifications/subscribe",
+      "file": "app/api/notifications/subscribe/route.js",
+      "methods": ["POST", "DELETE"],
+      "description": "Manage Web Push subscriptions: save endpoint+keys, remove subscription",
+      "sheetRange": "K7:L"
+    },
+    {
+      "id": "api-notifications-telegram",
+      "type": "api-route",
+      "label": "/api/notifications/telegram",
+      "file": "app/api/notifications/telegram/route.js",
+      "methods": ["DELETE"],
+      "description": "Remove Telegram chat ID from a profile (clear B5)"
+    },
+    {
+      "id": "api-notifications-test",
+      "type": "api-route",
+      "label": "/api/notifications/test",
+      "file": "app/api/notifications/test/route.js",
+      "methods": ["GET"],
+      "description": "Send test notification via both Web Push and Telegram to verify configuration"
+    },
+    {
+      "id": "api-cron-vaccine-reminder",
+      "type": "api-route",
+      "label": "/api/cron/vaccine-reminder",
+      "file": "app/api/cron/vaccine-reminder/route.js",
+      "methods": ["GET"],
+      "description": "Daily cron job: scans all profiles, sends vaccine reminders at 7/3/1/0 days before scheduled date via Push & Telegram",
+      "trigger": "Vercel Cron (daily 00:00 UTC)"
+    },
+    {
+      "id": "api-telegram-webhook",
+      "type": "api-route",
+      "label": "/api/telegram/webhook",
+      "file": "app/api/telegram/webhook/route.js",
+      "methods": ["POST"],
+      "description": "Telegram Bot webhook handler: /start, /lichtiem, /datiem, /info, /phattrien, /stop, /help commands"
+    }
+  ],
+  "edges": [
+    {"from": "layout-root", "to": "page-home", "type": "renders"},
+    {"from": "layout-root", "to": "page-profile", "type": "renders"},
+
+    {"from": "page-home", "to": "comp-profile-setup", "type": "imports"},
+    {"from": "page-home", "to": "comp-info-modal", "type": "imports"},
+    {"from": "page-home", "to": "api-profile", "type": "calls", "method": "POST"},
+
+    {"from": "page-profile", "to": "comp-dashboard", "type": "imports"},
+    {"from": "page-profile", "to": "api-profile", "type": "calls", "method": "GET"},
+
+    {"from": "comp-profile-setup", "to": "comp-change-code", "type": "imports"},
+    {"from": "comp-profile-setup", "to": "api-profile", "type": "calls", "method": "POST"},
+
+    {"from": "comp-dashboard", "to": "lib-calculations", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-add-record", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-edit-profile", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-edit-record", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-growth-charts", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-info-modal", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-vaccine-preview", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-teething-preview", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-vaccine-list", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-teething-chart", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-bottom-nav", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-dev-skills", "type": "imports"},
+    {"from": "comp-dashboard", "to": "hook-back-handler", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-exit-confirm", "type": "imports"},
+    {"from": "comp-dashboard", "to": "comp-notification-banner", "type": "imports"},
+    {"from": "comp-dashboard", "to": "api-growth", "type": "calls", "method": "GET"},
+    {"from": "comp-dashboard", "to": "api-vaccines", "type": "calls", "method": "GET"},
+    {"from": "comp-dashboard", "to": "api-teeth", "type": "calls", "method": "GET"},
+
+    {"from": "comp-edit-profile", "to": "comp-telegram-link", "type": "imports"},
+    {"from": "comp-edit-profile", "to": "api-profile", "type": "calls", "method": "POST"},
+    {"from": "comp-edit-profile", "to": "api-notifications-subscribe", "type": "calls", "method": "POST"},
+
+    {"from": "comp-growth-charts", "to": "lib-calculations", "type": "imports"},
+
+    {"from": "comp-dev-skills", "to": "api-skills", "type": "calls", "method": "GET"},
+
+    {"from": "comp-notification-banner", "to": "api-notifications-subscribe", "type": "calls", "method": "POST"},
+
+    {"from": "comp-add-record", "to": "api-growth", "type": "calls", "method": "POST"},
+    {"from": "comp-edit-record", "to": "api-growth", "type": "calls", "method": "PUT"},
+    {"from": "comp-vaccine-list", "to": "api-vaccines", "type": "calls", "methods": ["POST", "DELETE"]},
+    {"from": "comp-teething-chart", "to": "api-teeth", "type": "calls", "methods": ["POST", "DELETE"]},
+
+    {"from": "api-profile", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-growth", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-vaccines", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-teeth", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-skills", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-notifications-subscribe", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-notifications-telegram", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-notifications-test", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-notifications-test", "to": "lib-web-push", "type": "imports"},
+    {"from": "api-notifications-test", "to": "lib-telegram", "type": "imports"},
+    {"from": "api-cron-vaccine-reminder", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-cron-vaccine-reminder", "to": "lib-web-push", "type": "imports"},
+    {"from": "api-cron-vaccine-reminder", "to": "lib-telegram", "type": "imports"},
+    {"from": "api-cron-vaccine-reminder", "to": "data-vaccines", "type": "imports"},
+    {"from": "api-telegram-webhook", "to": "lib-google-sheets", "type": "imports"},
+    {"from": "api-telegram-webhook", "to": "lib-telegram", "type": "imports"},
+
+    {"from": "lib-google-sheets", "to": "ext-google-sheets-api", "type": "calls_external"},
+    {"from": "lib-telegram", "to": "ext-telegram-api", "type": "calls_external"},
+    {"from": "lib-web-push", "to": "ext-web-push-service", "type": "calls_external"}
+  ],
+  "externalServices": [
+    {
+      "id": "ext-google-sheets-api",
+      "label": "Google Sheets API v4",
+      "description": "Primary data store — each baby profile is a separate sheet tab in a single spreadsheet"
+    },
+    {
+      "id": "ext-telegram-api",
+      "label": "Telegram Bot API",
+      "description": "Bot for vaccine reminders and interactive commands (/lichtiem, /datiem, /info, /phattrien)"
+    },
+    {
+      "id": "ext-web-push-service",
+      "label": "Web Push Service (VAPID)",
+      "description": "Browser push notifications for vaccine reminders"
+    },
+    {
+      "id": "ext-vercel-cron",
+      "label": "Vercel Cron Jobs",
+      "description": "Daily scheduled trigger at 00:00 UTC for /api/cron/vaccine-reminder"
+    }
+  ],
+  "dataSchema": {
+    "sheetLayout": {
+      "profileRange": "A1:B5",
+      "profileFields": {
+        "A1:B1": "Tên bé / Baby name",
+        "A2:B2": "Giới tính / Gender (male|female)",
+        "A3:B3": "Ngày sinh / Date of birth (YYYY-MM-DD)",
+        "A4:B4": "Avatar URL",
+        "A5:B5": "Telegram Chat ID"
+      },
+      "growthHeaderRange": "A6:D6",
+      "growthDataRange": "A7:D",
+      "growthFields": ["Ngày đo (date)", "Tháng tuổi (ageMonths)", "Cân nặng (weight kg)", "Chiều cao (height cm)"],
+      "vaccineHeaderRange": "F6:I6",
+      "vaccineDataRange": "F7:I",
+      "vaccineFields": ["VaccineID", "Ngày tiêm (completed date)", "Ngày hẹn (scheduled date)", "Ghi chú (note)"],
+      "teethHeaderRange": "J6:L6",
+      "teethDataRange": "J7:L",
+      "teethFields": ["ToothID", "Ngày mọc (eruption date)", "Ghi chú (note)"],
+      "pushSubHeaderRange": "K6:L6",
+      "pushSubDataRange": "K7:L",
+      "pushSubFields": ["Push Endpoint", "Push Keys (JSON)"]
+    },
+    "masterSheet": {
+      "description": "Global sheet for developmental milestones/skills",
+      "candidates": ["MASTER", "Master", "master", "PHAT_TRIEN", "PhatTrien", "Milestones"],
+      "columns": ["thang_tuoi (month range)", "age_label", "age_from", "age_to", "title/skill", "description", "order/stt", "icon/emoji"]
+    }
+  },
+  "statistics": {
+    "totalSourceFiles": 30,
+    "pages": 2,
+    "components": 18,
+    "hooks": 1,
+    "apiRoutes": 10,
+    "serverLibraries": 4,
+    "referenceDataFiles": 2
+  }
+}

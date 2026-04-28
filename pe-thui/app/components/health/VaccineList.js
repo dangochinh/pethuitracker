@@ -736,25 +736,33 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
             {/* Untick Confirmation Custom Modal */}
             {untickVaccine && (
-                <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-on-surface/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-surface w-full max-w-sm p-8 rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300 text-center relative">
-                        <div className="w-20 h-20 bg-error-container text-on-error-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border-[6px] border-white relative z-10 -mt-16">
-                            <span className="material-symbols-outlined text-4xl">vaccines</span>
+                <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-on-surface/40 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-surface w-full max-w-md p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500">
+
+                        {/* Icon + heading */}
+                        <div className="flex flex-col items-center text-center gap-4 mb-8">
+                            <div className="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center">
+                                <span className="material-symbols-outlined text-error" style={{ fontSize: '32px' }}>vaccines</span>
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-black font-headline text-on-surface tracking-tight">Hủy đánh dấu?</h3>
+                                <p className="text-sm text-on-surface-variant/70 mt-2 font-medium leading-relaxed px-2">
+                                    Bạn có chắc chắn muốn hủy trạng thái đã tiêm của vắc xin <strong className="text-on-surface">{untickVaccine.name}</strong> không?
+                                </p>
+                            </div>
                         </div>
-                        <h3 className="text-xl font-headline font-black text-on-surface mb-2">Hủy đánh dấu?</h3>
-                        <p className="text-sm font-medium text-on-surface-variant/80 mb-8 px-2 leading-relaxed">
-                            Bạn có chắc chắn muốn hủy trạng thái đã tiêm của vắc xin <strong className="text-on-surface">{untickVaccine.name}</strong> không?
-                        </p>
+
+                        {/* Action buttons */}
                         <div className="flex gap-3">
                             <button 
                                 onClick={() => setUntickVaccine(null)}
-                                className="flex-1 py-4 font-extrabold rounded-2xl bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-all uppercase tracking-widest text-[11px]"
+                                className="flex-1 py-4 rounded-2xl font-bold border-2 border-outline-variant/40 text-on-surface-variant hover:bg-surface-container transition-all active:scale-95"
                             >
                                 Đóng
                             </button>
                             <button 
                                 onClick={handleConfirmUntick} disabled={savingId === untickVaccine.id}
-                                className="flex-1 flex items-center justify-center py-4 font-extrabold rounded-2xl bg-error text-on-error shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest text-[11px]"
+                                className="flex-1 py-4 rounded-2xl font-extrabold bg-error text-white shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest text-[11px] flex items-center justify-center"
                             >
                                 {savingId === untickVaccine.id ? (
                                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>

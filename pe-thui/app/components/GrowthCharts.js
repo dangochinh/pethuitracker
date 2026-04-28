@@ -1,7 +1,7 @@
 import { ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { predictAdultHeight, assessWeight, assessHeight } from '../lib/calculations';
 
-export default function GrowthCharts({ records, profile, onBack }) {
+export default function GrowthCharts({ records, profile, code, onBack, onEditRecord }) {
     const data = [...records].sort((a, b) => {
         if (a.ageMonths !== b.ageMonths) return a.ageMonths - b.ageMonths;
         return b.id - a.id;
@@ -167,7 +167,8 @@ export default function GrowthCharts({ records, profile, onBack }) {
                                     return (
                                         <div
                                             key={record.id || index}
-                                            className="bg-white rounded-2xl p-4 border border-outline-variant/20 shadow-sm"
+                                            onClick={() => onEditRecord && onEditRecord(record)}
+                                            className={`bg-white rounded-2xl p-4 border border-outline-variant/20 shadow-sm ${onEditRecord ? 'cursor-pointer active:scale-[0.98] hover:border-primary/30 hover:shadow-md transition-all' : ''}`}
                                         >
                                             <div className="flex items-center gap-2 mb-3">
                                                 <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center shrink-0">

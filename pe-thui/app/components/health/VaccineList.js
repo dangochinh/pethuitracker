@@ -272,7 +272,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
     const renderSummaryTable = () => (
         <div ref={summaryBodyScrollRef} className="-mx-2 overflow-x-auto summary-body-scroll px-2">
-            <div className="min-w-max bg-surface-container-lowest rounded-b-[2rem] shadow-[0px_20px_40px_rgba(165,51,97,0.08)] overflow-hidden">
+            <div className="min-w-max bg-surface-container-lowest shadow-[0px_20px_40px_rgba(165,51,97,0.08)]">
                 {rowConfigs.map((row, index) => (
                     <div
                         key={row.label}

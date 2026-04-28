@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 export default function EditRecordModal({ onClose, onSave, profile, code, record }) {
@@ -66,79 +68,110 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="cute-card w-full max-w-sm p-6 relative bg-white">
-                <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-pink-500 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">Sửa Lịch Sử Phát Triển</h2>
+        <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
+            <div className="w-full max-w-md bg-surface p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500">
+                <div className="flex justify-between items-center mb-8">
+                    <h2 className="text-2xl font-black font-headline text-primary tracking-tight">SỬA CHỈ SỐ</h2>
+                    <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
+                        <span className="material-symbols-outlined text-on-surface-variant">close</span>
+                    </button>
+                </div>
 
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-6 text-sm font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-2">
-                        <span className="text-lg leading-none mt-px">⚠️</span>
+                    <div className="bg-error/10 border border-error/20 text-error px-4 py-3 rounded-2xl mb-6 text-xs font-bold flex items-center gap-3">
+                        <span className="material-symbols-outlined text-sm">warning</span>
                         <span>{error}</span>
                     </div>
                 )}
 
                 {showConfirmDelete ? (
                     <div className="text-center py-4 animate-in fade-in zoom-in duration-200">
-                        <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">⚠️</div>
-                        <h3 className="font-bold text-gray-800 mb-2">Xóa bản ghi này?</h3>
-                        <p className="text-sm text-gray-500 mb-6 px-2">Bạn có chắc chắn muốn xóa bản ghi cân đo ngày <b className="text-gray-700">{new Date(record.date).toLocaleDateString('vi-VN')}</b> không? Dữ liệu bị xóa không thể khôi phục.</p>
+                        <div className="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>delete_forever</span>
+                        </div>
+                        <h3 className="font-black text-on-surface mb-2 text-lg">Xóa bản ghi này?</h3>
+                        <p className="text-sm text-on-surface-variant/70 mb-8 px-2 leading-relaxed font-medium">
+                            Bạn có chắc chắn muốn xóa bản ghi cân đo ngày <strong className="text-on-surface">{new Date(record.date).toLocaleDateString('vi-VN')}</strong> không? Dữ liệu bị xóa không thể khôi phục.
+                        </p>
                         <div className="flex gap-3">
-                            <button onClick={() => setShowConfirmDelete(false)} disabled={deleting} className="flex-1 py-3 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Hủy</button>
-                            <button onClick={handleDelete} disabled={deleting} className="flex-1 py-3 rounded-2xl font-bold bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50 shadow-sm shadow-red-200">
-                                {deleting ? 'Đang xóa...' : 'Vâng, Xóa đi!'}
+                            <button
+                                onClick={() => setShowConfirmDelete(false)}
+                                disabled={deleting}
+                                className="flex-1 py-4 rounded-2xl font-bold border-2 border-outline-variant/40 text-on-surface-variant hover:bg-surface-container transition-all active:scale-95"
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                disabled={deleting}
+                                className="flex-1 py-4 rounded-2xl font-extrabold bg-error text-white shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest text-[11px] flex items-center justify-center"
+                            >
+                                {deleting ? (
+                                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                ) : (
+                                    'Vâng, Xóa đi!'
+                                )}
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-bold text-gray-500 mb-1">Ngày đo</label>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Ngày đo</label>
                             <input
                                 type="date"
-                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-300 transition-all font-medium text-gray-700"
+                                className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-bold text-gray-500 mb-1">Cân nặng (kg)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-300 transition-all font-medium text-gray-700 text-lg"
-                                placeholder="Ví dụ: 8.5"
-                                value={weight}
-                                onChange={(e) => setWeight(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-bold text-gray-500 mb-1">Chiều cao (cm)</label>
-                            <input
-                                type="number"
-                                step="0.1"
-                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-300 transition-all font-medium text-gray-700 text-lg"
-                                placeholder="Ví dụ: 72.5"
-                                value={height}
-                                onChange={(e) => setHeight(e.target.value)}
-                            />
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Cân nặng (kg)</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
+                                    placeholder="VD: 8.5"
+                                    value={weight}
+                                    onChange={(e) => setWeight(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Chiều cao (cm)</label>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
+                                    placeholder="VD: 72.5"
+                                    value={height}
+                                    onChange={(e) => setHeight(e.target.value)}
+                                />
+                            </div>
                         </div>
 
                         <button
                             type="submit"
                             disabled={saving}
-                            className="w-full cute-button-primary mt-6 hover:shadow-lg disabled:opacity-50 py-4"
+                            className="w-full bg-soft-gradient text-white font-extrabold rounded-2xl py-5 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 mt-4 uppercase tracking-widest"
                         >
-                            {saving ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+                            {saving ? (
+                                <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined">save</span>
+                                    <span>Lưu Thay Đổi</span>
+                                </>
+                            )}
                         </button>
 
                         <button
                             type="button"
                             onClick={() => setShowConfirmDelete(true)}
-                            className="w-full py-3 mt-2 font-bold text-red-400 hover:text-red-500 border-2 border-transparent hover:border-red-100 bg-transparent hover:bg-red-50 rounded-2xl transition-all"
+                            className="w-full py-3 font-bold text-error/60 hover:text-error border-2 border-transparent hover:border-error/10 bg-transparent hover:bg-error/5 rounded-2xl transition-all flex items-center justify-center gap-2"
                         >
+                            <span className="material-symbols-outlined text-lg">delete</span>
                             Xóa bản ghi này
                         </button>
                     </form>

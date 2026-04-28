@@ -692,8 +692,8 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
             {/* Scheduling Modal */}
             {schedulingVaccine && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-on-surface/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+                <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-on-surface/40 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-surface w-full max-w-md rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500">
                         <div className="p-8 space-y-6">
                             <div className="flex justify-between items-start">
                                 <div className="space-y-1">
@@ -712,7 +712,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
                                         type="date" 
                                         value={scheduledDate}
                                         onChange={(e) => setScheduledDate(e.target.value)}
-                                        className="w-full bg-surface-container/50 border-none rounded-2xl p-4 font-bold text-on-surface focus:ring-2 focus:ring-secondary/20 transition-all"
+                                        className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 font-bold text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                                     />
                                 </div>
                             </div>

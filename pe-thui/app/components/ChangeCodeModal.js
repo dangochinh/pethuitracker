@@ -72,34 +72,28 @@ export default function ChangeCodeModal({ autoCode, profile, onComplete }) {
 
     return (
         /* Overlay */
-        <div className="fixed inset-0 z-[200] flex items-end justify-center sm:items-center">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                onClick={handleSkip}
-            />
-
+        <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
             {/* Sheet / Card */}
-            <div className="relative z-10 w-full max-w-sm mx-4 mb-6 sm:mb-0 bg-white rounded-[2rem] shadow-2xl p-7 animate-in slide-in-from-bottom-4 fade-in duration-300">
+            <div className="w-full max-w-md bg-surface p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500">
 
                 {/* Icon */}
-                <div className="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-5 text-3xl shadow-sm border-4 border-white">
-                    🔑
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <span className="material-symbols-outlined text-primary" style={{ fontSize: '32px' }}>key</span>
                 </div>
 
-                <h2 className="text-xl font-black text-gray-800 text-center mb-1">
+                <h2 className="text-xl font-black font-headline text-on-surface text-center mb-1">
                     Đặt mã dễ nhớ cho bé!
                 </h2>
-                <p className="text-sm text-gray-500 text-center mb-6 leading-relaxed">
+                <p className="text-sm text-on-surface-variant/70 text-center mb-6 leading-relaxed font-medium">
                     Mã tự sinh khá dài. Bạn có thể đặt lại thành tên bé hoặc bất cứ thứ gì dễ nhớ hơn nhé&nbsp;🎀
                 </p>
 
                 {/* Mã hiện tại */}
-                <div className="bg-gray-50 border border-dashed border-gray-200 rounded-2xl px-4 py-3 mb-5 text-center">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">
+                <div className="bg-surface-container-lowest border border-dashed border-outline-variant/40 rounded-2xl px-4 py-3 mb-5 text-center">
+                    <p className="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest mb-0.5">
                         Mã hiện tại (tự sinh)
                     </p>
-                    <p className="font-black text-base text-gray-400 tracking-widest break-all">
+                    <p className="font-black text-base text-on-surface-variant/40 tracking-widest break-all">
                         {autoCode}
                     </p>
                 </div>
@@ -108,11 +102,11 @@ export default function ChangeCodeModal({ autoCode, profile, onComplete }) {
                 <div className="relative mb-2">
                     <input
                         type="text"
-                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4
-                                   focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300
+                        className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4
+                                   focus:outline-none focus:ring-2 focus:ring-primary/20
                                    transition-all font-black text-center text-lg uppercase tracking-widest
-                                   placeholder-gray-300 placeholder:font-normal placeholder:tracking-normal
-                                   placeholder:text-base focus:placeholder-transparent"
+                                   text-on-surface placeholder-on-surface-variant/30 placeholder:font-normal
+                                   placeholder:tracking-normal placeholder:text-base focus:placeholder-transparent"
                         placeholder="VD: PEPE, BONGBONG..."
                         value={newCode}
                         onChange={handleChange}
@@ -120,23 +114,23 @@ export default function ChangeCodeModal({ autoCode, profile, onComplete }) {
                         autoFocus
                     />
                     {/* Độ dài counter */}
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-300 pointer-events-none">
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-on-surface-variant/30 pointer-events-none">
                         {newCode.length}/20
                     </span>
                 </div>
 
                 {/* Hint min length */}
                 {newCode.length > 0 && newCode.length < 3 && !error && (
-                    <p className="text-xs text-amber-500 font-semibold text-center mb-2">
+                    <p className="text-xs text-primary/70 font-semibold text-center mb-2">
                         Mã cần ít nhất 3 ký tự
                     </p>
                 )}
 
                 {/* Error message */}
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-2xl mb-3
-                                    text-sm font-medium flex items-start gap-2 animate-in fade-in slide-in-from-top-2">
-                        <span className="text-base leading-none mt-px">⚠️</span>
+                    <div className="bg-error/10 border border-error/20 text-error px-4 py-3 rounded-2xl mb-3
+                                    text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                        <span className="material-symbols-outlined text-sm">warning</span>
                         <span>{error}</span>
                     </div>
                 )}
@@ -145,16 +139,23 @@ export default function ChangeCodeModal({ autoCode, profile, onComplete }) {
                 <button
                     onClick={handleSave}
                     disabled={!isValid || saving}
-                    className="w-full cute-button-primary py-4 text-lg mt-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    className="w-full bg-soft-gradient text-white font-black rounded-2xl py-5 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed mt-2 uppercase tracking-widest"
                 >
-                    {saving ? 'Đang lưu...' : '✨ Lưu mã mới'}
+                    {saving ? (
+                        <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    ) : (
+                        <>
+                            <span className="material-symbols-outlined">check_circle</span>
+                            <span>Lưu mã mới</span>
+                        </>
+                    )}
                 </button>
 
                 {/* Nút Bỏ qua */}
                 <button
                     onClick={handleSkip}
                     disabled={saving}
-                    className="w-full mt-3 py-2 text-sm font-semibold text-gray-400 hover:text-gray-600
+                    className="w-full mt-3 py-2 text-sm font-semibold text-on-surface-variant/50 hover:text-on-surface-variant
                                transition-colors disabled:opacity-40"
                 >
                     Bỏ qua, dùng mã tự sinh

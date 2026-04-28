@@ -7,6 +7,7 @@ export default function ProfileSetup({ onComplete }) {
     const [gender, setGender] = useState('female');
     const [dob, setDob] = useState('');
     const [avatarUrl, setAvatarUrl] = useState('');
+    const [avatarValid, setAvatarValid] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [showChangeCode, setShowChangeCode] = useState(false);
@@ -108,14 +109,47 @@ export default function ProfileSetup({ onComplete }) {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-500 mb-1">Avatar URL (Tùy chọn)</label>
-                                <input
-                                    type="text"
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-medium"
-                                    placeholder="Link ảnh (Imgur...)"
-                                    value={avatarUrl}
-                                    onChange={(e) => setAvatarUrl(e.target.value)}
-                                />
+                                <label className="block text-sm font-bold text-gray-500 mb-1">Avatar URL (Tuỳ chọn)</label>
+                                <div className="flex gap-3 items-start">
+                                    {/* Preview */}
+                                    <div className="w-14 h-14 shrink-0 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+                                        {avatarUrl ? (
+                                            avatarValid ? (
+                                                <img
+                                                    src={avatarUrl}
+                                                    alt="Avatar preview"
+                                                    className="w-full h-full object-cover rounded-xl"
+                                                    onError={() => setAvatarValid(false)}
+                                                />
+                                            ) : (
+                                                <span className="material-symbols-outlined text-red-300 text-xl">broken_image</span>
+                                            )
+                                        ) : (
+                                            <span className="material-symbols-outlined text-gray-300 text-xl">person</span>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <input
+                                            type="text"
+                                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-medium text-sm"
+                                            placeholder="Paste link ảnh vào đây..."
+                                            value={avatarUrl}
+                                            onChange={(e) => {
+                                                setAvatarUrl(e.target.value);
+                                                setAvatarValid(true);
+                                            }}
+                                        />
+                                        <p className="text-[10px] text-gray-400 font-medium ml-1 leading-snug">
+                                            Upload lên <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="text-pink-500 font-bold hover:underline">imgur.com</a> → copy link → paste vào đây
+                                        </p>
+                                    </div>
+                                </div>
+                                {avatarUrl && !avatarValid && (
+                                    <p className="text-[10px] text-red-400 font-bold ml-1 mt-1 flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-xs">warning</span>
+                                        Link ảnh không hợp lệ hoặc không tải được
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -142,7 +176,7 @@ export default function ProfileSetup({ onComplete }) {
                                 <label className="block text-sm font-bold text-gray-500 mb-1">Ngày sinh</label>
                                 <input
                                     type="date"
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-medium text-gray-600"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-bold text-gray-600"
                                     value={dob}
                                     onChange={(e) => setDob(e.target.value)}
                                 />

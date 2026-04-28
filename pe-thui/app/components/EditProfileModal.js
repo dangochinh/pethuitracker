@@ -20,6 +20,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
     const [gender, setGender] = useState(profile.gender || 'female');
     const [dob, setDob] = useState(profile.dob || '');
     const [avatarUrl, setAvatarUrl] = useState(profile.avatar || '');
+    const [avatarValid, setAvatarValid] = useState(!!profile.avatar);
     const [telegramChatId] = useState(profile.telegramChatId || '');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -152,7 +153,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
 
     return (
         <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
-            <div className="w-full max-w-lg bg-surface rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500 max-h-[95dvh] flex flex-col">
+            <div className="w-full max-w-md bg-surface rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500 max-h-[95dvh] flex flex-col">
                 {/* ===== HEADER PINNED ===== */}
                 <div className="flex justify-between items-center px-6 sm:px-8 pt-6 sm:pt-8 pb-4 sticky top-0 bg-surface z-10 rounded-t-[3rem] sm:rounded-t-[3rem] border-b border-outline-variant/10">
                     <h2 className="text-xl font-black font-headline text-primary tracking-tight uppercase">Cài Đặt</h2>
@@ -207,13 +208,46 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
 
                             <div className="space-y-1.5">
                                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Avatar URL</label>
-                                <input
-                                    type="text"
-                                    className="w-full bg-surface border border-outline-variant/50 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-xs"
-                                    placeholder="Link ảnh (Imgur...)"
-                                    value={avatarUrl}
-                                    onChange={(e) => setAvatarUrl(e.target.value)}
-                                />
+                                <div className="flex gap-3 items-start">
+                                    {/* Preview */}
+                                    <div className="w-14 h-14 shrink-0 rounded-2xl border-2 border-dashed border-outline-variant/40 bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+                                        {avatarUrl ? (
+                                            avatarValid ? (
+                                                <img
+                                                    src={avatarUrl}
+                                                    alt="Avatar preview"
+                                                    className="w-full h-full object-cover rounded-xl"
+                                                    onError={() => setAvatarValid(false)}
+                                                />
+                                            ) : (
+                                                <span className="material-symbols-outlined text-error/40 text-xl">broken_image</span>
+                                            )
+                                        ) : (
+                                            <span className="material-symbols-outlined text-on-surface-variant/25 text-xl">person</span>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                        <input
+                                            type="text"
+                                            className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-xs"
+                                            placeholder="Paste link ảnh vào đây..."
+                                            value={avatarUrl}
+                                            onChange={(e) => {
+                                                setAvatarUrl(e.target.value);
+                                                setAvatarValid(true); // reset validation on new input
+                                            }}
+                                        />
+                                        <p className="text-[9px] text-on-surface-variant/50 font-medium ml-1 leading-snug">
+                                            Upload lên <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="text-primary/70 font-bold hover:underline">imgur.com</a> → copy link → paste vào đây
+                                        </p>
+                                    </div>
+                                </div>
+                                {avatarUrl && !avatarValid && (
+                                    <p className="text-[10px] text-error/70 font-bold ml-1 flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-xs">warning</span>
+                                        Link ảnh không hợp lệ hoặc không tải được
+                                    </p>
+                                )}
                             </div>
 
                             <div className="space-y-1.5">
@@ -242,7 +276,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
                                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Ngày sinh</label>
                                 <input
                                     type="date"
-                                    className="w-full bg-surface border border-outline-variant/50 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
+                                    className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
                                     value={dob}
                                     onChange={(e) => setDob(e.target.value)}
                                 />

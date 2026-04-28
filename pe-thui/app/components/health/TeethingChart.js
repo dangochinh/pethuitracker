@@ -211,8 +211,8 @@ export default function TeethingChart({ dob, records, code, onSave }) {
 
             {/* Tooth Log Modal */}
             {selectedTooth && (
-                <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[110] flex items-center justify-center p-6 animate-in fade-in duration-300">
-                    <div className="w-full max-w-sm bg-surface p-8 rounded-[3rem] shadow-2xl border border-outline-variant/30 animate-in zoom-in duration-300">
+                <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
+                    <div className="w-full max-w-md bg-surface p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500">
                         <h3 className="text-xl font-black font-headline text-primary mb-1 uppercase tracking-tight">Răng {selectedTooth.vnName}</h3>
                         <p className="text-[10px] text-on-surface-variant font-bold mb-6 opacity-60 uppercase tracking-widest">
                             {selectedTooth.jaw === 'upper' ? 'Hàm trên' : 'Hàm dưới'}

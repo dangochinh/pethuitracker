@@ -141,9 +141,9 @@ export default function GrowthCharts({ records, profile, onBack }) {
                     <section className="space-y-4">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-xl font-headline font-black text-primary">Lịch sử phát triển</h3>
-                            <span className="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">{records.filter(r => r.weight > 0 || r.height > 0).length} lần đo</span>
+                            <span className="text-[10px] font-bold text-secondary uppercase tracking-widest">{records.filter(r => r.weight > 0 || r.height > 0).length} lần đo</span>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {[...records]
                                 .filter(r => r.weight > 0 || r.height > 0)
                                 .map((record, index) => {

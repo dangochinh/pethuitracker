@@ -511,7 +511,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
     */
 
     return (
-        <div className="space-y-10 pb-8">
+        <div className="space-y-6 pb-8">
             {/* 1. Progress Hero */}
             <section className="relative bg-soft-gradient p-8 rounded-[2.5rem] text-white overflow-hidden shadow-lg shadow-primary/20">
                 <div className="relative z-10 flex justify-between items-center">
@@ -696,8 +696,8 @@ export default function VaccineList({ dob, records, code, onSave }) {
                                     <h3 className="text-xl font-headline font-black text-on-surface leading-tight">{schedulingVaccine.name}</h3>
                                     <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{schedulingVaccine.category}</p>
                                 </div>
-                                <button onClick={() => setSchedulingVaccine(null)} className="p-2 hover:bg-surface-container rounded-full transition-colors">
-                                    <span className="material-symbols-outlined">close</span>
+                                <button onClick={() => setSchedulingVaccine(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
+                                    <span className="material-symbols-outlined text-on-surface-variant">close</span>
                                 </button>
                             </div>
 

@@ -213,10 +213,17 @@ export default function TeethingChart({ dob, records, code, onSave }) {
             {selectedTooth && (
                 <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
                     <div className="w-full max-w-md bg-surface p-8 rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 animate-in slide-in-from-bottom duration-500">
-                        <h3 className="text-xl font-black font-headline text-primary mb-1 uppercase tracking-tight">Răng {selectedTooth.vnName}</h3>
-                        <p className="text-[10px] text-on-surface-variant font-bold mb-6 opacity-60 uppercase tracking-widest">
-                            {selectedTooth.jaw === 'upper' ? 'Hàm trên' : 'Hàm dưới'}
-                        </p>
+                        <div className="flex justify-between items-center mb-8">
+                            <div>
+                                <h3 className="text-2xl font-black font-headline text-primary tracking-tight uppercase">Răng {selectedTooth.vnName}</h3>
+                                <p className="text-[10px] text-on-surface-variant font-bold opacity-60 uppercase tracking-widest">
+                                    {selectedTooth.jaw === 'upper' ? 'Hàm trên' : 'Hàm dưới'}
+                                </p>
+                            </div>
+                            <button onClick={() => setSelectedTooth(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all">
+                                <span className="material-symbols-outlined text-on-surface-variant">close</span>
+                            </button>
+                        </div>
                         
                         <div className="space-y-6">
                             {isUnticking ? (
@@ -243,31 +250,37 @@ export default function TeethingChart({ dob, records, code, onSave }) {
                                 </div>
                             )}
                             
-                            <div className="flex gap-3">
+                            {isUnticking ? (
                                 <button 
-                                    onClick={() => setSelectedTooth(null)}
-                                    className="flex-1 bg-surface-container text-on-surface-variant font-bold rounded-2xl py-4 uppercase tracking-widest text-[10px]"
+                                    onClick={handleDelete}
+                                    disabled={saving}
+                                    className="w-full bg-error text-white font-extrabold rounded-2xl py-5 shadow-lg shadow-error/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 mt-4 uppercase tracking-widest"
                                 >
-                                    Đóng
+                                    {saving ? (
+                                        <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                    ) : (
+                                        <>
+                                            <span className="material-symbols-outlined">delete</span>
+                                            <span>Xóa ghi chú</span>
+                                        </>
+                                    )}
                                 </button>
-                                {isUnticking ? (
-                                    <button 
-                                        onClick={handleDelete}
-                                        disabled={saving}
-                                        className="flex-[2] bg-error text-white font-black rounded-2xl py-4 shadow-lg shadow-error/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest text-[10px]"
-                                    >
-                                        {saving ? 'Đang xóa...' : 'Xóa ghi chú'}
-                                    </button>
-                                ) : (
-                                    <button 
-                                        onClick={handleSave}
-                                        disabled={saving}
-                                        className="flex-[2] bg-soft-gradient text-white font-black rounded-2xl py-4 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest text-[10px]"
-                                    >
-                                        {saving ? 'Đang lưu...' : 'Lưu Ngay'}
-                                    </button>
-                                )}
-                            </div>
+                            ) : (
+                                <button 
+                                    onClick={handleSave}
+                                    disabled={saving}
+                                    className="w-full bg-soft-gradient text-white font-extrabold rounded-2xl py-5 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 mt-4 uppercase tracking-widest"
+                                >
+                                    {saving ? (
+                                        <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                    ) : (
+                                        <>
+                                            <span className="material-symbols-outlined">save</span>
+                                            <span>Lưu Ngay</span>
+                                        </>
+                                    )}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>

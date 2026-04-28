@@ -99,7 +99,7 @@ export default function Dashboard({ profile, code }) {
     const renderView = () => {
         switch (view) {
             case 'growth':
-                return <GrowthCharts records={records} profile={profile} onBack={() => setView('home')} />;
+                return <GrowthCharts records={records} profile={profile} code={code} onBack={() => setView('home')} onEditRecord={setEditingRecord} />;
             case 'health':
                 return <VaccineList dob={profile.dob} records={vaccineRecords} code={code} onSave={fetchAllData} />;
             case 'teething':

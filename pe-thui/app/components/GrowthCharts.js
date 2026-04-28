@@ -1,5 +1,5 @@
 import { ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { predictAdultHeight } from '../lib/calculations';
+import { predictAdultHeight, assessWeight, assessHeight } from '../lib/calculations';
 
 export default function GrowthCharts({ records, profile, onBack }) {
     const data = [...records].sort((a, b) => {
@@ -135,6 +135,71 @@ export default function GrowthCharts({ records, profile, onBack }) {
                         </ResponsiveContainer>
                     </div>
                 </div>
+
+                {/* Growth History Section */}
+                {records.filter(r => r.weight > 0 || r.height > 0).length > 0 && (
+                    <section className="space-y-4">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-xl font-headline font-black text-primary">Lịch sử phát triển</h3>
+                            <span className="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest">{records.filter(r => r.weight > 0 || r.height > 0).length} lần đo</span>
+                        </div>
+                        <div className="space-y-3">
+                            {[...records]
+                                .filter(r => r.weight > 0 || r.height > 0)
+                                .map((record, index) => {
+                                    const wStatus = record.weight > 0 ? assessWeight(record.weight, record.ageMonths) : null;
+                                    const hStatus = record.height > 0 ? assessHeight(record.height, record.ageMonths) : null;
+                                    const dateStr = record.date
+                                        ? new Date(record.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                        : (record.createdAt ? new Date(record.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '--');
+                                    const years = Math.floor(record.ageMonths / 12);
+                                    const months = record.ageMonths % 12;
+                                    const ageText = years > 0 ? `${years} tuổi ${months > 0 ? months + ' tháng' : ''}` : `${months} tháng`;
+
+                                    // Extract raw color hex from status for inline styling
+                                    const getStatusColor = (status) => {
+                                        if (!status) return '#9ca3af';
+                                        if (status.status === 'Vượt chuẩn') return '#e65100';
+                                        if (status.status === 'Dưới chuẩn') return '#c2185b';
+                                        return '#00838f';
+                                    };
+
+                                    return (
+                                        <div
+                                            key={record.id || index}
+                                            className="bg-white rounded-2xl p-4 border border-outline-variant/20 shadow-sm"
+                                        >
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
+                                                    <span className="material-symbols-outlined text-primary text-sm">calendar_month</span>
+                                                </div>
+                                                <p className="text-xs font-bold text-on-surface">{dateStr} <span className="text-on-surface-variant/50 font-semibold">({ageText})</span></p>
+                                            </div>
+
+                                            {/* Weight & Height Row */}
+                                            <div className="grid grid-cols-2 gap-3">
+                                                {/* Weight */}
+                                                {record.weight > 0 && (
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="material-symbols-outlined text-secondary text-base">weight</span>
+                                                        <p className="text-lg font-black" style={{ color: getStatusColor(wStatus) }}>{record.weight} <span className="text-xs font-bold text-on-surface-variant/30">kg</span></p>
+                                                    </div>
+                                                )}
+
+                                                {/* Height */}
+                                                {record.height > 0 && (
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="material-symbols-outlined text-primary text-base">height</span>
+                                                        <p className="text-lg font-black" style={{ color: getStatusColor(hStatus) }}>{record.height} <span className="text-xs font-bold text-on-surface-variant/30">cm</span></p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    </section>
+                )}
             </div>
         </div>
     );

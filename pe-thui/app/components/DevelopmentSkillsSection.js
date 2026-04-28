@@ -288,9 +288,9 @@ export default function DevelopmentSkillsSection({ ageMonths, ageDays = 0 }) {
                                 <button
                                     type="button"
                                     onClick={() => setShowTimeline(false)}
-                                    className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all"
                                 >
-                                    <span className="material-symbols-outlined">close</span>
+                                    <span className="material-symbols-outlined text-on-surface-variant">close</span>
                                 </button>
                             </div>
                         </div>

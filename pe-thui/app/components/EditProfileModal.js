@@ -373,22 +373,26 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
                         </div>
                     </div>
 
-                    {/* Submit */}
+                </form>
+                </div>
+
+                {/* ===== FOOTER PINNED ===== */}
+                <div className="px-6 sm:px-8 py-4 border-t border-outline-variant/10 bg-surface rounded-b-none sm:rounded-b-[3rem] shrink-0">
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleSubmit}
                         disabled={saving}
-                        className="w-full bg-soft-gradient text-white font-black rounded-2xl py-5 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest"
+                        className="w-full bg-soft-gradient text-white font-black rounded-2xl py-3.5 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 uppercase tracking-widest text-[11px]"
                     >
                         {saving ? (
-                            <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                         ) : (
                             <>
-                                <span className="material-symbols-outlined">how_to_reg</span>
+                                <span className="material-symbols-outlined text-lg">how_to_reg</span>
                                 <span>Cập Nhật Thông Tin</span>
                             </>
                         )}
                     </button>
-                </form>
                 </div>
             </div>
         </div>

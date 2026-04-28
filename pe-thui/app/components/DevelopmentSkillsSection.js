@@ -270,11 +270,11 @@ export default function DevelopmentSkillsSection({ ageMonths, ageDays = 0 }) {
 
             {showTimeline && (
                 <div
-                    className="fixed inset-0 z-[140] bg-on-surface/35 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-6"
+                    className="fixed inset-0 z-[100] bg-on-surface/40 backdrop-blur-md flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300"
                     onClick={() => setShowTimeline(false)}
                 >
                     <div
-                        className="w-full max-w-md h-[88vh] sm:h-[82vh] bg-white rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
+                        className="w-full max-w-md h-[88vh] sm:h-[82vh] bg-surface rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl border-t sm:border border-outline-variant/30 flex flex-col overflow-hidden animate-in slide-in-from-bottom duration-500"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="px-6 py-5 border-b border-outline-variant/20 shrink-0">

@@ -103,7 +103,17 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-4 mt-2">
                     <div className="border-l-2 border-primary pl-4 py-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 04/04/2026</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-primary">v{APP_VERSION} - 28/04/2026</p>
+                        <p className="text-sm font-bold">✨ Đồng bộ giao diện & cải thiện UX</p>
+                        <ul className="text-xs mt-1 space-y-1 opacity-80">
+                            <li>• Đồng bộ tất cả popup/modal: bottom sheet trên mobile, center trên desktop.</li>
+                            <li>• Cải thiện giao diện chọn ngày tháng: icon calendar đẹp hơn, hover effect.</li>
+                            <li>• Avatar URL: xem trước ảnh realtime khi paste link, cảnh báo nếu link lỗi.</li>
+                            <li>• Hướng dẫn upload ảnh qua Imgur ngay trong form.</li>
+                        </ul>
+                    </div>
+                    <div className="border-l-2 border-primary/20 pl-4 py-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant/60">v1.5.0 - 04/04/2026</p>
                         <p className="text-sm font-bold">🔔 Hệ thống nhắc lịch tiêm</p>
                         <ul className="text-xs mt-1 space-y-1 opacity-80">
                             <li>• Thêm thông báo đẩy (Push Notification) nhắc trước ngày tiêm 7, 3, 1, 0 ngày.</li>

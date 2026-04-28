@@ -271,7 +271,7 @@ export default function VaccineList({ dob, records, code, onSave }) {
     }, []);
 
     const renderSummaryTable = () => (
-        <div className="bg-surface-container-lowest rounded-[2rem] shadow-[0px_20px_40px_rgba(165,51,97,0.08)] overflow-hidden">
+        <div className="bg-surface-container-lowest rounded-b-[2rem] shadow-[0px_20px_40px_rgba(165,51,97,0.08)] overflow-hidden">
             <div ref={summaryBodyScrollRef} className="-mx-2 overflow-x-auto summary-body-scroll px-2">
                 <div className="min-w-max bg-surface-container-lowest">
                     <div className="bg-surface-container-lowest">
@@ -588,8 +588,8 @@ export default function VaccineList({ dob, records, code, onSave }) {
 
                         <div ref={summaryHeaderScrollRef} className="-mx-2 overflow-x-auto summary-header-scroll px-2">
                             <div className="min-w-max">
-                                <div className="grid bg-surface-container-low text-on-surface-variant shadow-sm rounded-t-[2rem]" style={{ gridTemplateColumns: summaryGridTemplate }}>
-                                    <div className="sticky left-0 z-50 bg-surface-container-low px-6 py-4 text-left font-headline font-black text-primary rounded-tl-[2rem]">
+                                <div className="grid bg-surface-container-low text-on-surface-variant shadow-sm" style={{ gridTemplateColumns: summaryGridTemplate }}>
+                                    <div className="sticky left-0 z-50 bg-surface-container-low px-6 py-4 text-left font-headline font-black text-primary">
                                         Vaccine
                                     </div>
                                     {ageIntervals.map(age => (

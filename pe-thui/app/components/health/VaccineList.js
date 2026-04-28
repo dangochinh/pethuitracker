@@ -271,57 +271,53 @@ export default function VaccineList({ dob, records, code, onSave }) {
     }, []);
 
     const renderSummaryTable = () => (
-        <div className="bg-surface-container-lowest rounded-b-[2rem] shadow-[0px_20px_40px_rgba(165,51,97,0.08)] overflow-hidden">
-            <div ref={summaryBodyScrollRef} className="-mx-2 overflow-x-auto summary-body-scroll px-2">
-                <div className="min-w-max bg-surface-container-lowest">
-                    <div className="bg-surface-container-lowest">
-                        {rowConfigs.map((row, index) => (
-                            <div
-                                key={row.label}
-                                className={`grid hover:bg-surface-container-low/50 transition-colors ${index === 0 ? '' : 'border-t border-surface-container'}`}
-                                style={{ gridTemplateColumns: summaryGridTemplate }}
-                            >
-                                <div className="sticky left-0 z-20 bg-surface-container-lowest px-6 py-4 font-medium text-on-surface shadow-[8px_0_16px_rgba(255,248,248,0.95)]">
-                                    {row.label}
+        <div ref={summaryBodyScrollRef} className="-mx-2 overflow-x-auto summary-body-scroll px-2">
+            <div className="min-w-max bg-surface-container-lowest rounded-b-[2rem] shadow-[0px_20px_40px_rgba(165,51,97,0.08)] overflow-hidden">
+                {rowConfigs.map((row, index) => (
+                    <div
+                        key={row.label}
+                        className={`grid hover:bg-surface-container-low/50 transition-colors ${index === 0 ? '' : 'border-t border-surface-container'}`}
+                        style={{ gridTemplateColumns: summaryGridTemplate }}
+                    >
+                        <div className="sticky left-0 z-20 bg-surface-container-lowest px-6 py-4 font-medium text-on-surface shadow-[8px_0_16px_rgba(255,248,248,0.95)]">
+                            {row.label}
+                        </div>
+                        {ageIntervals.map(age => {
+                            const vAtAge = ALL_VACCINES.find(v => {
+                                const matchesPrefix = Array.isArray(row.prefix)
+                                    ? row.prefix.some(p => v.id.startsWith(p))
+                                    : v.id.startsWith(row.prefix);
+                                return matchesPrefix && v.recommendedAge === age.val;
+                            });
+
+                            if (!vAtAge) return <div key={age.val} className="px-4 py-4"></div>;
+
+                            const isDone = completedIds.has(vAtAge.id);
+                            const countdown = getCountdown(vAtAge.id);
+                            const status = calculateStatus(vAtAge);
+
+                            return (
+                                <div key={age.val} className="flex items-center justify-center px-4 py-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleToggle(vAtAge)}
+                                        className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform hover:scale-105 ${
+                                            isDone
+                                                ? 'text-primary'
+                                                : countdown !== null || status === 'UPCOMING'
+                                                  ? 'text-secondary'
+                                                  : 'text-outline'
+                                        }`}
+                                    >
+                                        <span className="material-symbols-outlined" style={{ fontVariationSettings: `'FILL' ${isDone ? 1 : 0}, 'wght' 500, 'GRAD' 0, 'opsz' 24` }}>
+                                            {isDone ? 'check_circle' : 'radio_button_unchecked'}
+                                        </span>
+                                    </button>
                                 </div>
-                                {ageIntervals.map(age => {
-                                    const vAtAge = ALL_VACCINES.find(v => {
-                                        const matchesPrefix = Array.isArray(row.prefix)
-                                            ? row.prefix.some(p => v.id.startsWith(p))
-                                            : v.id.startsWith(row.prefix);
-                                        return matchesPrefix && v.recommendedAge === age.val;
-                                    });
-
-                                    if (!vAtAge) return <div key={age.val} className="px-4 py-4"></div>;
-
-                                    const isDone = completedIds.has(vAtAge.id);
-                                    const countdown = getCountdown(vAtAge.id);
-                                    const status = calculateStatus(vAtAge);
-
-                                    return (
-                                        <div key={age.val} className="flex items-center justify-center px-4 py-4">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleToggle(vAtAge)}
-                                                className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform hover:scale-105 ${
-                                                    isDone
-                                                        ? 'text-primary'
-                                                        : countdown !== null || status === 'UPCOMING'
-                                                          ? 'text-secondary'
-                                                          : 'text-outline'
-                                                }`}
-                                            >
-                                                <span className="material-symbols-outlined" style={{ fontVariationSettings: `'FILL' ${isDone ? 1 : 0}, 'wght' 500, 'GRAD' 0, 'opsz' 24` }}>
-                                                    {isDone ? 'check_circle' : 'radio_button_unchecked'}
-                                                </span>
-                                            </button>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
-                </div>
+                ))}
             </div>
         </div>
     );

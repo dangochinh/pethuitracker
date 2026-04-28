@@ -168,13 +168,19 @@ export default function GrowthCharts({ records, profile, code, onBack, onEditRec
                                         <div
                                             key={record.id || index}
                                             onClick={() => onEditRecord && onEditRecord(record)}
-                                            className={`bg-white rounded-2xl p-4 border border-outline-variant/20 shadow-sm ${onEditRecord ? 'cursor-pointer active:scale-[0.98] hover:border-primary/30 hover:shadow-md transition-all' : ''}`}
+                                            className={`group bg-white rounded-2xl p-4 border border-outline-variant/20 shadow-sm ${onEditRecord ? 'cursor-pointer active:scale-[0.98] hover:border-primary/30 hover:shadow-md transition-all' : ''}`}
                                         >
                                             <div className="flex items-center gap-2 mb-3">
                                                 <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
                                                     <span className="material-symbols-outlined text-primary text-sm">calendar_month</span>
                                                 </div>
-                                                <p className="text-xs font-bold text-on-surface">{dateStr} <span className="text-on-surface-variant/50 font-semibold">({ageText})</span></p>
+                                                <p className="text-xs font-bold text-on-surface flex-1">{dateStr} <span className="text-on-surface-variant/50 font-semibold">({ageText})</span></p>
+                                                {onEditRecord && (
+                                                    <div className="flex items-center gap-1 opacity-30 group-hover:opacity-60 transition-opacity">
+                                                        <span className="material-symbols-outlined text-sm text-on-surface-variant">edit</span>
+                                                        <span className="material-symbols-outlined text-sm text-on-surface-variant">delete</span>
+                                                    </div>
+                                                )}
                                             </div>
 
                                             {/* Weight & Height Row */}

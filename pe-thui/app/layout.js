@@ -1,4 +1,5 @@
 import { Plus_Jakarta_Sans, Be_Vietnam_Pro } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 const plusJakarta = Plus_Jakarta_Sans({ 
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
         <main className="min-h-screen max-w-md mx-auto bg-background shadow-2xl relative">
           {children}
         </main>
+        <Analytics />
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {

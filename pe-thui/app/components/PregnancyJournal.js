@@ -38,7 +38,14 @@ export default function PregnancyJournal({ code }) {
         }
     };
 
-    if (loading) return <div className="text-center py-10 opacity-50 font-bold">Đang tải hồ sơ...</div>;
+    if (loading) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
+                <div className="animate-bounce text-4xl mb-3">📸</div>
+                <p className="text-purple-600 font-bold tracking-wide animate-pulse">Đang tải nhật ký...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">

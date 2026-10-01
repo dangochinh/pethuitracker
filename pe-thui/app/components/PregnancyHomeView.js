@@ -35,7 +35,7 @@ export default function PregnancyHomeView({ profile }) {
         );
     }
 
-    const weeks = Array.from({ length: 39 }, (_, i) => i + 4); // 4 to 42
+    const weeks = Array.from({ length: 43 }, (_, i) => i); // 0 to 42
     const selectedStats = getPregnancyWeekStats(selectedWeek);
     const isCurrentWeek = selectedWeek === stats.weeks;
 
@@ -55,7 +55,7 @@ export default function PregnancyHomeView({ profile }) {
                 {/* Timeline UI */}
                 <div className="mt-6 relative">
                     <div className="absolute top-[36px] left-0 w-full h-1 bg-white/50 -translate-y-1/2 rounded-full pointer-events-none"></div>
-                    <div className="absolute top-[36px] left-0 h-1 bg-gradient-to-r from-purple-400 to-pink-400 -translate-y-1/2 rounded-full transition-all pointer-events-none" style={{ width: `${Math.min(100, Math.max(0, ((selectedWeek - 4) / 38) * 100))}%` }}></div>
+                    <div className="absolute top-[36px] left-0 h-1 bg-gradient-to-r from-purple-400 to-pink-400 -translate-y-1/2 rounded-full transition-all pointer-events-none" style={{ width: `${Math.min(100, Math.max(0, (selectedWeek / 42) * 100))}%` }}></div>
                     
                     <div ref={timelineRef} className="flex items-center overflow-x-auto gap-4 py-4 px-1/2 no-scrollbar hide-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden relative z-10 snap-x snap-mandatory">
                         {/* Add padding elements to allow centering first and last items */}

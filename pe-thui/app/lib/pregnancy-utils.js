@@ -21,8 +21,8 @@ export function calculatePregnancyWeeks(eddString) {
     if (weeks >= 27) trimester = 3;
 
     const fruitMap = getFruitMap();
-    const w = Math.min(Math.max(weeks, 4), 42);
-    const fruit = fruitMap[w] || fruitMap[4];
+    const w = Math.min(Math.max(weeks, 0), 42);
+    const fruit = fruitMap[w] || fruitMap[0];
 
     return {
         weeks,
@@ -39,6 +39,10 @@ export function calculatePregnancyWeeks(eddString) {
 
 export function getFruitMap() {
     return {
+        0: { name: 'Mầm sống (Chuẩn bị)', emoji: '✨', weight: 0, length: 0 },
+        1: { name: 'Tế bào trứng', emoji: '🥚', weight: 0, length: 0.01 },
+        2: { name: 'Hợp tử thụ tinh', emoji: '🧬', weight: 0.01, length: 0.02 },
+        3: { name: 'Hạt mầm (Phôi nang)', emoji: '🌱', weight: 0.05, length: 0.1 },
         4: { name: 'Hạt tiêu', emoji: '🌑', weight: 0.1, length: 0.2 },
         5: { name: 'Hạt vừng', emoji: '🌱', weight: 0.1, length: 0.3 },
         6: { name: 'Đậu lăng', emoji: '🥜', weight: 0.2, length: 0.6 },
@@ -82,7 +86,7 @@ export function getFruitMap() {
 }
 
 export function getPregnancyWeekStats(weekNumber) {
-    const w = Math.min(Math.max(weekNumber, 4), 42);
+    const w = Math.min(Math.max(weekNumber, 0), 42);
     const fruitMap = getFruitMap();
-    return fruitMap[w] || fruitMap[4];
+    return fruitMap[w] || fruitMap[0];
 }

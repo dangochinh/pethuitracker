@@ -139,17 +139,17 @@ export default function Dashboard({ profile, code }) {
     }, [view]);
 
 
-    const ageInfo = calculateAge(profile.dob);
+    const ageInfo = profile.dob ? calculateAge(profile.dob) : { totalMonths: 0, days: 0, text: '' };
     const latest = records[0];
 
-    const daysToBirthday = ((dob) => {
+    const daysToBirthday = profile.dob ? ((dob) => {
         const today = new Date();
         const birthDate = new Date(dob);
         let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
         if (today > nextBirthday) nextBirthday.setFullYear(today.getFullYear() + 1);
         const diffTime = nextBirthday - today;
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    })(profile.dob);
+    })(profile.dob) : 0;
 
     const renderView = () => {
         switch (view) {

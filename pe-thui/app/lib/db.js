@@ -16,7 +16,7 @@ export async function getBaby(code) {
         dob: data.dob || '',
         avatar: data.avatar || '',
         telegramChatId: data.telegramChatId || '',
-        mode: data.mode || 'born',
+        mode: data.mode || (data.estimatedDueDate ? 'pregnancy' : 'born'),
         estimatedDueDate: data.estimatedDueDate || null,
     };
 }

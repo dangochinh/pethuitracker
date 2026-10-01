@@ -47,9 +47,11 @@ export async function POST(request) {
         await createOrUpdateBaby(code, {
             name: body.name || '',
             gender: body.gender || '',
-            dob: body.dob || '',
+            dob: body.dob || null,
             avatar: avatar,
             telegramChatId: body.telegramChatId || '',
+            mode: body.mode || 'born',
+            estimatedDueDate: body.estimatedDueDate || null,
         });
 
         return NextResponse.json({ success: true, data: body });

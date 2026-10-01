@@ -33,8 +33,8 @@ export default function PregnancyHomeView({ profile }) {
     const isCurrentWeek = selectedWeek === stats.weeks;
 
     return (
-        <div className="space-y-6 pt-12">
-            <section className="bg-gradient-to-br from-purple-100 to-pink-50 rounded-[2.5rem] p-6 shadow-sm border border-purple-200/50 text-center relative overflow-hidden">
+        <div className="space-y-6">
+            <section className="mt-[38px] bg-gradient-to-br from-purple-100 to-pink-50 rounded-[2.5rem] p-6 shadow-sm border border-purple-200/50 text-center relative overflow-hidden">
                 <div className="absolute -top-4 -right-4 text-6xl opacity-10 blur-[2px]">🤰</div>
                 <div className="absolute -bottom-4 -left-4 text-6xl opacity-10 blur-[2px]">✨</div>
                 

@@ -8,6 +8,8 @@ export default function ProfileSetup({ onComplete }) {
     const [gender, setGender] = useState('female');
     const [dob, setDob] = useState('');
     const [avatar, setAvatar] = useState('');
+    const [mode, setMode] = useState('born'); // 'born' | 'pregnancy'
+    const [estimatedDueDate, setEstimatedDueDate] = useState('');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [showChangeCode, setShowChangeCode] = useState(false);
@@ -20,21 +22,45 @@ export default function ProfileSetup({ onComplete }) {
     const generateCode = () => {
         // e.g "tên bé là sóc" -> "SOC" -> "SOC010126.0226"
         const cleanName = removeAccents(name.trim()).replace(/\s+/g, '').toUpperCase();
-        const [year, month, day] = dob.split('-');
-        const yy = year.slice(-2);
+        
+        let dateString = '';
+        if (mode === 'born' && dob) {
+            const [year, month, day] = dob.split('-');
+            const yy = year.slice(-2);
+            dateString = `${day}${month}${yy}`;
+        } else if (mode === 'pregnancy' && estimatedDueDate) {
+            const [year, month, day] = estimatedDueDate.split('-');
+            const yy = year.slice(-2);
+            dateString = `${day}${month}${yy}`;
+        } else {
+            // fallback
+            const today = new Date();
+            const d = String(today.getDate()).padStart(2, '0');
+            const m = String(today.getMonth() + 1).padStart(2, '0');
+            const yy = String(today.getFullYear()).slice(-2);
+            dateString = `${d}${m}${yy}`;
+        }
 
         const today = new Date();
         const loginM = String(today.getMonth() + 1).padStart(2, '0');
         const loginY = String(today.getFullYear()).slice(-2);
 
-        return `${cleanName}${day}${month}${yy}.${loginM}${loginY}`;
+        return `${cleanName}${dateString}.${loginM}${loginY}`;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (!name || !dob) {
-            setError('Vui lòng nhập đủ thông tin!');
+        if (!name) {
+            setError('Vui lòng nhập tên!');
+            return;
+        }
+        if (mode === 'born' && !dob) {
+            setError('Vui lòng nhập ngày sinh!');
+            return;
+        }
+        if (mode === 'pregnancy' && !estimatedDueDate) {
+            setError('Vui lòng nhập ngày dự sinh!');
             return;
         }
 
@@ -46,7 +72,15 @@ export default function ProfileSetup({ onComplete }) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ code: newCode, name, gender, dob, avatar })
+                body: JSON.stringify({ 
+                    code: newCode, 
+                    name, 
+                    gender, 
+                    dob: mode === 'born' ? dob : null, 
+                    avatar,
+                    mode,
+                    estimatedDueDate: mode === 'pregnancy' ? estimatedDueDate : null
+                })
             });
             setSuccessCode(newCode);
         } catch (e) {
@@ -137,14 +171,49 @@ export default function ProfileSetup({ onComplete }) {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-gray-500 mb-1">Ngày sinh</label>
-                                <input
-                                    type="date"
-                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-bold text-gray-600"
-                                    value={dob}
-                                    onChange={(e) => setDob(e.target.value)}
-                                />
+                                <label className="block text-sm font-bold text-gray-500 mb-2">Trạng thái</label>
+                                <div className="flex gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setMode('born')}
+                                        className={`flex-1 py-4 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 transition-all ${mode === 'born' ? 'border-pink-400 bg-pink-50 text-pink-600 font-bold shadow-sm' : 'border-gray-100 bg-gray-50 text-gray-400 hover:bg-gray-100'}`}
+                                    >
+                                        <span className="text-xl">👶</span> Đã sinh bé
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setMode('pregnancy')}
+                                        className={`flex-1 py-4 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 transition-all ${mode === 'pregnancy' ? 'border-purple-400 bg-purple-50 text-purple-600 font-bold shadow-sm' : 'border-gray-100 bg-gray-50 text-gray-400 hover:bg-gray-100'}`}
+                                    >
+                                        <span className="text-xl">🤰</span> Đang mang thai
+                                    </button>
+                                </div>
                             </div>
+
+                            {mode === 'born' && (
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-500 mb-1">Ngày sinh của bé</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-bold text-gray-600"
+                                        value={dob}
+                                        onChange={(e) => setDob(e.target.value)}
+                                    />
+                                </div>
+                            )}
+
+                            {mode === 'pregnancy' && (
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-500 mb-1">Ngày dự sinh (EDD)</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-purple-50 border border-purple-200 rounded-2xl px-5 py-4 focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-300 transition-all font-bold text-purple-700"
+                                        value={estimatedDueDate}
+                                        onChange={(e) => setEstimatedDueDate(e.target.value)}
+                                    />
+                                    <p className="text-xs text-gray-400 mt-2">Dùng để tính số tuần thai kỳ.</p>
+                                </div>
+                            )}
 
                             <button
                                 type="submit"

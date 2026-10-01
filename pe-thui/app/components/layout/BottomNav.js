@@ -1,8 +1,12 @@
 // Được thay thế từ BottomNav1.js
 'use client';
 
-export default function BottomNav({ view, setView }) {
-    const navItems = [
+export default function BottomNav({ view, setView, mode }) {
+    const navItems = mode === 'pregnancy' ? [
+        { id: 'home', label: 'Thai kỳ', icon: 'pregnant_woman' },
+        { id: 'journal', label: 'Siêu âm', icon: 'photo_library' },
+        { id: 'health', label: 'Khám thai', icon: 'medical_services' },
+    ] : [
         { id: 'home', label: 'Trang chủ', icon: 'home' },
         { id: 'journal', label: 'Kỷ niệm', icon: 'photo_library' },
         { id: 'teething', label: 'Mọc răng', icon: 'dentistry' },

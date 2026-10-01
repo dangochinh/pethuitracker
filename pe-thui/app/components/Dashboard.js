@@ -18,6 +18,7 @@ import useBackHandler from '../hooks/useBackHandler';
 import ExitConfirmDialog from './ExitConfirmDialog';
 import NotificationBanner from './NotificationBanner';
 import PhotoJournal from './PhotoJournal';
+import PregnancyHomeView from './PregnancyHomeView';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
@@ -157,6 +158,9 @@ export default function Dashboard({ profile, code }) {
                 return <PhotoJournal code={code} />;
             case 'home':
             default:
+                if (profile.mode === 'pregnancy') {
+                    return <PregnancyHomeView profile={profile} code={code} />;
+                }
                 return (
                     <HomeView 
                         profile={profile} 
@@ -212,7 +216,7 @@ export default function Dashboard({ profile, code }) {
                 </button>
             )}
 
-            <BottomNav view={view} setView={setView} />
+            <BottomNav view={view} setView={setView} mode={profile.mode} />
 
             {showAdd && <AddRecordModal profile={profile} code={code} onClose={() => setShowAdd(false)} onSave={fetchAllData} />}
             {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={(newCode) => { if (newCode && newCode !== code) { router.push(`/${newCode}`); } else { window.location.reload(); } }} />}

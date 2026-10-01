@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { calculateAge, predictAdultHeight, assessWeight, assessHeight } from '../lib/calculations';
 import AddRecordModal from './AddRecordModal';
@@ -17,6 +17,7 @@ import DevelopmentSkillsSection from './DevelopmentSkillsSection';
 import useBackHandler from '../hooks/useBackHandler';
 import ExitConfirmDialog from './ExitConfirmDialog';
 import NotificationBanner from './NotificationBanner';
+import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
@@ -31,10 +32,24 @@ export default function Dashboard({ profile, code }) {
     const [view, setView] = useState('home'); // home, growth, health, teething
     const [showExitConfirm, setShowExitConfirm] = useState(false);
 
+    // Daily tracking state
+    const [feedings, setFeedings] = useState([]);
+    const [sleeps, setSleeps] = useState([]);
+    const [diapers, setDiapers] = useState([]);
+    const [showFeedModal, setShowFeedModal] = useState(false);
+    const [showSleepModal, setShowSleepModal] = useState(false);
+    const [showDiaperModal, setShowDiaperModal] = useState(false);
+
+    // Active sleep (no endTime)
+    const activeSleep = sleeps.find(s => !s.endTime) || null;
+
     // Intercept the browser / hardware back button:
     //  • If any modal is open → close that modal (priority order).
     //  • If no modal is open → show the exit confirmation sheet.
     useBackHandler(() => {
+        if (showFeedModal)   { setShowFeedModal(false);   return; }
+        if (showSleepModal)  { setShowSleepModal(false);  return; }
+        if (showDiaperModal) { setShowDiaperModal(false); return; }
         if (showAdd)         { setShowAdd(false);         return; }
         if (showEditProfile) { setShowEditProfile(false); return; }
         if (editingRecord)   { setEditingRecord(null);    return; }
@@ -42,6 +57,25 @@ export default function Dashboard({ profile, code }) {
         if (showExitConfirm) { setShowExitConfirm(false); return; }
         setShowExitConfirm(true);
     });
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    const fetchDailyData = useCallback(async () => {
+        try {
+            const t = Date.now();
+            const [feedRes, sleepRes, diaperRes] = await Promise.all([
+                fetch(`/api/feedings?code=${code}&date=${todayStr}&t=${t}`, { cache: 'no-store' }),
+                fetch(`/api/sleeps?code=${code}&date=${todayStr}&t=${t}`, { cache: 'no-store' }),
+                fetch(`/api/diapers?code=${code}&date=${todayStr}&t=${t}`, { cache: 'no-store' }),
+            ]);
+            const [feedJson, sleepJson, diaperJson] = await Promise.all([
+                feedRes.json(), sleepRes.json(), diaperRes.json()
+            ]);
+            if (feedJson.success) setFeedings(feedJson.data);
+            if (sleepJson.success) setSleeps(sleepJson.data);
+            if (diaperJson.success) setDiapers(diaperJson.data);
+        } catch (e) { console.error('Daily data fetch error:', e); }
+    }, [code, todayStr]);
 
     const fetchAllData = async () => {
         try {
@@ -75,9 +109,23 @@ export default function Dashboard({ profile, code }) {
         }
     };
 
+    const handleDeleteFeeding = async (id) => {
+        await fetch(`/api/feedings?code=${code}&id=${id}`, { method: 'DELETE' });
+        fetchDailyData();
+    };
+    const handleDeleteSleep = async (id) => {
+        await fetch(`/api/sleeps?code=${code}&id=${id}`, { method: 'DELETE' });
+        fetchDailyData();
+    };
+    const handleDeleteDiaper = async (id) => {
+        await fetch(`/api/diapers?code=${code}&id=${id}`, { method: 'DELETE' });
+        fetchDailyData();
+    };
+
     useEffect(() => {
         fetchAllData();
-    }, []);
+        fetchDailyData();
+    }, [fetchDailyData]);
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'auto' });
@@ -118,6 +166,16 @@ export default function Dashboard({ profile, code }) {
                         vaccineRecords={vaccineRecords} 
                         setShowEditProfile={setShowEditProfile}
                         code={code}
+                        feedings={feedings}
+                        sleeps={sleeps}
+                        diapers={diapers}
+                        activeSleep={activeSleep}
+                        onFeed={() => setShowFeedModal(true)}
+                        onSleep={() => setShowSleepModal(true)}
+                        onDiaper={() => setShowDiaperModal(true)}
+                        onDeleteFeeding={handleDeleteFeeding}
+                        onDeleteSleep={handleDeleteSleep}
+                        onDeleteDiaper={handleDeleteDiaper}
                     />
                 );
         }
@@ -157,12 +215,15 @@ export default function Dashboard({ profile, code }) {
             {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={(newCode) => { if (newCode && newCode !== code) { router.push(`/${newCode}`); } else { window.location.reload(); } }} />}
             {editingRecord && <EditRecordModal profile={profile} code={code} record={editingRecord} onClose={() => setEditingRecord(null)} onSave={fetchAllData} />}
             {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
+
+            {/* Daily Tracking Modals */}
+            {showFeedModal && <FeedingModal code={code} onClose={() => setShowFeedModal(false)} onSave={fetchDailyData} />}
+            {showSleepModal && <SleepModal code={code} activeSleep={activeSleep} onClose={() => setShowSleepModal(false)} onSave={fetchDailyData} />}
+            {showDiaperModal && <DiaperModal code={code} onClose={() => setShowDiaperModal(false)} onSave={fetchDailyData} />}
+
             {showExitConfirm && (
                 <ExitConfirmDialog
                     onConfirm={() => {
-                        // Flag this session so auto-redirect is skipped on login page.
-                        // sessionStorage clears when app is closed, so next cold open
-                        // still auto-redirects to the baby's profile.
                         sessionStorage.setItem('pe_thui_logout', '1');
                         router.push('/');
                     }}
@@ -173,7 +234,7 @@ export default function Dashboard({ profile, code }) {
     );
 }
 
-function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords, code, setShowEditProfile }) {
+function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, teethingRecords, vaccineRecords, code, setShowEditProfile, feedings, sleeps, diapers, activeSleep, onFeed, onSleep, onDiaper, onDeleteFeeding, onDeleteSleep, onDeleteDiaper }) {
     const latestWeightRecord = records.find(r => r.weight > 0);
     const latestHeightRecord = records.find(r => r.height > 0);
 
@@ -185,7 +246,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
             {/* Notification Banner */}
             <NotificationBanner code={code} />
 
-            {/* New Bento Profile Card */}
+            {/* Profile Card */}
             <section className="relative mt-[4.5rem] px-2">
                 <div className="bg-[#fffbf0] rounded-[2rem] p-5 pt-16 relative shadow-sm border-[3px] border-dashed border-primary/30">
                     
@@ -242,6 +303,45 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
                 </div>
             </section>
 
+            {/* ===== DAILY TRACKING SECTION ===== */}
+            <section className="space-y-4">
+                <h2 className="font-headline text-xl font-extrabold text-primary flex items-center gap-2 px-2">
+                    <span className="material-symbols-outlined text-lg">today</span>
+                    Hôm nay
+                </h2>
+
+                {/* Quick Actions */}
+                <QuickActions
+                    onFeed={onFeed}
+                    onSleep={onSleep}
+                    onDiaper={onDiaper}
+                    onMeasure={() => setView('growth')}
+                    activeSleep={activeSleep}
+                />
+
+                {/* Status Bar */}
+                <StatusBar feedings={feedings} sleeps={sleeps} diapers={diapers} />
+
+                {/* Activity Timeline */}
+                <div className="bg-surface-container-lowest/50 rounded-[2rem] p-4 border border-outline-variant/15">
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-xs font-black text-on-surface uppercase tracking-widest flex items-center gap-1.5">
+                            <span className="material-symbols-outlined text-sm text-primary">schedule</span>
+                            Dòng thời gian
+                        </h3>
+                    </div>
+                    <ActivityTimeline
+                        feedings={feedings}
+                        sleeps={sleeps}
+                        diapers={diapers}
+                        onDeleteFeeding={onDeleteFeeding}
+                        onDeleteSleep={onDeleteSleep}
+                        onDeleteDiaper={onDeleteDiaper}
+                    />
+                </div>
+            </section>
+
+            {/* ===== OVERVIEW SECTION ===== */}
             <section className="space-y-6">
                 <h2 className="font-headline text-xl font-extrabold text-primary flex items-center gap-2 px-2">
                     <span className="material-symbols-outlined text-lg">dashboard</span>

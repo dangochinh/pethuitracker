@@ -277,3 +277,166 @@ export async function getMasterMilestones() {
     milestones.sort((a, b) => parseInt(a.id || 0) - parseInt(b.id || 0));
     return milestones;
 }
+
+// -------------------------------------------------------------
+// FEEDINGS
+// -------------------------------------------------------------
+
+export async function getFeedings(code, dateStr) {
+    if (!code) return [];
+    const db = getFirestore();
+    let query = db.collection('babies').doc(code).collection('feedings')
+        .orderBy('startTime', 'desc');
+    if (dateStr) {
+        // Filter by date range (start of day to end of day)
+        const start = new Date(dateStr + 'T00:00:00');
+        const end = new Date(dateStr + 'T23:59:59');
+        query = query.where('startTime', '>=', start).where('startTime', '<=', end);
+    } else {
+        query = query.limit(50);
+    }
+    const snap = await query.get();
+    return snap.docs.map(doc => {
+        const d = doc.data();
+        return {
+            id: doc.id,
+            type: d.type || 'bottle', // 'breast' | 'bottle' | 'solid'
+            startTime: d.startTime?.toDate?.() ? d.startTime.toDate().toISOString() : d.startTime,
+            endTime: d.endTime?.toDate?.() ? d.endTime.toDate().toISOString() : d.endTime || null,
+            duration: d.duration || 0, // seconds
+            side: d.side || null, // 'left' | 'right'
+            amount: d.amount ?? null, // ml
+            notes: d.notes || '',
+        };
+    });
+}
+
+export async function addFeeding(code, record) {
+    const db = getFirestore();
+    const col = db.collection('babies').doc(code).collection('feedings');
+    const data = {
+        type: record.type || 'bottle',
+        startTime: new Date(record.startTime),
+        endTime: record.endTime ? new Date(record.endTime) : null,
+        duration: Number(record.duration) || 0,
+        side: record.side || null,
+        amount: record.amount != null ? Number(record.amount) : null,
+        notes: record.notes || '',
+        createdAt: new Date(),
+    };
+    const docRef = await col.add(data);
+    return { id: docRef.id, ...record };
+}
+
+export async function deleteFeeding(code, id) {
+    const db = getFirestore();
+    await db.collection('babies').doc(code).collection('feedings').doc(id).delete();
+}
+
+// -------------------------------------------------------------
+// SLEEPS
+// -------------------------------------------------------------
+
+export async function getSleeps(code, dateStr) {
+    if (!code) return [];
+    const db = getFirestore();
+    let query = db.collection('babies').doc(code).collection('sleeps')
+        .orderBy('startTime', 'desc');
+    if (dateStr) {
+        const start = new Date(dateStr + 'T00:00:00');
+        const end = new Date(dateStr + 'T23:59:59');
+        query = query.where('startTime', '>=', start).where('startTime', '<=', end);
+    } else {
+        query = query.limit(50);
+    }
+    const snap = await query.get();
+    return snap.docs.map(doc => {
+        const d = doc.data();
+        return {
+            id: doc.id,
+            type: d.type || 'nap', // 'nap' | 'night'
+            startTime: d.startTime?.toDate?.() ? d.startTime.toDate().toISOString() : d.startTime,
+            endTime: d.endTime?.toDate?.() ? d.endTime.toDate().toISOString() : d.endTime || null,
+            duration: d.duration || 0, // minutes
+            notes: d.notes || '',
+        };
+    });
+}
+
+export async function addSleep(code, record) {
+    const db = getFirestore();
+    const col = db.collection('babies').doc(code).collection('sleeps');
+    const data = {
+        type: record.type || 'nap',
+        startTime: new Date(record.startTime),
+        endTime: record.endTime ? new Date(record.endTime) : null,
+        duration: Number(record.duration) || 0,
+        notes: record.notes || '',
+        createdAt: new Date(),
+    };
+    const docRef = await col.add(data);
+    return { id: docRef.id, ...record };
+}
+
+export async function updateSleep(code, id, data) {
+    const db = getFirestore();
+    const docRef = db.collection('babies').doc(code).collection('sleeps').doc(id);
+    const updateData = {};
+    if (data.endTime) updateData.endTime = new Date(data.endTime);
+    if (data.duration != null) updateData.duration = Number(data.duration);
+    if (data.type) updateData.type = data.type;
+    if (data.notes != null) updateData.notes = data.notes;
+    updateData.updatedAt = new Date();
+    await docRef.set(updateData, { merge: true });
+}
+
+export async function deleteSleep(code, id) {
+    const db = getFirestore();
+    await db.collection('babies').doc(code).collection('sleeps').doc(id).delete();
+}
+
+// -------------------------------------------------------------
+// DIAPERS
+// -------------------------------------------------------------
+
+export async function getDiapers(code, dateStr) {
+    if (!code) return [];
+    const db = getFirestore();
+    let query = db.collection('babies').doc(code).collection('diapers')
+        .orderBy('time', 'desc');
+    if (dateStr) {
+        const start = new Date(dateStr + 'T00:00:00');
+        const end = new Date(dateStr + 'T23:59:59');
+        query = query.where('time', '>=', start).where('time', '<=', end);
+    } else {
+        query = query.limit(50);
+    }
+    const snap = await query.get();
+    return snap.docs.map(doc => {
+        const d = doc.data();
+        return {
+            id: doc.id,
+            time: d.time?.toDate?.() ? d.time.toDate().toISOString() : d.time,
+            type: d.type || 'wet', // 'wet' | 'dirty' | 'mixed'
+            notes: d.notes || '',
+        };
+    });
+}
+
+export async function addDiaper(code, record) {
+    const db = getFirestore();
+    const col = db.collection('babies').doc(code).collection('diapers');
+    const data = {
+        time: new Date(record.time),
+        type: record.type || 'wet',
+        notes: record.notes || '',
+        createdAt: new Date(),
+    };
+    const docRef = await col.add(data);
+    return { id: docRef.id, ...record };
+}
+
+export async function deleteDiaper(code, id) {
+    const db = getFirestore();
+    await db.collection('babies').doc(code).collection('diapers').doc(id).delete();
+}

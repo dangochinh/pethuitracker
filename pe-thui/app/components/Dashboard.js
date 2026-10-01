@@ -22,10 +22,12 @@ import PregnancyHomeView from './PregnancyHomeView';
 import PregnancyCheckups from './PregnancyCheckups';
 import PregnancyJournal from './PregnancyJournal';
 import PregnancyGrowth from './PregnancyGrowth';
+import ShareModal from './ShareModal';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
+    const [showShare, setShowShare] = useState(false);
     const [records, setRecords] = useState([]);
     const [vaccineRecords, setVaccineRecords] = useState([]);
     const [teethingRecords, setTeethingRecords] = useState([]);
@@ -205,6 +207,9 @@ export default function Dashboard({ profile, code }) {
             {/* Global Floating Buttons */}
             {view === 'home' && (
                 <div className="absolute top-6 right-6 z-50 flex gap-2">
+                    <button onClick={() => setShowShare(true)} className="w-10 h-10 flex items-center justify-center bg-white text-gray-400 hover:text-pink-500 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border border-gray-100">
+                        <span className="material-symbols-outlined text-xl">share</span>
+                    </button>
                     <button onClick={() => setShowInfo(true)} className="w-10 h-10 flex items-center justify-center bg-white text-gray-400 hover:text-primary rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border border-gray-100">
                         <span className="material-symbols-outlined text-xl">help</span>
                     </button>
@@ -230,6 +235,7 @@ export default function Dashboard({ profile, code }) {
 
             <BottomNav view={view} setView={setView} mode={profile.mode} />
 
+            {showShare && <ShareModal code={code} onClose={() => setShowShare(false)} />}
             {showAdd && <AddRecordModal profile={profile} code={code} onClose={() => setShowAdd(false)} onSave={fetchAllData} />}
             {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={(newCode) => { if (newCode && newCode !== code) { router.push(`/${newCode}`); } else { window.location.reload(); } }} />}
             {editingRecord && <EditRecordModal profile={profile} code={code} record={editingRecord} onClose={() => setEditingRecord(null)} onSave={fetchAllData} />}

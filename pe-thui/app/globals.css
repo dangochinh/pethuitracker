@@ -126,12 +126,16 @@
   .u5-l { left: 48px; top: 120px; }
   .u5-r { left: 232px; top: 120px; }
 
+  .no-scrollbar,
+  .hide-scrollbar,
   .summary-header-scroll,
   .summary-body-scroll {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
+  .no-scrollbar::-webkit-scrollbar,
+  .hide-scrollbar::-webkit-scrollbar,
   .summary-header-scroll::-webkit-scrollbar,
   .summary-body-scroll::-webkit-scrollbar {
     display: none;

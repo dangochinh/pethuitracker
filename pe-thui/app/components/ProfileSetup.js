@@ -231,7 +231,7 @@ export default function ProfileSetup({ onComplete }) {
             {showChangeCode && successCode && (
                 <ChangeCodeModal
                     autoCode={successCode}
-                    profile={{ name, gender, dob, avatar }}
+                    profile={{ name, gender, dob, avatar, mode, estimatedDueDate }}
                     onComplete={(finalCode) => onComplete(finalCode)}
                 />
             )}

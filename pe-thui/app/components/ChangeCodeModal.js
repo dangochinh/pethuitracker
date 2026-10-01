@@ -51,8 +51,10 @@ export default function ChangeCodeModal({ autoCode, profile, onComplete }) {
                     oldCode: autoCode,
                     name: profile.name,
                     gender: profile.gender,
-                    dob: profile.dob,
+                    dob: profile.dob || null,
                     avatar: profile.avatar || '',
+                    mode: profile.mode || (profile.estimatedDueDate ? 'pregnancy' : 'born'),
+                    estimatedDueDate: profile.estimatedDueDate || null,
                 }),
             });
             const json = await res.json();

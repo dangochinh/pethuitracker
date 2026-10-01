@@ -44,14 +44,25 @@ export async function POST(request) {
             }
         }
 
+        let mode = body.mode;
+        let estimatedDueDate = body.estimatedDueDate;
+
+        if (oldCode && (!mode || !estimatedDueDate)) {
+            const existing = await getBaby(code);
+            if (existing) {
+                if (!mode) mode = existing.mode;
+                if (!estimatedDueDate) estimatedDueDate = existing.estimatedDueDate;
+            }
+        }
+
         await createOrUpdateBaby(code, {
             name: body.name || '',
             gender: body.gender || '',
             dob: body.dob || null,
             avatar: avatar,
             telegramChatId: body.telegramChatId || '',
-            mode: body.mode || 'born',
-            estimatedDueDate: body.estimatedDueDate || null,
+            mode: mode || (estimatedDueDate ? 'pregnancy' : 'born'),
+            estimatedDueDate: estimatedDueDate || null,
         });
 
         return NextResponse.json({ success: true, data: body });

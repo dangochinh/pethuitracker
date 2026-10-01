@@ -3,45 +3,93 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import InfoModal from './components/InfoModal';
-import AuthFlow from './components/AuthFlow';
-import UserDashboard from './components/UserDashboard';
-import { FaBaby } from 'react-icons/fa';
+import ProfileSetup from './components/ProfileSetup';
+import { FaBaby, FaPlus, FaTimes } from 'react-icons/fa';
 import packageJson from '../package.json';
 
 export default function Home() {
   const APP_VERSION = packageJson.version;
   const [showInfo, setShowInfo] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
+  
+  const [code, setCode] = useState('');
+  const [savedBabies, setSavedBabies] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
+  
   const cardRef = useRef(null);
   const router = useRouter();
 
   useEffect(() => {
     if (sessionStorage.getItem('pe_thui_logout')) {
       sessionStorage.removeItem('pe_thui_logout');
-      return;
     }
 
-    const savedUser = localStorage.getItem('pe_thui_user');
-    if (savedUser) {
+    // Load saved baby codes from local storage
+    const loadBabies = async () => {
+      let codes = [];
       try {
-        setUser(JSON.parse(savedUser));
+        const stored = localStorage.getItem('pe_thui_babies');
+        if (stored) codes = JSON.parse(stored);
       } catch (e) {
-        localStorage.removeItem('pe_thui_user');
+        // Handle legacy case
+        const legacy = localStorage.getItem('pe_thui_last_code');
+        if (legacy) codes = [legacy];
       }
-    } else {
-      // Legacy redirect
-      const savedCode = localStorage.getItem('pe_thui_last_code');
-      if (savedCode) {
-        setRedirecting(true);
-        router.replace(`/${savedCode}`);
+
+      if (codes.length === 0) return;
+
+      // Automatically fetch basic info for these babies
+      const results = [];
+      for (const c of codes) {
+        try {
+          const res = await fetch(`/api/profile?code=${c}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.profile) {
+              results.push({ code: c, ...data.profile });
+            }
+          }
+        } catch(e) {}
       }
-    }
+      setSavedBabies(results);
+    };
+
+    loadBabies();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('pe_thui_user');
-    setUser(null);
+  const formatCode = (str) => {
+    const noAccents = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    const alphanumeric = noAccents.replace(/[^a-zA-Z0-9.]/g, '');
+    return alphanumeric.toUpperCase().slice(0, 30);
+  };
+
+  const handleEnterCode = (e) => {
+    e.preventDefault();
+    if (code) {
+      saveCodeAndRedirect(code);
+    }
+  };
+
+  const saveCodeAndRedirect = (c) => {
+    try {
+      const stored = localStorage.getItem('pe_thui_babies');
+      let codes = stored ? JSON.parse(stored) : [];
+      if (!codes.includes(c)) {
+        codes.push(c);
+        localStorage.setItem('pe_thui_babies', JSON.stringify(codes));
+      }
+      localStorage.setItem('pe_thui_last_code', c); // For backward compatibility
+    } catch (e) {}
+    router.push(`/${c}`);
+  };
+
+  const handleRemoveSaved = (e, c) => {
+    e.stopPropagation();
+    if (!confirm('Bạn có chắc muốn xoá bé này khỏi danh sách truy cập nhanh?')) return;
+    const newBabies = savedBabies.filter(b => b.code !== c);
+    setSavedBabies(newBabies);
+    localStorage.setItem('pe_thui_babies', JSON.stringify(newBabies.map(b => b.code)));
   };
 
   if (redirecting) {
@@ -55,9 +103,13 @@ export default function Home() {
     );
   }
 
+  if (isCreating) {
+    return <ProfileSetup onComplete={(newCode) => saveCodeAndRedirect(newCode)} />;
+  }
+
   return (
     <div className="min-h-screen bg-pink-50 relative flex flex-col justify-center overflow-x-hidden overflow-y-auto login-scroll">
-      <div className="flex-1 w-full flex flex-col items-center justify-center p-6 py-12 pb-[10vh] md:pb-12">
+      <div className={`flex-1 w-full flex flex-col items-center justify-center p-6 py-12 ${isFocused ? 'pb-[24vh]' : 'pb-8'} md:pb-12`}>
         <div className="absolute top-0 left-0 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
 
@@ -68,12 +120,72 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-gray-800 mb-2 tracking-tight">Pe Thúi Tracker</h1>
           <p className="text-gray-500 text-sm mb-8 font-medium">Lưu giữ hành trình khôn lớn</p>
 
-          {user ? (
-            <UserDashboard user={user} onLogout={handleLogout} />
-          ) : (
-            <AuthFlow onLoginSuccess={(u) => setUser(u)} />
+          {/* List of previously saved babies */}
+          {savedBabies.length > 0 && (
+            <div className="mb-6 space-y-3">
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-left px-1">Truy cập nhanh</p>
+              {savedBabies.map(baby => (
+                <button
+                    key={baby.code}
+                    onClick={() => saveCodeAndRedirect(baby.code)}
+                    className="w-full bg-white border border-gray-100 shadow-sm p-3 rounded-2xl flex items-center gap-3 hover:border-pink-200 hover:shadow-md transition-all active:scale-95 text-left relative group"
+                >
+                    {baby.avatar ? (
+                        <img src={baby.avatar} alt="avatar" className="w-12 h-12 rounded-full object-cover border-2 border-pink-100" />
+                    ) : (
+                        <div className="w-12 h-12 bg-gradient-to-br from-pink-100 to-purple-100 rounded-full flex items-center justify-center text-pink-400 border-2 border-white shadow-sm shrink-0">
+                            <FaBaby size={20} />
+                        </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-gray-800 text-base truncate">{baby.name}</h3>
+                        <p className="text-[11px] text-gray-500 font-medium truncate">Mã: {baby.code}</p>
+                    </div>
+                    
+                    <div 
+                      onClick={(e) => handleRemoveSaved(e, baby.code)}
+                      className="w-8 h-8 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-colors shrink-0"
+                    >
+                      <FaTimes />
+                    </div>
+                </button>
+              ))}
+            </div>
           )}
 
+          <form onSubmit={handleEnterCode} className="space-y-4">
+            <div className="relative group">
+              <input
+                type="text"
+                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 focus:outline-none focus:ring-4 focus:ring-pink-100 focus:border-pink-300 transition-all font-medium text-center uppercase tracking-widest placeholder-gray-400 placeholder:normal-case placeholder:tracking-normal focus:placeholder-transparent"
+                placeholder={savedBabies.length > 0 ? "Nhập mã bé khác..." : "Nhập mã của bé..."}
+                value={code}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                onChange={(e) => setCode(formatCode(e.target.value))}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={!code}
+              onMouseDown={(e) => e.preventDefault()}
+              className="w-full cute-button-primary py-4 text-lg disabled:opacity-50 shadow-md hover:shadow-lg transition-all"
+            >
+              Vào trang / Tra cứu
+            </button>
+          </form>
+
+          <div className="mt-8 relative flex items-center justify-center">
+            <div className="border-t border-gray-200 w-full absolute"></div>
+            <span className="bg-white px-4 text-xs font-bold text-gray-400 relative z-10 uppercase tracking-wider">Hoặc</span>
+          </div>
+
+          <button
+            onClick={() => setIsCreating(true)}
+            className="w-full mt-6 py-4 rounded-2xl font-bold border-2 border-pink-200 text-pink-500 hover:bg-pink-50 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2"
+          >
+            <FaPlus /> Tạo hồ sơ mới
+          </button>
         </div>
 
         <p className="mt-6 text-[10px] text-primary/50 font-bold tracking-wide relative z-10 text-center">

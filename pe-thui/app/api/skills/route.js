@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGoogleSheets, SHEET_ID } from '../../lib/google-sheets';
+import { getMasterMilestones } from '../../lib/db';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -181,39 +181,23 @@ function pickDescriptionCell(row, headers, preferredIndex, titleText, blockedInd
 
 export async function GET() {
     try {
-        const sheets = await getGoogleSheets();
-        const spreadsheet = await sheets.spreadsheets.get({
-            spreadsheetId: SHEET_ID,
-        });
-
-        const masterSheet = resolveMasterSheetName(spreadsheet.data.sheets || []);
-        if (!masterSheet) {
+        const milestones = await getMasterMilestones();
+        if (!milestones || milestones.length === 0) {
             return NextResponse.json({
                 success: true,
                 data: {
-                    sourceSheet: null,
+                    sourceSheet: 'master_milestones',
                     sections: [],
                 },
             });
         }
 
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${masterSheet}!A1:Z`,
-        });
+        const headers = ['ID', 'Thang_Tuoi', 'Chu_De', 'Noi_dung_Fact'];
+        const rows = [
+            headers,
+            ...milestones.map(m => [m.id, m.ageRange, m.category, m.content])
+        ];
 
-        const rows = response.data.values || [];
-        if (rows.length < 2) {
-            return NextResponse.json({
-                success: true,
-                data: {
-                    sourceSheet: masterSheet,
-                    sections: [],
-                },
-            });
-        }
-
-        const headers = rows[0];
         const thangTuoiIdx = findColumnIndex(headers, ['thang_tuoi', 'thang tuoi', 'thangtuoi']);
         const ageLabelIdx = findColumnIndex(headers, ['age_label', 'độ tuổi', 'do tuoi', 'age group', 'nhóm tuổi']);
         const ageFromIdx = findColumnIndex(headers, ['age_from', 'tuoi_tu', 'from_month', 'min_month', 'tu bat dau']);

@@ -1,4 +1,4 @@
-import { getGoogleSheets, SHEET_ID } from '../../../lib/google-sheets';
+import { getAllBabies, getVaccineRecords, getPushSubscriptions, deletePushSubscription } from '../../../lib/db';
 import getWebPush from '../../../lib/web-push';
 import { sendTelegramMessage } from '../../../lib/telegram';
 import { VACCINES } from '../../../lib/data/vaccines';
@@ -53,134 +53,68 @@ function getMessageTemplate(babyName, vaccineName, daysLeft) {
 export async function GET(request) {
   // Verify cron secret
   const authHeader = request.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const results = { totalProfiles: 0, reminders: 0, pushSent: 0, pushFailed: 0, telegramSent: 0, errors: [] };
 
   try {
-    const sheets = await getGoogleSheets();
-
-    // 1. List all sheet tabs (each tab = one baby profile)
-    const spreadsheet = await sheets.spreadsheets.get({
-      spreadsheetId: SHEET_ID
-    });
-
-    const allSheets = spreadsheet.data.sheets.map(s => s.properties.title);
-    results.totalProfiles = allSheets.length;
+    const allBabies = await getAllBabies();
+    results.totalProfiles = allBabies.length;
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 2. Process each profile
-    for (const sheetName of allSheets) {
+    for (const baby of allBabies) {
       try {
-        // Read profile (A1:B5) + vaccine data (F7:I) + push subscriptions (K7:L)
-        const [profileResp, vaccineResp, pushResp] = await Promise.all([
-          sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${sheetName}!A1:B5`,
-          }).catch(() => ({ data: { values: [] } })),
-          sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${sheetName}!F7:I`,
-          }).catch(() => ({ data: { values: [] } })),
-          sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${sheetName}!K7:L`,
-          }).catch(() => ({ data: { values: [] } }))
+        const babyName = baby.name || baby.code;
+        const telegramChatId = baby.telegramChatId || '';
+
+        const [vaccines, pushSubscriptions] = await Promise.all([
+          getVaccineRecords(baby.code),
+          getPushSubscriptions(baby.code)
         ]);
 
-        const profileRows = profileResp.data.values || [];
-        const vaccineRows = vaccineResp.data.values || [];
-        const pushRows = pushResp.data.values || [];
-
-        const babyName = profileRows[0] ? profileRows[0][1] || sheetName : sheetName;
-        const telegramChatId = profileRows[4] ? profileRows[4][1] || '' : '';
-
-        // Build push subscriptions list
-        const pushSubscriptions = pushRows
-          .filter(row => row[0] && row[1])
-          .map(row => {
-            try {
-              const keys = JSON.parse(row[1]);
-              return { endpoint: row[0], keys };
-            } catch (e) {
-              return null;
-            }
-          })
-          .filter(Boolean);
-
-        // No notification channels configured — skip
         if (pushSubscriptions.length === 0 && !telegramChatId) {
           continue;
         }
 
-        // Check each vaccine record for scheduled dates
-        for (const row of vaccineRows) {
-          const vaccineId = row[0];
-          const completedDate = row[1]; // If has date = already vaccinated
-          const scheduledDate = row[2];
-
+        for (const vac of vaccines) {
           // Skip completed or no scheduled date
-          if (completedDate || !scheduledDate) continue;
+          if (vac.administeredDate || !vac.scheduledDate) continue;
 
-          const [year, month, day] = scheduledDate.split('-');
+          const [year, month, day] = vac.scheduledDate.split('-');
           const target = new Date(year, month - 1, day);
           target.setHours(0, 0, 0, 0);
           const diffDays = Math.round((target - today) / (1000 * 60 * 60 * 24));
 
-          // Check if this matches a reminder milestone
           if (!REMINDER_DAYS.includes(diffDays)) continue;
 
-          // Find vaccine name
-          const vaccineInfo = VACCINES.find(v => v.id === vaccineId);
-          const vaccineName = vaccineInfo ? vaccineInfo.name : vaccineId;
+          const vaccineInfo = VACCINES.find(v => v.id === vac.vaccineId);
+          const vaccineName = vaccineInfo ? vaccineInfo.name : vac.vaccineId;
 
           const msg = getMessageTemplate(babyName, vaccineName, diffDays);
           if (!msg) continue;
 
           results.reminders++;
 
-          // Send Web Push to all subscriptions
-          const expiredEndpoints = [];
+          // Send Web Push
           for (const sub of pushSubscriptions) {
             try {
               await getWebPush().sendNotification(sub, JSON.stringify({
                 title: msg.title,
                 body: msg.body,
-                tag: `vaccine-${vaccineId}-${diffDays}`,
-                url: `/${sheetName}`
+                tag: `vaccine-${vac.vaccineId}-${diffDays}`,
+                url: `/${baby.code}`
               }));
               results.pushSent++;
             } catch (pushErr) {
               results.pushFailed++;
-              // 410 Gone or 404 = subscription expired
               if (pushErr.statusCode === 410 || pushErr.statusCode === 404) {
-                expiredEndpoints.push(sub.endpoint);
+                // Subscription has expired or is invalid — remove it
+                await deletePushSubscription(baby.code, sub.endpoint).catch(() => {});
               }
-            }
-          }
-
-          // Cleanup expired subscriptions
-          if (expiredEndpoints.length > 0) {
-            try {
-              const remaining = pushRows.filter(row => !expiredEndpoints.includes(row[0]));
-              await sheets.spreadsheets.values.clear({
-                spreadsheetId: SHEET_ID,
-                range: `${sheetName}!K7:L`,
-              });
-              if (remaining.length > 0) {
-                await sheets.spreadsheets.values.update({
-                  spreadsheetId: SHEET_ID,
-                  range: `${sheetName}!K7:L`,
-                  valueInputOption: 'USER_ENTERED',
-                  requestBody: { values: remaining }
-                });
-              }
-            } catch (e) {
-              // Non-critical, continue
             }
           }
 
@@ -189,23 +123,23 @@ export async function GET(request) {
             try {
               await sendTelegramMessage(telegramChatId, msg.telegramText);
               results.telegramSent++;
-            } catch (teleErr) {
-              results.errors.push(`Telegram error for ${sheetName}: ${teleErr.message}`);
+            } catch (tgErr) {
+              results.errors.push(`Telegram to ${baby.code} failed: ${tgErr.message}`);
             }
           }
         }
-      } catch (sheetErr) {
-        results.errors.push(`Error processing ${sheetName}: ${sheetErr.message}`);
+      } catch (err) {
+        results.errors.push(`Error processing ${baby.code}: ${err.message}`);
       }
     }
 
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),
-      ...results
+      results
     });
   } catch (err) {
-    console.error('Cron job error:', err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    console.error('Vaccine reminder cron error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

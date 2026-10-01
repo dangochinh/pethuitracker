@@ -1,4 +1,4 @@
-import { getGoogleSheets, SHEET_ID } from '../../lib/google-sheets';
+import { getTeethingRecords, saveTeethingRecord, deleteTeethingRecord } from '../../lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -7,28 +7,17 @@ export async function GET(request) {
         const code = searchParams.get('code');
         if (!code) return NextResponse.json({ success: true, data: [] });
 
-        const sheets = await getGoogleSheets();
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!J7:L`, // Teething data in J:L
-        });
-
-        const rows = response.data.values;
-        if (!rows || rows.length === 0) {
-            return NextResponse.json({ success: true, data: [] });
-        }
-
-        const data = rows
-            .map((row, index) => ({
-                id: index + 7,
-                toothId: row[0],
-                date: row[1],
-                note: row[2] || ''
-            }))
-            .filter(d => d.toothId);
+        const raw = await getTeethingRecords(code);
+        const data = raw.map(d => ({
+            id: d.toothId,
+            toothId: d.toothId,
+            date: d.eruptedDate || '',
+            note: d.notes || '',
+        }));
 
         return NextResponse.json({ success: true, data });
     } catch (err) {
+        console.error('API Error in /api/teeth GET:', err);
         return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
 }
@@ -39,58 +28,19 @@ export async function POST(request) {
         const { code, toothId, date, note } = body;
         if (!code || !toothId) throw new Error('Missing code or toothId');
 
-        const sheets = await getGoogleSheets();
-        
-        // Ensure header exists
-        await sheets.spreadsheets.values.update({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!J6:L6`,
-            valueInputOption: 'USER_ENTERED',
-            requestBody: {
-                values: [['ToothID', 'Ngày mọc', 'Ghi chú']]
-            }
+        await saveTeethingRecord(code, {
+            toothId,
+            eruptedDate: date || '',
+            notes: note || '',
         });
-
-        const newRow = [toothId, date, note || ''];
-
-        // Check if a record already exists for this toothId
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!J7:L`,
-        });
-
-        const rows = response.data.values || [];
-        const existingRowIndex = rows.findIndex(row => row[0] === toothId);
-
-        if (existingRowIndex >= 0) {
-            // Update existing row
-            const rowNumber = existingRowIndex + 7;
-            await sheets.spreadsheets.values.update({
-                spreadsheetId: SHEET_ID,
-                range: `${code}!J${rowNumber}:L${rowNumber}`,
-                valueInputOption: 'USER_ENTERED',
-                requestBody: {
-                    values: [newRow]
-                }
-            });
-        } else {
-            // Add as new row at the end
-            const rowNumber = rows.length + 7;
-            await sheets.spreadsheets.values.update({
-                spreadsheetId: SHEET_ID,
-                range: `${code}!J${rowNumber}:L${rowNumber}`,
-                valueInputOption: 'USER_ENTERED',
-                requestBody: {
-                    values: [newRow]
-                }
-            });
-        }
 
         return NextResponse.json({ success: true, data: body });
     } catch (err) {
+        console.error('API Error in /api/teeth POST:', err);
         return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
 }
+
 export async function DELETE(request) {
     try {
         const { searchParams } = new URL(request.url);
@@ -98,42 +48,10 @@ export async function DELETE(request) {
         const toothId = searchParams.get('toothId');
         if (!code || !toothId) throw new Error('Missing code or toothId');
 
-        const sheets = await getGoogleSheets();
-        
-        // Get current values
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!J7:L`,
-        });
-
-        const rows = response.data.values;
-        if (!rows || rows.length === 0) {
-            return NextResponse.json({ success: true, message: 'No records to delete' });
-        }
-
-        // Filter out the row with the matching toothId
-        const remainingRows = rows.filter(row => row[0] !== toothId);
-
-        // Clear the range
-        await sheets.spreadsheets.values.clear({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!J7:L`,
-        });
-
-        // Update with remaining rows
-        if (remainingRows.length > 0) {
-            await sheets.spreadsheets.values.update({
-                spreadsheetId: SHEET_ID,
-                range: `${code}!J7:L`,
-                valueInputOption: 'USER_ENTERED',
-                requestBody: {
-                    values: remainingRows
-                }
-            });
-        }
-
+        await deleteTeethingRecord(code, toothId);
         return NextResponse.json({ success: true, deleted: toothId });
     } catch (err) {
+        console.error('API Error in /api/teeth DELETE:', err);
         return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
 }

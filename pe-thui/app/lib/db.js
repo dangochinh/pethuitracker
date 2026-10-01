@@ -16,6 +16,8 @@ export async function getBaby(code) {
         dob: data.dob || '',
         avatar: data.avatar || '',
         telegramChatId: data.telegramChatId || '',
+        mode: data.mode || 'born',
+        estimatedDueDate: data.estimatedDueDate || null,
     };
 }
 
@@ -37,6 +39,8 @@ export async function createOrUpdateBaby(code, data) {
         dob: data.dob || '',
         avatar: data.avatar || '',
         telegramChatId: data.telegramChatId || '',
+        mode: data.mode || 'born',
+        estimatedDueDate: data.estimatedDueDate || null,
         updatedAt: new Date(),
     }, { merge: true });
 }

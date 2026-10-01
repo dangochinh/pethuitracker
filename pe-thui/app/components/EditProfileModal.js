@@ -22,6 +22,8 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
     const [dob, setDob] = useState(profile.dob || '');
     const [avatar, setAvatar] = useState(profile.avatar || '');
     const [telegramChatId] = useState(profile.telegramChatId || '');
+    const [mode, setMode] = useState(profile.mode || 'born');
+    const [estimatedDueDate, setEstimatedDueDate] = useState(profile.estimatedDueDate || '');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
@@ -124,7 +126,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (!name || !dob || !newCode) {
+        if (!newCode || (mode === 'born' && (!name || !dob)) || (mode === 'pregnancy' && (!name || !estimatedDueDate))) {
             setError('Vui lòng nhập đủ thông tin!');
             return;
         }
@@ -134,7 +136,17 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
             const res = await fetch('/api/profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: newCode, oldCode: code, name, gender, dob, avatar, telegramChatId })
+                body: JSON.stringify({ 
+                    code: newCode, 
+                    oldCode: code, 
+                    name, 
+                    gender, 
+                    dob: mode === 'born' ? dob : null, 
+                    avatar, 
+                    telegramChatId,
+                    mode,
+                    estimatedDueDate: mode === 'pregnancy' ? estimatedDueDate : null
+                })
             });
 
             const json = await res.json();
@@ -234,15 +246,47 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Ngày sinh</label>
-                                <input
-                                    type="date"
-                                    className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
-                                    value={dob}
-                                    onChange={(e) => setDob(e.target.value)}
-                                />
+                            <div className="space-y-1.5 mt-4">
+                                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Tình trạng</label>
+                                <div className="flex bg-surface-container rounded-2xl p-1 mb-2">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setMode('born')}
+                                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${mode === 'born' ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-surface'}`}
+                                    >
+                                        👶 Đã sinh bé
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setMode('pregnancy')}
+                                        className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${mode === 'pregnancy' ? 'bg-white shadow-sm text-pink-500' : 'text-on-surface-variant hover:text-on-surface'}`}
+                                    >
+                                        🤰 Đang mang thai
+                                    </button>
+                                </div>
                             </div>
+
+                            {mode === 'born' ? (
+                                <div className="space-y-1.5 mt-4">
+                                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Ngày sinh của bé</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm"
+                                        value={dob}
+                                        onChange={(e) => setDob(e.target.value)}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="space-y-1.5 mt-4">
+                                    <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Ngày dự sinh</label>
+                                    <input
+                                        type="date"
+                                        className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-sm text-pink-600"
+                                        value={estimatedDueDate}
+                                        onChange={(e) => setEstimatedDueDate(e.target.value)}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
 

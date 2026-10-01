@@ -1,4 +1,11 @@
-import { getGoogleSheets, SHEET_ID, getSheetExists } from '../../../lib/google-sheets';
+import {
+  checkBabyExists,
+  getBaby,
+  getBabyByTelegramChatId,
+  createOrUpdateBaby,
+  getVaccineRecords,
+  addGrowthRecord
+} from '../../../lib/db';
 import { sendTelegramMessage } from '../../../lib/telegram';
 import { NextResponse } from 'next/server';
 
@@ -25,14 +32,13 @@ function getVaccineName(id) {
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  // Handle various formats (DD/MM/YYYY, YYYY-MM-DD, etc.)
   try {
     const parts = dateStr.includes('/') ? dateStr.split('/') : dateStr.split('-');
     if (parts.length === 3) {
       if (dateStr.includes('/')) {
-        return `${parts[0]}/${parts[1]}/${parts[2]}`; // DD/MM/YYYY
+        return `${parts[0]}/${parts[1]}/${parts[2]}`;
       } else {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`; // YYYY-MM-DD → DD/MM/YYYY
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
       }
     }
     return dateStr;
@@ -45,9 +51,9 @@ function parseDate(dateStr) {
     const parts = dateStr.includes('/') ? dateStr.split('/') : dateStr.split('-');
     if (parts.length === 3) {
       if (dateStr.includes('/')) {
-        return new Date(parts[2], parts[1] - 1, parts[0]); // DD/MM/YYYY
+        return new Date(parts[2], parts[1] - 1, parts[0]);
       } else {
-        return new Date(parts[0], parts[1] - 1, parts[2]); // YYYY-MM-DD
+        return new Date(parts[0], parts[1] - 1, parts[2]);
       }
     }
     return null;
@@ -61,40 +67,6 @@ function daysUntil(dateStr) {
   now.setHours(0, 0, 0, 0);
   d.setHours(0, 0, 0, 0);
   return Math.round((d - now) / (1000 * 60 * 60 * 24));
-}
-
-// Lookup code linked to a chatId — scan all sheets with this chatId
-async function findCodeByChatId(sheets, chatId) {
-  try {
-    // Get all sheet names
-    const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID });
-    const sheetNames = meta.data.sheets
-      .map(s => s.properties.title)
-      .filter(t => t !== 'Template' && t !== 'README');
-
-    if (sheetNames.length === 0) return null;
-
-    // Use batchGet to fetch A1:B5 of all sheets in a single API call (much faster, prevents Vercel 10s timeout)
-    const ranges = sheetNames.map(name => `${name}!A1:B5`);
-    const batchResp = await sheets.spreadsheets.values.batchGet({
-      spreadsheetId: SHEET_ID,
-      ranges,
-    });
-
-    const valueRanges = batchResp.data.valueRanges || [];
-    for (let i = 0; i < valueRanges.length; i++) {
-      const rows = valueRanges[i].values || [];
-      // rows[4] is A5:B5 (Telegram Chat ID)
-      if (rows[4] && rows[4][1] === String(chatId)) {
-        const babyName = rows[0] ? rows[0][1] || 'b\u00e9' : 'b\u00e9';
-        const dob = rows[2] ? rows[2][1] || '' : '';
-        return { code: sheetNames[i], babyName, dob };
-      }
-    }
-    return null;
-  } catch (e) {
-    return null;
-  }
 }
 
 export async function POST(request) {
@@ -127,7 +99,7 @@ export async function POST(request) {
       }
 
       const code = parts[1].toUpperCase();
-      const exists = await getSheetExists(code);
+      const exists = await checkBabyExists(code);
       if (!exists) {
         await sendTelegramMessage(chatId,
           `❌ Không tìm thấy mã <b>${code}</b>.\n\n` +
@@ -136,21 +108,11 @@ export async function POST(request) {
         return NextResponse.json({ ok: true });
       }
 
-      const sheets = await getGoogleSheets();
-      const profileResp = await sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: `${code}!A1:B5`,
-      });
-      const rows = profileResp.data.values || [];
-      const babyName = rows[0] ? rows[0][1] || 'bé' : 'bé';
+      const baby = await getBaby(code);
+      const babyName = baby?.name || 'bé';
 
-      // Save
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: SHEET_ID,
-        range: `${code}!A5:B5`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [['Telegram Chat ID', String(chatId)]] }
-      });
+      // Save telegramChatId
+      await createOrUpdateBaby(code, { telegramChatId: String(chatId) });
 
       await sendTelegramMessage(chatId,
         `✅ Liên kết thành công!\n\n` +
@@ -169,8 +131,7 @@ export async function POST(request) {
     // /lichtiêm or /lichtiem — Xem lịch hẹn sắp tới
     // ==========================================
     if (text.startsWith('/lichti') || text.startsWith('/lich') || text === '/lt') {
-      const sheets = await getGoogleSheets();
-      const profile = await findCodeByChatId(sheets, chatId);
+      const profile = await getBabyByTelegramChatId(chatId);
 
       if (!profile) {
         await sendTelegramMessage(chatId,
@@ -179,24 +140,16 @@ export async function POST(request) {
         return NextResponse.json({ ok: true });
       }
 
-      const { code, babyName } = profile;
+      const { code, name: babyName } = profile;
+      const vaccines = await getVaccineRecords(code);
 
-      // Read vaccine records
-      const vaccResp = await sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: `${code}!F7:I`,
-      });
-      const vaccRows = vaccResp.data.values || [];
-
-      // Find upcoming (has scheduledDate, no completed date, or scheduledDate in future)
-      const upcoming = vaccRows
-        .filter(row => row[0] && row[2]) // has vaccineId AND scheduledDate
-        .filter(row => !row[1]) // NOT yet done (no date column)
-        .map(row => ({
-          name: getVaccineName(row[0]),
-          scheduledDate: row[2],
-          note: row[3] || '',
-          days: daysUntil(row[2])
+      const upcoming = vaccines
+        .filter(v => v.vaccineId && v.scheduledDate && !v.administeredDate)
+        .map(v => ({
+          name: getVaccineName(v.vaccineId),
+          scheduledDate: v.scheduledDate,
+          note: v.notes || '',
+          days: daysUntil(v.scheduledDate)
         }))
         .filter(v => v.days !== null)
         .sort((a, b) => a.days - b.days);
@@ -211,8 +164,7 @@ export async function POST(request) {
       }
 
       let msg = `📋 <b>Lịch tiêm sắp tới — ${babyName}</b>\n\n`;
-
-      upcoming.forEach((v, i) => {
+      upcoming.forEach((v) => {
         const icon = v.days <= 0 ? '🔴' : v.days <= 3 ? '🟡' : v.days <= 7 ? '🟢' : '⚪';
         const dayText = v.days === 0 ? '<b>HÔM NAY</b>' : v.days < 0 ? `<b>Quá hạn ${Math.abs(v.days)} ngày</b>` : `còn <b>${v.days}</b> ngày`;
         msg += `${icon} <b>${v.name}</b>\n`;
@@ -222,7 +174,6 @@ export async function POST(request) {
       });
 
       msg += `Tổng: <b>${upcoming.length}</b> mũi có lịch hẹn`;
-
       await sendTelegramMessage(chatId, msg);
       return NextResponse.json({ ok: true });
     }
@@ -231,8 +182,7 @@ export async function POST(request) {
     // /datiêm or /datiem — Xem mũi đã tiêm
     // ==========================================
     if (text.startsWith('/dati') || text.startsWith('/da') || text === '/dt') {
-      const sheets = await getGoogleSheets();
-      const profile = await findCodeByChatId(sheets, chatId);
+      const profile = await getBabyByTelegramChatId(chatId);
 
       if (!profile) {
         await sendTelegramMessage(chatId,
@@ -241,20 +191,14 @@ export async function POST(request) {
         return NextResponse.json({ ok: true });
       }
 
-      const { code, babyName } = profile;
-
-      const vaccResp = await sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: `${code}!F7:I`,
-      });
-      const vaccRows = vaccResp.data.values || [];
-
-      const done = vaccRows
-        .filter(row => row[0] && row[1]) // has vaccineId AND completed date
-        .map(row => ({
-          name: getVaccineName(row[0]),
-          date: row[1],
-          note: row[3] || ''
+      const { code, name: babyName } = profile;
+      const vaccines = await getVaccineRecords(code);
+      const done = vaccines
+        .filter(v => v.vaccineId && v.administeredDate)
+        .map(v => ({
+          name: getVaccineName(v.vaccineId),
+          date: v.administeredDate,
+          note: v.notes || ''
         }));
 
       if (done.length === 0) {
@@ -265,7 +209,7 @@ export async function POST(request) {
       }
 
       let msg = `💉 <b>Đã tiêm — ${babyName}</b>\n\n`;
-      done.forEach((v, i) => {
+      done.forEach((v) => {
         msg += `✅ <b>${v.name}</b> — ${formatDate(v.date)}\n`;
       });
       msg += `\nTổng: <b>${done.length}</b> mũi đã tiêm 🎉`;
@@ -278,8 +222,7 @@ export async function POST(request) {
     // /info — Thông tin bé
     // ==========================================
     if (text.startsWith('/info') || text === '/i') {
-      const sheets = await getGoogleSheets();
-      const profile = await findCodeByChatId(sheets, chatId);
+      const profile = await getBabyByTelegramChatId(chatId);
 
       if (!profile) {
         await sendTelegramMessage(chatId,
@@ -288,16 +231,7 @@ export async function POST(request) {
         return NextResponse.json({ ok: true });
       }
 
-      const { code, babyName } = profile;
-
-      const profileResp = await sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: `${code}!A1:B5`,
-      });
-      const rows = profileResp.data.values || [];
-      const name = rows[0]?.[1] || 'N/A';
-      const gender = rows[1]?.[1] || 'N/A';
-      const dob = rows[2]?.[1] || 'N/A';
+      const { code, name = 'N/A', gender = 'N/A', dob = 'N/A' } = profile;
 
       // Calculate age
       let ageText = '';
@@ -310,14 +244,9 @@ export async function POST(request) {
         ageText = years > 0 ? `${years} tuổi ${remainMonths} tháng` : `${months} tháng`;
       }
 
-      // Vaccine stats
-      const vaccResp = await sheets.spreadsheets.values.get({
-        spreadsheetId: SHEET_ID,
-        range: `${code}!F7:I`,
-      });
-      const vaccRows = vaccResp.data.values || [];
-      const totalDone = vaccRows.filter(r => r[0] && r[1]).length;
-      const totalScheduled = vaccRows.filter(r => r[0] && r[2] && !r[1]).length;
+      const vaccines = await getVaccineRecords(code);
+      const totalDone = vaccines.filter(v => v.vaccineId && v.administeredDate).length;
+      const totalScheduled = vaccines.filter(v => v.vaccineId && v.scheduledDate && !v.administeredDate).length;
 
       let msg = `👶 <b>Thông tin bé</b>\n\n`;
       msg += `📛 <b>Tên:</b> ${name}\n`;
@@ -357,9 +286,7 @@ export async function POST(request) {
         return NextResponse.json({ ok: true });
       }
 
-      const sheets = await getGoogleSheets();
-      const profile = await findCodeByChatId(sheets, chatId);
-
+      const profile = await getBabyByTelegramChatId(chatId);
       if (!profile) {
         await sendTelegramMessage(chatId,
           `❌ Bạn chưa liên kết tài khoản.\n\nGửi <b>/start MÃ_CODE</b> để bắt đầu.`
@@ -367,20 +294,19 @@ export async function POST(request) {
         return NextResponse.json({ ok: true });
       }
 
-      const { code, babyName, dob } = profile;
+      const { code, name: babyName, dob } = profile;
 
       let measureDate = new Date();
       if (dateStrInput) {
         const pDate = parseDate(dateStrInput);
         if (pDate) {
-           measureDate = pDate;
+          measureDate = pDate;
         } else {
-           await sendTelegramMessage(chatId, `❌ Định dạng ngày không hợp lệ. Vui lòng dùng định dạng DD/MM/YYYY.`);
-           return NextResponse.json({ ok: true });
+          await sendTelegramMessage(chatId, `❌ Định dạng ngày không hợp lệ. Vui lòng dùng định dạng DD/MM/YYYY.`);
+          return NextResponse.json({ ok: true });
         }
       }
 
-      // format to DD/MM/YYYY
       const dd = String(measureDate.getDate()).padStart(2, '0');
       const mm = String(measureDate.getMonth() + 1).padStart(2, '0');
       const yyyy = measureDate.getFullYear();
@@ -391,31 +317,16 @@ export async function POST(request) {
       if (dobDate) {
         ageMonths = (measureDate.getFullYear() - dobDate.getFullYear()) * 12 + (measureDate.getMonth() - dobDate.getMonth());
         if (measureDate.getDate() < dobDate.getDate()) {
-            ageMonths -= 1;
+          ageMonths -= 1;
         }
         ageMonths = Math.max(0, ageMonths);
       }
 
-      // Check header
-      const headerResp = await sheets.spreadsheets.values.get({ spreadsheetId: SHEET_ID, range: `${code}!A6:D6` });
-      if (!headerResp.data.values || headerResp.data.values.length === 0) {
-          await sheets.spreadsheets.values.update({
-              spreadsheetId: SHEET_ID,
-              range: `${code}!A6:D6`,
-              valueInputOption: 'USER_ENTERED',
-              requestBody: { values: [['Ngày đo', 'Tháng tuổi', 'Cân nặng', 'Chiều cao']] }
-          });
-      }
-
-      // Append
-      await sheets.spreadsheets.values.append({
-          spreadsheetId: SHEET_ID,
-          range: `${code}!A7:D`,
-          valueInputOption: 'USER_ENTERED',
-          insertDataOption: 'INSERT_ROWS',
-          requestBody: {
-              values: [[measureDateStr, ageMonths, weight, height]]
-          }
+      await addGrowthRecord(code, {
+        date: measureDateStr,
+        ageMonths,
+        weight,
+        height
       });
 
       await sendTelegramMessage(chatId,
@@ -432,15 +343,12 @@ export async function POST(request) {
     // ==========================================
     if (text.startsWith('/stop')) {
       const parts = text.split(' ');
-
-      // Try to find by chatId first
-      const sheets = await getGoogleSheets();
       let code;
 
       if (parts.length >= 2) {
         code = parts[1].toUpperCase();
       } else {
-        const profile = await findCodeByChatId(sheets, chatId);
+        const profile = await getBabyByTelegramChatId(chatId);
         if (profile) {
           code = profile.code;
         } else {
@@ -451,14 +359,9 @@ export async function POST(request) {
         }
       }
 
-      const exists = await getSheetExists(code);
+      const exists = await checkBabyExists(code);
       if (exists) {
-        await sheets.spreadsheets.values.update({
-          spreadsheetId: SHEET_ID,
-          range: `${code}!A5:B5`,
-          valueInputOption: 'USER_ENTERED',
-          requestBody: { values: [['Telegram Chat ID', '']] }
-        });
+        await createOrUpdateBaby(code, { telegramChatId: '' });
         await sendTelegramMessage(chatId,
           `✅ Đã ngừng nhắc lịch tiêm cho mã <b>${code}</b>.\n\nGửi /start ${code} nếu muốn bật lại.`
         );
@@ -475,14 +378,14 @@ export async function POST(request) {
       await sendTelegramMessage(chatId,
         `🤖 <b>Pe Thui Tracker Bot</b>\n\n` +
         `📋 <b>Các lệnh:</b>\n\n` +
-        `\u2022 /start M\u00c3_CODE \u2014 Li\u00ean k\u1ebft t\u00e0i kho\u1ea3n\n` +
-        `\u2022 /lichtiem \u2014 \ud83d\udcc5 Xem l\u1ecbch ti\u00eam s\u1eafp t\u1edbi\n` +
-        `\u2022 /datiem \u2014 \u2705 Xem m\u0169i \u0111\u00e3 ti\u00eam  \n` +
-        `\u2022 /info \u2014 \ud83d\udc76 Th\u00f4ng tin b\u00e9\n` +
-        `\u2022 /phattrien \u2014 \ud83d\udcc8 C\u1eadp nh\u1eadt chi\u1ec1u cao, c\u00e2n n\u1eb7ng\n` +
-        `\u2022 /stop \u2014 \ud83d\udd15 Ng\u1eebng nh\u1eadn th\u00f4ng b\u00e1o\n` +
-        `\u2022 /help \u2014 \u2753 Tr\u1ee3 gi\u00fap\n\n` +
-        `<b>Ph\u00edm t\u1eaft:</b> /lt /dt /i /pt /h`
+        `• /start MÃ_CODE — Liên kết tài khoản\n` +
+        `• /lichtiem — 📅 Xem lịch tiêm sắp tới\n` +
+        `• /datiem — ✅ Xem mũi đã tiêm\n` +
+        `• /info — 👶 Thông tin bé\n` +
+        `• /phattrien — 📈 Cập nhật chiều cao, cân nặng\n` +
+        `• /stop — 🔕 Ngừng nhận thông báo\n` +
+        `• /help — ❓ Trợ giúp\n\n` +
+        `<b>Phím tắt:</b> /lt /dt /i /pt /h`
       );
       return NextResponse.json({ ok: true });
     }
@@ -499,6 +402,6 @@ export async function POST(request) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('Telegram webhook error:', err);
-    return NextResponse.json({ ok: true }); // Always return 200 to Telegram
+    return NextResponse.json({ ok: true });
   }
 }

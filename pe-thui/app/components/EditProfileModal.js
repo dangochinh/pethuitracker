@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import TelegramLinkSection from './TelegramLinkSection';
+import AvatarUpload from './AvatarUpload';
 
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -19,8 +20,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
     const [name, setName] = useState(profile.name || '');
     const [gender, setGender] = useState(profile.gender || 'female');
     const [dob, setDob] = useState(profile.dob || '');
-    const [avatarUrl, setAvatarUrl] = useState(profile.avatar || '');
-    const [avatarValid, setAvatarValid] = useState(!!profile.avatar);
+    const [avatar, setAvatar] = useState(profile.avatar || '');
     const [telegramChatId] = useState(profile.telegramChatId || '');
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -134,7 +134,7 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
             const res = await fetch('/api/profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: newCode, oldCode: code, name, gender, dob, avatar: avatarUrl, telegramChatId })
+                body: JSON.stringify({ code: newCode, oldCode: code, name, gender, dob, avatar, telegramChatId })
             });
 
             const json = await res.json();
@@ -206,49 +206,11 @@ export default function EditProfileModal({ profile, code, onClose, onSave }) {
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Avatar URL</label>
-                                <div className="flex gap-3 items-start">
-                                    {/* Preview */}
-                                    <div className="w-14 h-14 shrink-0 rounded-2xl border-2 border-dashed border-outline-variant/40 bg-surface-container-lowest flex items-center justify-center overflow-hidden">
-                                        {avatarUrl ? (
-                                            avatarValid ? (
-                                                <img
-                                                    src={avatarUrl}
-                                                    alt="Avatar preview"
-                                                    className="w-full h-full object-cover rounded-xl"
-                                                    onError={() => setAvatarValid(false)}
-                                                />
-                                            ) : (
-                                                <span className="material-symbols-outlined text-error/40 text-xl">broken_image</span>
-                                            )
-                                        ) : (
-                                            <span className="material-symbols-outlined text-on-surface-variant/25 text-xl">person</span>
-                                        )}
-                                    </div>
-                                    <div className="flex-1 space-y-1">
-                                        <input
-                                            type="text"
-                                            className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface text-xs"
-                                            placeholder="Paste link ảnh vào đây..."
-                                            value={avatarUrl}
-                                            onChange={(e) => {
-                                                setAvatarUrl(e.target.value);
-                                                setAvatarValid(true); // reset validation on new input
-                                            }}
-                                        />
-                                        <p className="text-[9px] text-on-surface-variant/50 font-medium ml-1 leading-snug">
-                                            Upload lên <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer" className="text-primary/70 font-bold hover:underline">imgur.com</a> → copy link → paste vào đây
-                                        </p>
-                                    </div>
-                                </div>
-                                {avatarUrl && !avatarValid && (
-                                    <p className="text-[10px] text-error/70 font-bold ml-1 flex items-center gap-1">
-                                        <span className="material-symbols-outlined text-xs">warning</span>
-                                        Link ảnh không hợp lệ hoặc không tải được
-                                    </p>
-                                )}
-                            </div>
+                            <AvatarUpload
+                                value={avatar}
+                                onChange={setAvatar}
+                                disabled={saving}
+                            />
 
                             <div className="space-y-1.5">
                                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Giới tính</label>

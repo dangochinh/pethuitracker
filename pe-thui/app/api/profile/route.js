@@ -1,4 +1,4 @@
-import { getGoogleSheets, SHEET_ID, getSheetExists, createNewSheet, renameSheet } from '../../lib/google-sheets';
+import { getBaby, createOrUpdateBaby, renameBabyCode } from '../../lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -7,34 +7,12 @@ export async function GET(request) {
         const code = searchParams.get('code');
         if (!code) return NextResponse.json({ success: true, data: null });
 
-        const exists = await getSheetExists(code);
-        if (!exists) return NextResponse.json({ success: true, data: null });
-
-        const sheets = await getGoogleSheets();
-        const response = await sheets.spreadsheets.values.get({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!A1:B5`, // Row 1 to 5 (includes Telegram Chat ID)
-        });
-
-        const rows = response.data.values;
-        if (!rows || rows.length < 3) {
-            return NextResponse.json({ success: true, data: null });
-        }
-
-        const profile = {
-            name: rows[0] ? rows[0][1] || '' : '',
-            gender: rows[1] ? rows[1][1] || '' : '',
-            dob: rows[2] ? rows[2][1] || '' : '',
-            avatar: rows[3] ? rows[3][1] || '' : '',
-            telegramChatId: rows[4] ? rows[4][1] || '' : '',
-        };
-
+        const profile = await getBaby(code);
         return NextResponse.json({ success: true, data: profile });
     } catch (err) {
         console.error('API Error in /api/profile:', err);
         return NextResponse.json({ success: false, error: err.message }, { status: 500 });
     }
-
 }
 
 export async function POST(request) {
@@ -45,38 +23,37 @@ export async function POST(request) {
         if (!code) throw new Error('Code is required');
 
         if (oldCode && oldCode !== code) {
-            // Check if new code already exists
-            const newExists = await getSheetExists(code);
-            if (newExists) {
-                return NextResponse.json({ success: false, error: 'Mã code này đã được sử dụng bởi người khác!' }, { status: 400 });
-            }
-            await renameSheet(oldCode, code);
-        } else {
-            const exists = await getSheetExists(code);
-            if (!exists) {
-                await createNewSheet(code);
+            await renameBabyCode(oldCode, code);
+        }
+
+        let avatar = body.avatar || '';
+        // If an external URL is passed, fetch and convert to base64 data URI
+        if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+            try {
+                const res = await fetch(avatar, {
+                    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+                });
+                if (res.ok) {
+                    const buf = Buffer.from(await res.arrayBuffer());
+                    let mimeType = res.headers.get('content-type') || 'image/jpeg';
+                    mimeType = mimeType.split(';')[0].trim();
+                    avatar = `data:${mimeType};base64,${buf.toString('base64')}`;
+                }
+            } catch (fetchErr) {
+                console.warn('Could not fetch avatar URL server-side:', fetchErr.message);
             }
         }
 
-        const sheets = await getGoogleSheets();
-
-        const values = [
-            ['Tên bé', body.name || ''],
-            ['Giới tính', body.gender || ''],
-            ['Ngày sinh', body.dob || ''],
-            ['Avatar URL', body.avatar || ''],
-            ['Telegram Chat ID', body.telegramChatId || '']
-        ];
-
-        await sheets.spreadsheets.values.update({
-            spreadsheetId: SHEET_ID,
-            range: `${code}!A1:B5`,
-            valueInputOption: 'USER_ENTERED',
-            requestBody: { values }
+        await createOrUpdateBaby(code, {
+            name: body.name || '',
+            gender: body.gender || '',
+            dob: body.dob || '',
+            avatar: avatar,
+            telegramChatId: body.telegramChatId || '',
         });
 
         return NextResponse.json({ success: true, data: body });
     } catch (err) {
-        return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+        return NextResponse.json({ success: false, error: err.message }, { status: 400 });
     }
 }

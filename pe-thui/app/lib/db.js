@@ -39,7 +39,7 @@ export async function createOrUpdateBaby(code, data) {
         dob: data.dob || '',
         avatar: data.avatar || '',
         telegramChatId: data.telegramChatId || '',
-        mode: data.mode || 'born',
+        mode: data.mode || (data.estimatedDueDate ? 'pregnancy' : 'born'),
         estimatedDueDate: data.estimatedDueDate || null,
         updatedAt: new Date(),
     }, { merge: true });

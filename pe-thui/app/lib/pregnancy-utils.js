@@ -20,8 +20,25 @@ export function calculatePregnancyWeeks(eddString) {
     if (weeks >= 13 && weeks <= 26) trimester = 2;
     if (weeks >= 27) trimester = 3;
 
-    // Very rough estimates for fruit size, weight, length
-    const fruitMap = {
+    const fruitMap = getFruitMap();
+    const w = Math.min(Math.max(weeks, 4), 42);
+    const fruit = fruitMap[w] || fruitMap[4];
+
+    return {
+        weeks,
+        days,
+        totalDaysPassed,
+        daysRemaining,
+        trimester,
+        fruitName: fruit.name,
+        fruitEmoji: fruit.emoji,
+        estimatedWeight: fruit.weight,
+        estimatedLength: fruit.length
+    };
+}
+
+export function getFruitMap() {
+    return {
         4: { name: 'Hạt tiêu', emoji: '🌑', weight: 0.1, length: 0.2 },
         5: { name: 'Hạt vừng', emoji: '🌱', weight: 0.1, length: 0.3 },
         6: { name: 'Đậu lăng', emoji: '🥜', weight: 0.2, length: 0.6 },
@@ -39,7 +56,7 @@ export function calculatePregnancyWeeks(eddString) {
         18: { name: 'Quả ớt chuông', emoji: '🫑', weight: 190, length: 14.2 },
         19: { name: 'Quả cà chua heirloom', emoji: '🍅', weight: 240, length: 15.3 },
         20: { name: 'Quả chuối', emoji: '🍌', weight: 300, length: 16.4 },
-        21: { name: 'Củ cà rốt', emoji: '🥕', weight: 360, length: 26.7 }, // length measured head to heel from here
+        21: { name: 'Củ cà rốt', emoji: '🥕', weight: 360, length: 26.7 },
         22: { name: 'Quả đu đủ nhỏ', emoji: '🍈', weight: 430, length: 27.8 },
         23: { name: 'Quả xoài lớn', emoji: '🥭', weight: 501, length: 28.9 },
         24: { name: 'Bắp ngô', emoji: '🌽', weight: 600, length: 30.0 },
@@ -62,19 +79,10 @@ export function calculatePregnancyWeeks(eddString) {
         41: { name: 'Quả mít nhỏ', emoji: '🍈', weight: 3597, length: 51.7 },
         42: { name: 'Quả mít', emoji: '🍈', weight: 3685, length: 51.5 },
     };
+}
 
-    const w = Math.min(Math.max(weeks, 4), 42); // cap between 4 and 42 for lookup
-    const fruit = fruitMap[w] || fruitMap[4];
-
-    return {
-        weeks,
-        days,
-        totalDaysPassed,
-        daysRemaining,
-        trimester,
-        fruitName: fruit.name,
-        fruitEmoji: fruit.emoji,
-        estimatedWeight: fruit.weight,
-        estimatedLength: fruit.length
-    };
+export function getPregnancyWeekStats(weekNumber) {
+    const w = Math.min(Math.max(weekNumber, 4), 42);
+    const fruitMap = getFruitMap();
+    return fruitMap[w] || fruitMap[4];
 }

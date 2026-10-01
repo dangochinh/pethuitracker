@@ -17,6 +17,7 @@ import DevelopmentSkillsSection from './DevelopmentSkillsSection';
 import useBackHandler from '../hooks/useBackHandler';
 import ExitConfirmDialog from './ExitConfirmDialog';
 import NotificationBanner from './NotificationBanner';
+import PhotoJournal from './PhotoJournal';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
@@ -152,6 +153,8 @@ export default function Dashboard({ profile, code }) {
                 return <VaccineList dob={profile.dob} records={vaccineRecords} code={code} onSave={fetchAllData} />;
             case 'teething':
                 return <TeethingChart dob={profile.dob} records={teethingRecords} code={code} onSave={fetchAllData} />;
+            case 'journal':
+                return <PhotoJournal code={code} />;
             case 'home':
             default:
                 return (
@@ -200,7 +203,7 @@ export default function Dashboard({ profile, code }) {
                     {renderView()}
                 </div>
             </div>
-            {view !== 'teething' && view !== 'health' && (
+            {view !== 'teething' && view !== 'health' && view !== 'journal' && (
                 <button 
                     onClick={() => setShowAdd(true)}
                     className="fixed bottom-32 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-full shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-34"

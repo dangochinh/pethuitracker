@@ -19,6 +19,7 @@ import ExitConfirmDialog from './ExitConfirmDialog';
 import NotificationBanner from './NotificationBanner';
 import PhotoJournal from './PhotoJournal';
 import PregnancyHomeView from './PregnancyHomeView';
+import PregnancyCheckups from './PregnancyCheckups';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
@@ -151,6 +152,9 @@ export default function Dashboard({ profile, code }) {
             case 'growth':
                 return <GrowthCharts records={records} profile={profile} code={code} onBack={() => setView('home')} onEditRecord={setEditingRecord} />;
             case 'health':
+                if (profile.mode === 'pregnancy') {
+                    return <PregnancyCheckups profile={profile} code={code} />;
+                }
                 return <VaccineList dob={profile.dob} records={vaccineRecords} code={code} onSave={fetchAllData} />;
             case 'teething':
                 return <TeethingChart dob={profile.dob} records={teethingRecords} code={code} onSave={fetchAllData} />;

@@ -20,6 +20,8 @@ import NotificationBanner from './NotificationBanner';
 import PhotoJournal from './PhotoJournal';
 import PregnancyHomeView from './PregnancyHomeView';
 import PregnancyCheckups from './PregnancyCheckups';
+import PregnancyJournal from './PregnancyJournal';
+import PregnancyGrowth from './PregnancyGrowth';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
@@ -150,6 +152,9 @@ export default function Dashboard({ profile, code }) {
     const renderView = () => {
         switch (view) {
             case 'growth':
+                if (profile.mode === 'pregnancy') {
+                    return <PregnancyGrowth code={code} profile={profile} />;
+                }
                 return <GrowthCharts records={records} profile={profile} code={code} onBack={() => setView('home')} onEditRecord={setEditingRecord} />;
             case 'health':
                 if (profile.mode === 'pregnancy') {
@@ -159,6 +164,9 @@ export default function Dashboard({ profile, code }) {
             case 'teething':
                 return <TeethingChart dob={profile.dob} records={teethingRecords} code={code} onSave={fetchAllData} />;
             case 'journal':
+                if (profile.mode === 'pregnancy') {
+                    return <PregnancyJournal code={code} />;
+                }
                 return <PhotoJournal code={code} />;
             case 'home':
             default:

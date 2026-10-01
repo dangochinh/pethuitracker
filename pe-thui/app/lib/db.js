@@ -440,3 +440,49 @@ export async function deleteDiaper(code, id) {
     const db = getFirestore();
     await db.collection('babies').doc(code).collection('diapers').doc(id).delete();
 }
+
+// -------------------------------------------------------------
+// JOURNAL / MILESTONES
+// -------------------------------------------------------------
+
+export async function getJournalEntries(code) {
+    if (!code) return [];
+    const db = getFirestore();
+    const snap = await db.collection('babies').doc(code).collection('journal')
+        .orderBy('date', 'desc')
+        .get();
+        
+    return snap.docs.map(doc => {
+        const d = doc.data();
+        return {
+            id: doc.id,
+            date: d.date?.toDate?.() ? d.date.toDate().toISOString() : d.date,
+            photos: d.photos || [],
+            caption: d.caption || '',
+            tags: d.tags || [],
+            type: d.type || 'memory', // 'memory' | 'milestone'
+            milestoneId: d.milestoneId || null,
+        };
+    });
+}
+
+export async function addJournalEntry(code, entry) {
+    const db = getFirestore();
+    const col = db.collection('babies').doc(code).collection('journal');
+    const data = {
+        date: new Date(entry.date || Date.now()),
+        photos: entry.photos || [], // base64 strings
+        caption: entry.caption || '',
+        tags: entry.tags || [],
+        type: entry.type || 'memory',
+        milestoneId: entry.milestoneId || null,
+        createdAt: new Date(),
+    };
+    const docRef = await col.add(data);
+    return { id: docRef.id, ...entry };
+}
+
+export async function deleteJournalEntry(code, id) {
+    const db = getFirestore();
+    await db.collection('babies').doc(code).collection('journal').doc(id).delete();
+}

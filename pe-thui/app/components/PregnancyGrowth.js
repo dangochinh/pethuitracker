@@ -44,7 +44,14 @@ export default function PregnancyGrowth({ code, profile }) {
         }
     };
 
-    if (loading) return <div className="text-center py-10 opacity-50 font-bold">Đang tải hồ sơ...</div>;
+    if (loading) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
+                <div className="animate-bounce text-4xl mb-3">⚖️</div>
+                <p className="text-purple-600 font-bold tracking-wide animate-pulse">Đang tải hồ sơ...</p>
+            </div>
+        );
+    }
 
     const initialWeight = entries.length > 0 ? entries[0].weight : 0;
     const currentWeight = entries.length > 0 ? entries[entries.length - 1].weight : 0;

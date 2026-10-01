@@ -26,7 +26,14 @@ export default function PregnancyHomeView({ profile }) {
         }
     }, [stats]);
 
-    if (!stats || !selectedWeek) return <div className="text-center py-10 opacity-50 font-bold">Đang tải dữ liệu thai kỳ...</div>;
+    if (!stats || !selectedWeek) {
+        return (
+            <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
+                <div className="animate-bounce text-4xl mb-3">🤰</div>
+                <p className="text-purple-600 font-bold tracking-wide animate-pulse">Đang tải dữ liệu thai kỳ...</p>
+            </div>
+        );
+    }
 
     const weeks = Array.from({ length: 39 }, (_, i) => i + 4); // 4 to 42
     const selectedStats = getPregnancyWeekStats(selectedWeek);

@@ -65,8 +65,8 @@ export async function renameBabyCode(oldCode, newCode) {
     });
     batch.delete(oldRef);
 
-    // Copy subcollections: growth, vaccines, teeth, push_subscriptions
-    const subcols = ['growth', 'vaccines', 'teeth', 'push_subscriptions'];
+    // Copy subcollections: growth, vaccines, teeth, push_subscriptions, journal, feedings, sleeps, diapers
+    const subcols = ['growth', 'vaccines', 'teeth', 'push_subscriptions', 'journal', 'feedings', 'sleeps', 'diapers'];
     for (const sub of subcols) {
         const subSnap = await oldRef.collection(sub).get();
         for (const doc of subSnap.docs) {
@@ -464,8 +464,12 @@ export async function getJournalEntries(code) {
             photos: d.photos || [],
             caption: d.caption || '',
             tags: d.tags || [],
-            type: d.type || 'memory', // 'memory' | 'milestone'
+            type: d.type || 'memory', // 'memory' | 'milestone' | 'ultrasound'
             milestoneId: d.milestoneId || null,
+            fetalWeight: d.fetalWeight !== undefined ? d.fetalWeight : null,
+            heartRate: d.heartRate !== undefined ? d.heartRate : null,
+            gestationalAge: d.gestationalAge || '',
+            isUltrasound: d.isUltrasound || false,
         };
     });
 }
@@ -480,6 +484,10 @@ export async function addJournalEntry(code, entry) {
         tags: entry.tags || [],
         type: entry.type || 'memory',
         milestoneId: entry.milestoneId || null,
+        fetalWeight: entry.fetalWeight !== undefined && entry.fetalWeight !== null ? Number(entry.fetalWeight) : null,
+        heartRate: entry.heartRate !== undefined && entry.heartRate !== null ? Number(entry.heartRate) : null,
+        gestationalAge: entry.gestationalAge || '',
+        isUltrasound: !!entry.isUltrasound,
         createdAt: new Date(),
     };
     const docRef = await col.add(data);

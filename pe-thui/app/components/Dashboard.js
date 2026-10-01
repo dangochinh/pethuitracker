@@ -350,6 +350,9 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
                     <span className="material-symbols-outlined text-lg">dashboard</span>
                     Tổng quan
                 </h2>
+
+                <AiInsightsCard code={code} />
+
                 <div className="grid grid-cols-2 gap-4">
                     {/* Weight Card */}
                     <div onClick={() => setView('growth')} className="bg-white rounded-[2.5rem] p-5 flex flex-col items-center justify-center gap-2 shadow-sm border border-outline-variant/20 relative cursor-pointer overflow-hidden transition-transform active:scale-95 text-center min-h-[170px]">
@@ -400,6 +403,61 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
 
             <DevelopmentSkillsSection ageMonths={ageInfo.totalMonths} ageDays={ageInfo.days} />
         </main>
+    );
+}
+
+function AiInsightsCard({ code }) {
+    const [insight, setInsight] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const fetchInsight = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const res = await fetch(`/api/ai?code=${code}`);
+            const data = await res.json();
+            if (data.success) {
+                setInsight(data.insight);
+            } else {
+                setError(data.error || 'Có lỗi xảy ra');
+            }
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-100 rounded-[2rem] p-5 relative overflow-hidden">
+            <span className="absolute top-4 right-4 text-4xl opacity-10">✨</span>
+            <div className="flex items-center gap-2 mb-3">
+                <span className="material-symbols-outlined text-indigo-600">psychiatry</span>
+                <h3 className="font-headline font-bold text-indigo-900">Bác sĩ AI khuyên mẹ</h3>
+            </div>
+            
+            {insight ? (
+                <div className="text-sm text-indigo-900/80 leading-relaxed font-medium whitespace-pre-wrap">
+                    {insight}
+                </div>
+            ) : error ? (
+                <div className="text-sm text-red-500 font-medium">Lỗi: {error}</div>
+            ) : loading ? (
+                <div className="flex items-center gap-2 text-indigo-500 text-sm font-bold animate-pulse">
+                    <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                    Đang phân tích dữ liệu...
+                </div>
+            ) : (
+                <button
+                    onClick={fetchInsight}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 hover:bg-indigo-700 transition-colors"
+                >
+                    <span className="material-symbols-outlined text-sm">auto_awesome</span>
+                    Phân tích sinh hoạt hôm nay
+                </button>
+            )}
+        </div>
     );
 }
 

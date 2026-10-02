@@ -5,14 +5,21 @@ import {
     calculatePregnancyWeeks, 
     getPregnancyWeekStats, 
     getUpcomingCheckup, 
-    getWeeklyAdvice 
+    getWeeklyAdvice,
+    isLatePregnancy
 } from '../lib/pregnancy-utils';
 import KickCounter from './pregnancy/KickCounter';
 import HospitalBagChecklist from './pregnancy/HospitalBagChecklist';
+import ConvertBabyModal from './pregnancy/ConvertBabyModal';
+import LaborSignsModal from './pregnancy/LaborSignsModal';
+import LatePregnancyRemindModal from './pregnancy/LatePregnancyRemindModal';
 
 export default function PregnancyHomeView({ profile, code }) {
     const [stats, setStats] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
+    const [showConvertBabyModal, setShowConvertBabyModal] = useState(false);
+    const [showLaborSignsModal, setShowLaborSignsModal] = useState(false);
+    const [showLateRemindModal, setShowLateRemindModal] = useState(false);
     const timelineRef = useRef(null);
 
     // Drag-to-scroll refs (Desktop mouse & Touch)
@@ -28,6 +35,20 @@ export default function PregnancyHomeView({ profile, code }) {
             const current = calculatePregnancyWeeks(profile.estimatedDueDate);
             setStats(current);
             setSelectedWeek(current.weeks);
+
+            // Tự động kiểm tra nhắc nhở nếu vào giai đoạn cuối thai kỳ (>= 37 tuần hoặc <= 21 ngày)
+            if (isLatePregnancy(current.weeks, current.daysRemaining)) {
+                if (typeof window !== 'undefined') {
+                    const todayStr = new Date().toISOString().slice(0, 10);
+                    const dismissed = localStorage.getItem('pethui_late_pregnancy_dismissed');
+                    if (dismissed !== todayStr) {
+                        const t = setTimeout(() => {
+                            setShowLateRemindModal(true);
+                        }, 500);
+                        return () => clearTimeout(t);
+                    }
+                }
+            }
         }
     }, [profile?.estimatedDueDate]);
 
@@ -308,8 +329,107 @@ export default function PregnancyHomeView({ profile, code }) {
                 </div>
             </section>
 
+            {/* Late Pregnancy Alert Banner (khi >= 37 tuần hoặc <= 21 ngày) */}
+            {isLatePregnancy(stats.weeks, stats.daysRemaining) && (
+                <section className="bg-gradient-to-r from-[#861949]/10 via-pink-50 to-amber-50 rounded-[2.5rem] p-5 shadow-xs border border-[#861949]/20 text-left relative overflow-hidden">
+                    <div className="flex items-start gap-3.5">
+                        <div className="w-11 h-11 rounded-2xl bg-[#861949] text-white flex items-center justify-center shrink-0 shadow-sm shadow-[#861949]/30">
+                            <span className="material-symbols-outlined text-2xl">notifications_active</span>
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#861949] bg-white px-2 py-0.5 rounded-full border border-[#861949]/20">
+                                    Tuần cuối thai kỳ
+                                </span>
+                                <span className="text-xs font-bold text-gray-800">
+                                    {stats.daysRemaining <= 0 ? 'Đã đến ngày sinh!' : `Còn ~${stats.daysRemaining} ngày`}
+                                </span>
+                            </div>
+                            <h4 className="font-headline font-black text-sm text-gray-900 mt-1">
+                                Mẹ ơi, thiên thần nhỏ sắp chào đời!
+                            </h4>
+                            <p className="text-xs text-gray-600 mt-0.5 leading-relaxed">
+                                Đã đến lúc kiểm tra giỏ đồ sinh, ghi nhớ các dấu hiệu chuyển dạ thực sự và sẵn sàng chào đón bé yêu.
+                            </p>
+
+                            <div className="flex flex-wrap gap-2 mt-3.5">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowLaborSignsModal(true)}
+                                    className="px-3.5 py-2 rounded-xl bg-white hover:bg-pink-50 text-[#861949] font-headline font-bold text-xs flex items-center gap-1.5 border border-pink-200 shadow-xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">medical_services</span>
+                                    <span>Xem dấu hiệu chuyển dạ</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConvertBabyModal(true)}
+                                    className="px-3.5 py-2 rounded-xl bg-[#861949] hover:bg-[#6c123a] text-white font-headline font-bold text-xs flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95 transition-all"
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">celebration</span>
+                                    <span>Bé đã sinh? Chuyển hồ sơ</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Quick Action: Cẩm nang dấu hiệu chuyển dạ y khoa (Luôn có sẵn cho mẹ) */}
+            <section className="bg-white rounded-[2.5rem] p-5 shadow-sm border border-purple-100/80 flex items-center justify-between text-left">
+                <div className="flex items-center gap-3">
+                    <span className="w-10 h-10 rounded-2xl bg-teal-50 text-[#006972] flex items-center justify-center shadow-xs">
+                        <span className="material-symbols-outlined text-2xl">medical_information</span>
+                    </span>
+                    <div>
+                        <h4 className="font-headline font-bold text-sm text-gray-800">Cẩm nang chuyển dạ y khoa</h4>
+                        <p className="text-xs text-gray-500">Quy tắc 5-1-1, vỡ ối & dấu hiệu khẩn cấp</p>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    onClick={() => setShowLaborSignsModal(true)}
+                    className="px-3.5 py-1.5 rounded-full bg-teal-50 hover:bg-teal-100 text-[#006972] text-xs font-bold border border-teal-200/50 cursor-pointer active:scale-95 transition-all"
+                >
+                    Tra cứu
+                </button>
+            </section>
+
             {/* Card 6: Giỏ đồ đi sinh (Hospital Bag Checklist từ Stitch) */}
-            <HospitalBagChecklist />
+            <div id="hospital-bag-section">
+                <HospitalBagChecklist />
+            </div>
+
+            {/* Modals */}
+            {showLateRemindModal && (
+                <LatePregnancyRemindModal
+                    weeks={stats.weeks}
+                    daysRemaining={stats.daysRemaining}
+                    onClose={() => setShowLateRemindModal(false)}
+                    onOpenLaborSigns={() => setShowLaborSignsModal(true)}
+                    onOpenConvertBaby={() => setShowConvertBabyModal(true)}
+                />
+            )}
+
+            {showLaborSignsModal && (
+                <LaborSignsModal
+                    onClose={() => setShowLaborSignsModal(false)}
+                    onOpenHospitalBag={() => {
+                        const el = document.getElementById('hospital-bag-section');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                />
+            )}
+
+            {showConvertBabyModal && (
+                <ConvertBabyModal
+                    profile={profile}
+                    code={code}
+                    onClose={() => setShowConvertBabyModal(false)}
+                    onSuccess={() => window.location.reload()}
+                />
+            )}
         </div>
     );
 }

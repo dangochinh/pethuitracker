@@ -9,6 +9,7 @@ import {
     generateBackupDataPayload 
 } from '../../lib/profile-utils';
 import { formatBabyAge } from '../../lib/baby-utils';
+import ConvertBabyModal from '../pregnancy/ConvertBabyModal';
 
 export default function ProfileSettingsView({ profile, code, records = [], onEditProfile, onOpenShare }) {
     const router = useRouter();
@@ -16,6 +17,7 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
     const [copiedCode, setCopiedCode] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [showConvertBabyModal, setShowConvertBabyModal] = useState(false);
     
     // Reminders state
     const [reminders, setReminders] = useState({
@@ -223,11 +225,11 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                             <div className="flex items-center gap-1.5">
                                 <h4 className="font-headline font-bold text-sm text-gray-900">{profile?.name || 'Bé'}</h4>
                                 <span className="px-2 py-0.5 rounded-full bg-pink-100 text-[#861949] text-[9px] font-extrabold uppercase">
-                                    Đang chọn
+                                    {profile?.mode === 'pregnancy' ? 'Thai kỳ' : 'Đang chọn'}
                                 </span>
                             </div>
                             <p className="text-xs text-gray-500 mt-0.5">
-                                Mã: <span className="font-bold text-[#861949]">#{code}</span> • {babyAge.formatted}
+                                Mã: <span className="font-bold text-[#861949]">#{code}</span> • {profile?.mode === 'pregnancy' ? 'Hồ sơ mang thai' : babyAge.formatted}
                             </p>
                         </div>
                     </div>
@@ -236,11 +238,33 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                         type="button"
                         onClick={onEditProfile}
                         className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 active:scale-95 transition-all cursor-pointer"
-                        title="Chỉnh sửa hồ sơ bé"
+                        title="Chỉnh sửa hồ sơ"
                     >
                         <span className="material-symbols-outlined text-[18px]">edit</span>
                     </button>
                 </div>
+
+                {/* Quick Convert to Baby Profile if mode is pregnancy */}
+                {profile?.mode === 'pregnancy' && (
+                    <div className="bg-gradient-to-r from-pink-50 via-rose-50 to-amber-50 rounded-[2rem] p-4 border border-pink-200/80 flex items-center justify-between shadow-xs">
+                        <div className="flex items-center gap-3">
+                            <span className="w-10 h-10 rounded-2xl bg-[#861949] text-white flex items-center justify-center shrink-0 shadow-xs">
+                                <span className="material-symbols-outlined text-[20px]">celebration</span>
+                            </span>
+                            <div>
+                                <h4 className="font-headline font-bold text-xs sm:text-sm text-gray-900">Bé đã cất tiếng khóc?</h4>
+                                <p className="text-[11px] text-gray-500 mt-0.5">Chuyển sang theo dõi cữ bú, giấc ngủ & tiêm chủng</p>
+                            </div>
+                        </div>
+                        <button 
+                            type="button"
+                            onClick={() => setShowConvertBabyModal(true)}
+                            className="px-3.5 py-2 rounded-xl bg-[#861949] hover:bg-[#6c123a] text-white font-headline font-bold text-xs shrink-0 active:scale-95 transition-all shadow-xs cursor-pointer"
+                        >
+                            Chuyển đổi
+                        </button>
+                    </div>
+                )}
 
                 {/* Inactive Saved Profiles */}
                 {savedProfiles.filter(p => p.code !== code).map(p => (
@@ -455,6 +479,16 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                     Dữ liệu của bé được bảo mật an toàn trên máy chủ Firebase Cloud. Chỉ những ai có mã #{code} của bạn mới có thể truy cập.
                 </p>
             </div>
+
+            {/* Convert Baby Modal */}
+            {showConvertBabyModal && (
+                <ConvertBabyModal
+                    profile={profile}
+                    code={code}
+                    onClose={() => setShowConvertBabyModal(false)}
+                    onSuccess={() => window.location.reload()}
+                />
+            )}
         </div>
     );
 }

@@ -1,3 +1,5 @@
+import { ALL_WEEKS_ADVICE } from './data/pregnancy-guides.js';
+
 export function calculatePregnancyWeeks(eddString) {
     const edd = new Date(eddString);
     const today = new Date();
@@ -103,13 +105,17 @@ export function getUpcomingCheckup(w) {
 }
 
 export function getWeeklyAdvice(w) {
-    if (w < 13) {
+    const clampedWeek = Math.min(Math.max(Number(w) || 0, 0), 42);
+    if (ALL_WEEKS_ADVICE && ALL_WEEKS_ADVICE[clampedWeek]) {
+        return ALL_WEEKS_ADVICE[clampedWeek];
+    }
+    if (clampedWeek < 13) {
         return {
             diet: 'Bổ sung Axit Folic (400mcg/ngày), uống đủ 2L nước, chia nhỏ 5-6 bữa để giảm ốm nghén.',
             warning: 'Cần đến viện ngay nếu xuất hiện ra máu âm đạo, đau bụng dưới dữ dội hoặc nghén kiệt sức.'
         };
     }
-    if (w < 27) {
+    if (clampedWeek < 27) {
         return {
             diet: 'Bổ sung Canxi (1000-1200mg/ngày) và Sắt. Ăn thêm trứng, sữa, cá hồi và rau lá xanh đậm.',
             warning: 'Cảnh báo đau đầu dữ dội, hoa mắt, phù tay chân đột ngột (dấu hiệu tiền sản giật).'

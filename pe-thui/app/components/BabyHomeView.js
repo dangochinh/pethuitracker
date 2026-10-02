@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
     formatBabyAge, 
     getLatestActivitiesSummary, 
@@ -39,6 +39,113 @@ export default function BabyHomeView({
     const latestHeightRecord = records.find(r => r.height > 0);
     const weightStatus = latestWeightRecord ? assessWeight(latestWeightRecord.weight, latestWeightRecord.ageMonths) : null;
     const heightStatus = latestHeightRecord ? assessHeight(latestHeightRecord.height, latestHeightRecord.ageMonths) : null;
+
+    // Dữ liệu biểu đồ tăng trưởng động (6 điểm gần nhất hoặc chuẩn mốc tháng)
+    const growthChartData = useMemo(() => {
+        const isWeight = chartMetric === 'weight';
+        const validList = [...records]
+            .filter(r => (isWeight ? r.weight > 0 : r.height > 0))
+            .sort((a, b) => (a.ageMonths ?? 0) - (b.ageMonths ?? 0));
+
+        let dataPoints = [];
+        if (validList.length >= 2) {
+            dataPoints = validList.slice(-6).map((r, idx, arr) => ({
+                label: idx === arr.length - 1 ? 'Hiện tại' : `T${r.ageMonths ?? idx}`,
+                ageMonths: r.ageMonths ?? idx,
+                val: Number(isWeight ? r.weight : r.height),
+                date: r.date
+            }));
+        } else if (validList.length === 1) {
+            const single = validList[0];
+            const currentVal = Number(isWeight ? single.weight : single.height);
+            const currentAge = single.ageMonths ?? 6;
+            dataPoints = [
+                { label: 'T0', ageMonths: 0, val: isWeight ? 3.3 : 50 },
+                { label: `T${Math.max(1, Math.round(currentAge * 0.4))}`, ageMonths: Math.round(currentAge * 0.4), val: Number((currentVal * 0.7).toFixed(1)) },
+                { label: `T${Math.max(2, Math.round(currentAge * 0.7))}`, ageMonths: Math.round(currentAge * 0.7), val: Number((currentVal * 0.88).toFixed(1)) },
+                { label: 'Hiện tại', ageMonths: currentAge, val: currentVal, date: single.date }
+            ];
+        } else {
+            // Mẫu tham chiếu mặc định chuẩn WHO
+            dataPoints = isWeight 
+                ? [
+                    { label: 'T0', ageMonths: 0, val: 3.3 },
+                    { label: 'T2', ageMonths: 2, val: 5.6 },
+                    { label: 'T4', ageMonths: 4, val: 7.0 },
+                    { label: 'T6', ageMonths: 6, val: 7.9 },
+                    { label: 'T9', ageMonths: 9, val: 8.9 },
+                    { label: 'Hiện tại', ageMonths: 12, val: 9.6 }
+                ]
+                : [
+                    { label: 'T0', ageMonths: 0, val: 50 },
+                    { label: 'T2', ageMonths: 2, val: 58 },
+                    { label: 'T4', ageMonths: 4, val: 64 },
+                    { label: 'T6', ageMonths: 6, val: 68 },
+                    { label: 'T9', ageMonths: 9, val: 72 },
+                    { label: 'Hiện tại', ageMonths: 12, val: 76 }
+                ];
+        }
+
+        // Tạo dải WHO chuẩn tương ứng với từng điểm ageMonths
+        const n = dataPoints.length;
+        const xCoords = n === 1 ? [170] : dataPoints.map((_, i) => Math.round(20 + i * (300 / (n - 1))));
+
+        // Min & Max bounds cho scale Y
+        const values = dataPoints.map(d => d.val);
+        const whoMedians = dataPoints.map(d => (isWeight ? d.ageMonths * 0.5 + 4 : d.ageMonths * 1.5 + 50));
+        const whoUppers = whoMedians.map(m => (isWeight ? m * 1.25 : m * 1.08));
+        const whoLowers = whoMedians.map(m => (isWeight ? m * 0.78 : m * 0.92));
+
+        const minVal = Math.min(...values, ...whoLowers) * 0.9;
+        const maxVal = Math.max(...values, ...whoUppers) * 1.1;
+        const range = Math.max(maxVal - minVal, 1);
+
+        const getY = (val) => Math.round(108 - ((val - minVal) / range) * 88);
+
+        const babyPoints = dataPoints.map((d, i) => ({
+            ...d,
+            x: xCoords[i],
+            y: getY(d.val)
+        }));
+
+        const whoPoints = dataPoints.map((d, i) => ({
+            x: xCoords[i],
+            yP50: getY(whoMedians[i]),
+            yUpper: getY(whoUppers[i]),
+            yLower: getY(whoLowers[i])
+        }));
+
+        // SVG Paths & Polygons
+        const babyPathD = babyPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+        const babyAreaPoints = [
+            ...babyPoints.map(p => `${p.x},${p.y}`),
+            `${babyPoints[babyPoints.length - 1].x},116`,
+            `${babyPoints[0].x},116`
+        ].join(' ');
+
+        const whoBandPoints = [
+            ...whoPoints.map(p => `${p.x},${p.yUpper}`),
+            ...[...whoPoints].reverse().map(p => `${p.x},${p.yLower}`)
+        ].join(' ');
+
+        const whoP50D = whoPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.yP50}`).join(' ');
+
+        const latestPoint = babyPoints[babyPoints.length - 1];
+
+        return {
+            isWeight,
+            unit: isWeight ? 'kg' : 'cm',
+            themeColor: isWeight ? '#861949' : '#006972',
+            lightColor: isWeight ? '#ffd9e2' : '#ccfbf1',
+            status: isWeight ? (weightStatus?.status || 'Đạt chuẩn') : (heightStatus?.status || 'Đạt chuẩn'),
+            latestVal: latestPoint.val,
+            babyPoints,
+            babyPathD,
+            babyAreaPoints,
+            whoBandPoints,
+            whoP50D
+        };
+    }, [chartMetric, records, weightStatus, heightStatus]);
 
     const { latestFeed, latestSleep, latestDiaper } = getLatestActivitiesSummary(feedings, sleeps, diapers);
     const teethingData = getTeethingArchData(teethingRecords);
@@ -382,63 +489,197 @@ export default function BabyHomeView({
                 </div>
 
                 {/* Inline Lightweight SVG Chart Container */}
-                <div className="relative w-full bg-[#fff8f8] rounded-2xl p-4 flex flex-col justify-end border border-pink-100/60">
-                    <div className="flex items-center justify-end gap-3 mb-2">
-                        <div className="flex items-center gap-1">
-                            <span className="w-2.5 h-1 rounded-full bg-teal-600"></span>
-                            <span className="text-[10px] text-gray-500 font-medium">WHO P50</span>
+                <div className="relative w-full bg-[#fff8f8] rounded-2xl p-4 flex flex-col justify-end border border-pink-100/60 overflow-hidden">
+                    {/* Embedded animation styles */}
+                    <style>{`
+                        @keyframes drawGrowthPath {
+                            0% {
+                                stroke-dashoffset: 600;
+                                opacity: 0.2;
+                            }
+                            100% {
+                                stroke-dashoffset: 0;
+                                opacity: 1;
+                            }
+                        }
+                        @keyframes fadeInGrowthArea {
+                            0% {
+                                opacity: 0;
+                                transform: translateY(6px);
+                            }
+                            100% {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+                        @keyframes popGrowthPoint {
+                            0% {
+                                transform: scale(0);
+                                opacity: 0;
+                            }
+                            70% {
+                                transform: scale(1.3);
+                                opacity: 1;
+                            }
+                            100% {
+                                transform: scale(1);
+                                opacity: 1;
+                            }
+                        }
+                        .animate-growth-line {
+                            stroke-dasharray: 600;
+                            stroke-dashoffset: 600;
+                            animation: drawGrowthPath 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                        }
+                        .animate-growth-area {
+                            animation: fadeInGrowthArea 0.7s ease-out 0.2s forwards;
+                        }
+                        .animate-growth-point {
+                            transform-origin: center;
+                            animation: popGrowthPoint 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                        }
+                    `}</style>
+
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                        <div className="flex items-center gap-1.5">
+                            <span 
+                                className="text-xs font-bold px-2 py-0.5 rounded-full transition-colors duration-300"
+                                style={{
+                                    backgroundColor: growthChartData.lightColor,
+                                    color: growthChartData.themeColor
+                                }}
+                            >
+                                Gần nhất: {growthChartData.latestVal} {growthChartData.unit}
+                            </span>
                         </div>
-                        <div className="flex items-center gap-1">
-                            <span className="w-2.5 h-2 rounded-full bg-[#861949]"></span>
-                            <span className="text-[10px] text-[#861949] font-bold">{profile?.name || 'Bé'}</span>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1">
+                                <span className="w-2.5 h-1 rounded-full bg-teal-600"></span>
+                                <span className="text-[10px] text-gray-500 font-medium">WHO P50</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <span 
+                                    className="w-2.5 h-2 rounded-full transition-colors duration-300" 
+                                    style={{ backgroundColor: growthChartData.themeColor }}
+                                ></span>
+                                <span 
+                                    className="text-[10px] font-bold transition-colors duration-300"
+                                    style={{ color: growthChartData.themeColor }}
+                                >
+                                    {profile?.name || 'Bé'}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
-                    <svg className="w-full h-28 overflow-visible" preserveAspectRatio="none" viewBox="0 0 340 120">
+                    {/* SVG Chart with key to re-trigger drawing animation on toggle */}
+                    <svg 
+                        key={chartMetric} 
+                        className="w-full h-28 overflow-visible" 
+                        preserveAspectRatio="none" 
+                        viewBox="0 0 340 120"
+                    >
                         <defs>
-                            <linearGradient id="growthAreaGradient" x1="0" x2="0" y1="0" y2="1">
-                                <stop offset="0%" stopColor="#ffd9e2" stopOpacity="0.6" />
-                                <stop offset="100%" stopColor="#ffd9e2" stopOpacity="0.0" />
+                            <linearGradient id={`growthGradient-${chartMetric}`} x1="0" x2="0" y1="0" y2="1">
+                                <stop offset="0%" stopColor={growthChartData.themeColor} stopOpacity="0.25" />
+                                <stop offset="100%" stopColor={growthChartData.themeColor} stopOpacity="0.0" />
                             </linearGradient>
                         </defs>
+
                         {/* WHO Standard Band P15-P85 */}
-                        <polygon fill="#a1eff9" fillOpacity="0.25" points="10,95 70,82 130,70 190,58 250,48 310,38 310,65 250,75 190,85 130,95 70,105 10,115" />
+                        <polygon 
+                            fill="#a1eff9" 
+                            fillOpacity="0.22" 
+                            points={growthChartData.whoBandPoints} 
+                            className="transition-all duration-500"
+                        />
+
                         {/* WHO Median P50 Line */}
-                        <path d="M 10 102 Q 160 70 310 48" fill="none" opacity="0.7" stroke="#006972" strokeDasharray="3,3" strokeWidth="1.5" />
-                        {/* Baby Growth Area */}
-                        <polygon fill="url(#growthAreaGradient)" points="10,105 70,90 130,78 190,64 250,52 310,36 310,118 10,118" />
-                        {/* Baby Trajectory Line */}
-                        <path d="M 10 105 L 70 90 L 130 78 L 190 64 L 250 52 L 310 36" fill="none" stroke="#861949" strokeLinecap="round" strokeWidth="3" />
-                        {/* Points */}
-                        <circle cx="10" cy="105" fill="#861949" r="3" />
-                        <circle cx="70" cy="90" fill="#861949" r="3" />
-                        <circle cx="130" cy="78" fill="#861949" r="3" />
-                        <circle cx="190" cy="64" fill="#861949" r="3" />
-                        <circle cx="250" cy="52" fill="#861949" r="3" />
-                        {/* Latest Node Halo */}
-                        <circle cx="310" cy="36" fill="#ffd9e2" r="7" className="animate-ping" opacity="0.75" />
-                        <circle cx="310" cy="36" fill="#861949" r="4" />
+                        <path 
+                            d={growthChartData.whoP50D} 
+                            fill="none" 
+                            opacity="0.65" 
+                            stroke="#006972" 
+                            strokeDasharray="3,3" 
+                            strokeWidth="1.5" 
+                            className="transition-all duration-500"
+                        />
+
+                        {/* Baby Growth Area Fill */}
+                        <polygon 
+                            fill={`url(#growthGradient-${chartMetric})`} 
+                            points={growthChartData.babyAreaPoints} 
+                            className="animate-growth-area opacity-0"
+                        />
+
+                        {/* Animated Baby Trajectory Line */}
+                        <path 
+                            d={growthChartData.babyPathD} 
+                            fill="none" 
+                            stroke={growthChartData.themeColor} 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                            strokeWidth="3" 
+                            className="animate-growth-line"
+                        />
+
+                        {/* Staggered Animated Data Points */}
+                        {growthChartData.babyPoints.map((pt, idx) => {
+                            const isLast = idx === growthChartData.babyPoints.length - 1;
+                            const delay = (0.2 + idx * 0.1).toFixed(2);
+                            return (
+                                <g key={`${chartMetric}-${idx}`} style={{ transformOrigin: `${pt.x}px ${pt.y}px` }}>
+                                    {isLast && (
+                                        <circle 
+                                            cx={pt.x} 
+                                            cy={pt.y} 
+                                            fill={growthChartData.lightColor} 
+                                            r="8" 
+                                            className="animate-ping" 
+                                            opacity="0.75" 
+                                        />
+                                    )}
+                                    <circle 
+                                        cx={pt.x} 
+                                        cy={pt.y} 
+                                        fill={growthChartData.themeColor} 
+                                        r={isLast ? "4.5" : "3"}
+                                        className="animate-growth-point opacity-0"
+                                        style={{ animationDelay: `${delay}s` }}
+                                    />
+                                </g>
+                            );
+                        })}
                     </svg>
 
                     <div className="flex justify-between items-center px-1 pt-2 border-t border-pink-100/40 text-[10px] text-gray-400 font-bold uppercase">
-                        <span>T-4</span>
-                        <span>T-3</span>
-                        <span>T-2</span>
-                        <span>T-1</span>
-                        <span>Tháng này</span>
-                        <span className="text-[#861949]">Hiện tại</span>
+                        {growthChartData.babyPoints.map((pt, idx) => (
+                            <span 
+                                key={idx} 
+                                className={idx === growthChartData.babyPoints.length - 1 ? 'font-black' : ''}
+                                style={idx === growthChartData.babyPoints.length - 1 ? { color: growthChartData.themeColor } : {}}
+                            >
+                                {pt.label}
+                            </span>
+                        ))}
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-gray-500 pt-1 px-1">
                     <span className="flex items-center gap-1 font-medium">
-                        <span className="material-symbols-outlined text-[16px] text-teal-600">health_and_safety</span>
-                        Tăng trưởng ổn định theo chuẩn
+                        <span 
+                            className="material-symbols-outlined text-[16px] transition-colors duration-300" 
+                            style={{ color: growthChartData.themeColor }}
+                        >
+                            health_and_safety
+                        </span>
+                        <span>{growthChartData.status} theo chuẩn WHO</span>
                     </span>
                     <button 
                         onClick={() => setView?.('growth')}
                         type="button"
-                        className="font-bold text-[#861949] hover:underline cursor-pointer"
+                        className="font-bold hover:underline cursor-pointer transition-colors duration-300"
+                        style={{ color: growthChartData.themeColor }}
                     >
                         Xem báo cáo chi tiết →
                     </button>

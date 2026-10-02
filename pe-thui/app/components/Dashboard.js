@@ -101,7 +101,10 @@ export default function Dashboard({ profile, code }) {
             ]);
 
             if (growthJson.success) {
-                setRecords(growthJson.data.sort((a, b) => {
+                const list = profile.mode === 'pregnancy'
+                    ? growthJson.data
+                    : growthJson.data.filter(d => d.type !== 'mother_weight');
+                setRecords(list.sort((a, b) => {
                     if (b.ageMonths !== a.ageMonths) return b.ageMonths - a.ageMonths;
                     return b.id - a.id;
                 }));
@@ -224,7 +227,7 @@ export default function Dashboard({ profile, code }) {
                     {renderView()}
                 </div>
             </div>
-            {view !== 'teething' && view !== 'health' && view !== 'journal' && (
+            {profile.mode !== 'pregnancy' && view !== 'teething' && view !== 'health' && view !== 'journal' && (
                 <button 
                     onClick={() => setShowAdd(true)}
                     className="fixed bottom-32 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-full shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-34"

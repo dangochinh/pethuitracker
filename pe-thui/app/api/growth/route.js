@@ -7,7 +7,11 @@ export async function GET(request) {
         const code = searchParams.get('code');
         if (!code) return NextResponse.json({ success: true, data: [] });
 
-        const data = await getGrowthRecords(code);
+        const type = searchParams.get('type');
+        let data = await getGrowthRecords(code);
+        if (type) {
+            data = data.filter(d => d.type === type || (!d.type && type === 'mother_weight'));
+        }
         return NextResponse.json({ success: true, data });
     } catch (err) {
         console.error('API Error in /api/growth GET:', err);
@@ -26,6 +30,9 @@ export async function POST(request) {
             ageMonths: body.ageMonths,
             weight: body.weight,
             height: body.height,
+            type: body.type,
+            gestationalAge: body.gestationalAge,
+            note: body.note,
         });
 
         return NextResponse.json({ success: true, data: record });
@@ -47,6 +54,9 @@ export async function PUT(request) {
             ageMonths: body.ageMonths,
             weight: body.weight,
             height: body.height,
+            type: body.type,
+            gestationalAge: body.gestationalAge,
+            note: body.note,
         });
 
         return NextResponse.json({ success: true, data: body });

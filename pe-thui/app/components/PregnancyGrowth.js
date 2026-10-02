@@ -15,9 +15,11 @@ export default function PregnancyGrowth({ code, profile }) {
             setLoading(true);
             const res = await fetch(`/api/growth?code=${code}&type=mother_weight&t=${Date.now()}`, { cache: 'no-store' });
             const json = await res.json();
-            if (json.success) {
-                // filter mother weight
-                const sorted = json.data.filter(d => d.type === 'mother_weight').sort((a, b) => new Date(a.date) - new Date(b.date));
+            if (json.success && Array.isArray(json.data)) {
+                // filter mother weight or legacy records with weight
+                const sorted = json.data
+                    .filter(d => (d.type === 'mother_weight' || !d.type) && Number(d.weight) > 0)
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
                 setEntries(sorted);
             }
         } catch (e) {
@@ -28,11 +30,11 @@ export default function PregnancyGrowth({ code, profile }) {
     };
 
     useEffect(() => {
-        if (profile.estimatedDueDate) {
+        if (profile?.estimatedDueDate) {
             setCurrentStats(calculatePregnancyWeeks(profile.estimatedDueDate));
         }
         fetchHealth();
-    }, [code, profile.estimatedDueDate]);
+    }, [code, profile?.estimatedDueDate]);
 
     const handleDelete = async (id) => {
         if (!confirm('Bạn có chắc muốn xoá bản ghi này?')) return;
@@ -57,9 +59,17 @@ export default function PregnancyGrowth({ code, profile }) {
     const currentWeight = entries.length > 0 ? entries[entries.length - 1].weight : 0;
     const gained = currentWeight - initialWeight;
 
+    const formatGain = () => {
+        if (entries.length === 0) return '--';
+        if (entries.length === 1) return '0 kg';
+        if (gained > 0) return `+${gained.toFixed(1)} kg`;
+        if (gained < 0) return `${gained.toFixed(1)} kg`;
+        return '0 kg';
+    };
+
     // Chart Data for Recharts
     const chartData = entries.map(e => ({
-        name: e.gestationalAge || new Date(e.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+        name: e.gestationalAge || (e.date ? new Date(e.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) : ''),
         weight: e.weight
     }));
 
@@ -98,7 +108,7 @@ export default function PregnancyGrowth({ code, profile }) {
                 </div>
                 <div className="bg-pink-50 rounded-2xl p-4 border border-pink-100 flex flex-col justify-center items-center text-center">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-pink-400 mb-1">Đã tăng</span>
-                    <span className="text-2xl font-black text-pink-600">{gained > 0 ? `+${gained.toFixed(1)} kg` : '--'}</span>
+                    <span className="text-2xl font-black text-pink-600">{formatGain()}</span>
                 </div>
             </div>
 
@@ -129,12 +139,12 @@ export default function PregnancyGrowth({ code, profile }) {
                                 <div>
                                     <p className="font-bold text-gray-800 text-lg">{e.weight} kg</p>
                                     <div className="flex gap-2 text-xs text-gray-500 font-medium mt-1">
-                                        <span>{new Date(e.date).toLocaleDateString('vi-VN')}</span>
+                                        <span>{e.date ? new Date(e.date).toLocaleDateString('vi-VN') : ''}</span>
                                         {e.gestationalAge && <span className="bg-purple-100 text-purple-700 px-1.5 rounded uppercase font-bold">{e.gestationalAge}</span>}
                                     </div>
                                     {e.note && <p className="text-xs text-gray-400 mt-1">{e.note}</p>}
                                 </div>
-                                <button onClick={() => handleDelete(e.id)} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
+                                <button onClick={() => handleDelete(e.id)} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
                                     <span className="material-symbols-outlined text-[16px]">delete</span>
                                 </button>
                             </div>
@@ -157,7 +167,7 @@ export default function PregnancyGrowth({ code, profile }) {
 
 function AddMotherWeightModal({ code, currentWeek, onClose, onSave }) {
     const [weight, setWeight] = useState('');
-    const [gestationalAge, setGestationalAge] = useState(currentWeek ? `${currentWeek}w` : '');
+    const [gestationalAge, setGestationalAge] = useState(currentWeek ? `Tuần ${currentWeek}` : '');
     const [note, setNote] = useState('');
     const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
     const [saving, setSaving] = useState(false);
@@ -169,7 +179,7 @@ function AddMotherWeightModal({ code, currentWeek, onClose, onSave }) {
         }
         setSaving(true);
         try {
-            await fetch('/api/growth', {
+            const res = await fetch('/api/growth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -181,6 +191,11 @@ function AddMotherWeightModal({ code, currentWeek, onClose, onSave }) {
                     note
                 }),
             });
+            const data = await res.json();
+            if (!data.success) {
+                alert('Lỗi: ' + (data.error || 'Không thể lưu cân nặng'));
+                return;
+            }
             onSave?.();
             onClose();
         } catch (err) {
@@ -226,10 +241,10 @@ function AddMotherWeightModal({ code, currentWeek, onClose, onSave }) {
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block mb-1">Tuần thai</label>
                             <input
                                 type="text"
-                                placeholder="VD: 12w"
+                                placeholder="VD: Tuần 12"
                                 value={gestationalAge}
                                 onChange={(e) => setGestationalAge(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-200 uppercase"
+                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-200"
                             />
                         </div>
                     </div>

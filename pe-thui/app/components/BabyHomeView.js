@@ -51,8 +51,37 @@ export default function BabyHomeView({
 
         let dataPoints = [];
         if (validList.length >= 2) {
-            dataPoints = validList.slice(-6).map((r, idx, arr) => ({
-                label: idx === arr.length - 1 ? 'Hiện tại' : `T${r.ageMonths ?? idx}`,
+            // Đảm bảo luôn xuất phát từ mốc sơ sinh (0 tháng)
+            const firstRec = validList[0];
+            const lastRec = validList[validList.length - 1];
+
+            let selectedList = [];
+            if (validList.length <= 6) {
+                selectedList = [...validList];
+            } else {
+                // Lấy mốc đầu, mốc cuối và 4 mốc trung gian phân bố đều
+                const middle = validList.slice(1, -1);
+                const step = middle.length / 4;
+                const sampled = [0, 1, 2, 3].map(i => middle[Math.floor(i * step)]);
+                selectedList = [firstRec, ...sampled, lastRec];
+            }
+
+            // Nếu bản ghi đầu tiên chưa phải 0 tháng (ví dụ bắt đầu đo từ 2-3 tháng),
+            // bổ sung mốc chuẩn sơ sinh T0 (0 tháng) ở điểm xuất phát
+            if ((selectedList[0].ageMonths ?? 0) > 0) {
+                selectedList.unshift({
+                    ageMonths: 0,
+                    weight: 3.3,
+                    height: 50,
+                    isPlaceholder: true
+                });
+                if (selectedList.length > 7) {
+                    selectedList.splice(1, 1);
+                }
+            }
+
+            dataPoints = selectedList.map((r, idx, arr) => ({
+                label: r.ageMonths === 0 ? 'T0' : (idx === arr.length - 1 ? 'Hiện tại' : `T${r.ageMonths}`),
                 ageMonths: r.ageMonths ?? idx,
                 val: Number(isWeight ? r.weight : r.height),
                 date: r.date
@@ -68,7 +97,7 @@ export default function BabyHomeView({
                 { label: 'Hiện tại', ageMonths: currentAge, val: currentVal, date: single.date }
             ];
         } else {
-            // Mẫu tham chiếu mặc định chuẩn WHO
+            // Mẫu tham chiếu mặc định chuẩn WHO (bắt đầu từ mốc sơ sinh T0)
             dataPoints = isWeight 
                 ? [
                     { label: 'T0', ageMonths: 0, val: 3.3 },

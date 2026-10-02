@@ -741,6 +741,241 @@
             box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
         }
 
+        /* Support Floating Button */
+        #supportBtn {
+            position: fixed;
+            bottom: 95px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffdd00, #fbb03b);
+            color: #0f172a;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 20px rgba(251, 176, 59, 0.4);
+            z-index: 999;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: supportPulse 2s infinite;
+        }
+
+        @keyframes supportPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(251, 176, 59, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(251, 176, 59, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(251, 176, 59, 0);
+            }
+        }
+
+        #supportBtn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 8px 25px rgba(251, 176, 59, 0.6);
+        }
+
+        /* Support Modal */
+        .support-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .support-modal-backdrop.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .support-modal {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 480px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        .support-modal-backdrop.open .support-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.25rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-tab-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-family: var(--font-heading);
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .modal-tab-btn.active {
+            background: var(--gradient-text);
+            color: white;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .support-qr-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .support-qr-img {
+            max-width: 200px;
+            border-radius: 12px;
+            margin: 0 auto 1.25rem;
+            display: block;
+            border: 4px solid white;
+        }
+
+        .copy-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .copy-info-value {
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent-primary);
+            cursor: pointer;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .copy-btn:hover {
+            color: #22d3ee;
+        }
+
+        .support-platforms {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .platform-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .platform-link:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .platform-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .bmc-icon {
+            background: #ffdd00;
+            color: #111;
+        }
+
+        .paypal-icon {
+            background: #003087;
+            color: white;
+        }
+
         /* Navigation Bar */
         #navbar {
             position: fixed;
@@ -1147,14 +1382,15 @@
                 <!-- Project 3: Pe-thui tracker -->
                 <div class="project-card slide-up" style="transition-delay: 0.2s;">
                     <div style="margin-bottom: 1.5rem;">
-                        <h3 class="project-title" style="margin-bottom: 0.5rem;">Pe-Thui Tracker</h3>
+                        <h3 class="project-title" style="margin-bottom: 0.5rem;">Pe-Thui Tracker <span style="font-size: 0.7rem; background: linear-gradient(135deg, #861949, #006972); color: white; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 600; vertical-align: middle;">v2.0</span></h3>
                         <p style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; opacity: 0.8;">
-                            Mobile-First PWA</p>
+                            Mobile-First PWA · Stitch Design System</p>
                     </div>
 
-                    <p class="project-desc" style="margin-bottom: 1.5rem; font-size: 0.95rem;">A personal utility
-                        application built to track daily routines and milestones, optimized for quick mobile access and
-                        ease of use.</p>
+                    <p class="project-desc" style="margin-bottom: 1.5rem; font-size: 0.95rem;">Baby & pregnancy
+                        tracking PWA with WHO growth charts, vaccination schedules, teething tracker, late pregnancy
+                        alerts, profile conversion with celebration effects, and AI-powered insights — all wrapped in the
+                        warm "Tactile Keepsake" design language.</p>
 
                     <div style="margin-bottom: 1.5rem;">
                         <p
@@ -1162,12 +1398,17 @@
                             Tech Stack</p>
                         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                             <span class="client-tag"
-                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">React</span>
+                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">Next.js 16</span>
                             <span class="client-tag"
-                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">Context
-                                API</span>
+                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">React 19</span>
                             <span class="client-tag"
-                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">LocalStorage</span>
+                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">Tailwind v4</span>
+                            <span class="client-tag"
+                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">Firebase</span>
+                            <span class="client-tag"
+                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">Gemini AI</span>
+                            <span class="client-tag"
+                                style="padding: 0.25rem 0.75rem; font-size: 0.75rem; border-color: rgba(6, 182, 212, 0.3); color: var(--accent-primary);">Recharts</span>
                         </div>
                     </div>
 
@@ -1176,8 +1417,9 @@
                         <p
                             style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 700;">
                             Architecture</p>
-                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Offline-capable static web
-                            architecture leveraging persistent browser storage and robust global state management.</p>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary);">Server-rendered Next.js 16 with
+                            Turbopack, Firebase Firestore backend, Stitch "Tactile Keepsake" design system, WHO standard
+                            growth percentile charts, canvas-based particle celebration system, and 93+ automated test checks.</p>
                     </div>
 
                     <div class="project-links"
@@ -1324,13 +1566,13 @@
                         <i class="fa-solid fa-envelope contact-icon"></i>
                         <span>dangochinh@gmail.com</span>
                     </a>
-                    <!-- <a href="tel:+84363839007" class="contact-item">
-                        <i class="fa-solid fa-phone contact-icon"></i>
-                        <span>036 3839 007</span>
-                    </a> -->
                     <a href="https://www.linkedin.com/in/chính-đặng-977456114/" target="_blank" class="contact-item">
                         <i class="fa-brands fa-linkedin contact-icon"></i>
                         <span>LinkedIn Profile</span>
+                    </a>
+                    <a href="javascript:void(0)" class="contact-item" id="contactSupportBtn" style="border-color: rgba(251, 176, 59, 0.4);">
+                        <i class="fa-solid fa-mug-hot contact-icon" style="color: #fbb03b;"></i>
+                        <span style="color: #fbb03b; font-weight: 600;">Buy Me A Coffee ☕</span>
                     </a>
                 </div>
             </div>
@@ -1416,8 +1658,100 @@
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
+    <!-- Floating Support / Coffee Button -->
+    <button id="supportBtn" title="Support my projects">
+        <i class="fa-solid fa-mug-hot"></i>
+    </button>
+
+    <!-- Support / Coffee Modal Backdrop -->
+    <div class="support-modal-backdrop" id="supportModalBackdrop">
+        <div class="support-modal">
+            <button class="close-modal-btn" id="closeModalBtn" title="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 style="font-family: var(--font-heading); font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center;" class="gradient-text">Buy Me A Coffee</h3>
+            <p style="color: var(--text-secondary); text-align: center; margin-bottom: 1.5rem; font-size: 0.95rem;">Cảm ơn bạn đã ghé thăm! Hãy tiếp thêm động lực cho các dự án mã nguồn mở của mình nhé ☕</p>
+            
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" id="tabVietQRBtn">Chuyển Khoản / MoMo</button>
+                <button class="modal-tab-btn" id="tabBMCBtn">International (BMC)</button>
+            </div>
+
+            <!-- Tab content: VietQR -->
+            <div class="tab-content active" id="vietqrTabContent">
+                <div class="support-qr-card">
+                    <img src="https://img.vietqr.io/image/MB-0363839007-print.png?amount=50000&addInfo=Tip%20Cafe%20DNC&accountName=Dang%20Ngoc%20Chinh" alt="VietQR MBBank" class="support-qr-img" id="supportQRImg">
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0;">Quét mã VietQR bằng ứng dụng Ngân hàng hoặc MoMo</p>
+                </div>
+                
+                <div class="copy-info-row">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Ngân Hàng Quân Đội (MB)</div>
+                        <div class="copy-info-value" id="bankAccNo">0363839007</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('bankAccNo', this)">
+                        <i class="fa-regular fa-copy"></i> Sao chép
+                    </button>
+                </div>
+
+                <div class="copy-info-row">
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 600;">Ví Điện Tử MoMo</div>
+                        <div class="copy-info-value" id="momoPhone">0363839007</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('momoPhone', this)">
+                        <i class="fa-regular fa-copy"></i> Sao chép
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab content: International BMC -->
+            <div class="tab-content" id="bmcTabContent">
+                <div class="support-platforms">
+                    <a href="https://www.buymeacoffee.com/dangochinh" target="_blank" class="platform-link">
+                        <div class="platform-icon bmc-icon">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 1rem;">Buy Me A Coffee</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">Support via Credit Card / Apple Pay</div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right" style="color: var(--accent-primary);"></i>
+                    </a>
+                    
+                    <a href="https://paypal.me/dangochinh" target="_blank" class="platform-link">
+                        <div class="platform-icon paypal-icon">
+                            <i class="fa-brands fa-paypal"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 1rem;">PayPal</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: normal;">Fast and secure international tip</div>
+                        </div>
+                        <i class="fa-solid fa-arrow-right" style="color: var(--accent-primary);"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Simple Scroll Animation Script -->
     <script>
+        // Copy to clipboard helper (global scope)
+        function copyText(elementId, btnElement) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = '<i class="fa-solid fa-check" style="color: #22c55e;"></i> Copied!';
+                btnElement.style.color = '#22c55e';
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHTML;
+                    btnElement.style.color = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const observerOptions = {
                 root: null,
@@ -1505,6 +1839,56 @@
                     }
                 });
             });
+
+            // Support Modal Handlers
+            const supportBtn = document.getElementById('supportBtn');
+            const contactSupportBtn = document.getElementById('contactSupportBtn');
+            const supportModalBackdrop = document.getElementById('supportModalBackdrop');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const tabVietQRBtn = document.getElementById('tabVietQRBtn');
+            const tabBMCBtn = document.getElementById('tabBMCBtn');
+            const vietqrTabContent = document.getElementById('vietqrTabContent');
+            const bmcTabContent = document.getElementById('bmcTabContent');
+
+            const openSupportModal = () => {
+                supportModalBackdrop.classList.add('open');
+                document.body.style.overflow = 'hidden'; // Lock background scroll
+            };
+
+            const closeSupportModal = () => {
+                supportModalBackdrop.classList.remove('open');
+                document.body.style.overflow = ''; // Unlock background scroll
+            };
+
+            if (supportBtn) supportBtn.addEventListener('click', openSupportModal);
+            if (contactSupportBtn) contactSupportBtn.addEventListener('click', openSupportModal);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeSupportModal);
+
+            // Close modal when clicking on backdrop
+            if (supportModalBackdrop) {
+                supportModalBackdrop.addEventListener('click', (e) => {
+                    if (e.target === supportModalBackdrop) {
+                        closeSupportModal();
+                    }
+                });
+            }
+
+            // Tab Toggling
+            if (tabVietQRBtn && tabBMCBtn) {
+                tabVietQRBtn.addEventListener('click', () => {
+                    tabVietQRBtn.classList.add('active');
+                    tabBMCBtn.classList.remove('active');
+                    vietqrTabContent.classList.add('active');
+                    bmcTabContent.classList.remove('active');
+                });
+
+                tabBMCBtn.addEventListener('click', () => {
+                    tabBMCBtn.classList.add('active');
+                    tabVietQRBtn.classList.remove('active');
+                    bmcTabContent.classList.add('active');
+                    vietqrTabContent.classList.remove('active');
+                });
+            }
         });
     </script>
 </body>

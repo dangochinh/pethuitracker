@@ -13,6 +13,7 @@ import HospitalBagChecklist from './pregnancy/HospitalBagChecklist';
 import ConvertBabyModal from './pregnancy/ConvertBabyModal';
 import LaborSignsModal from './pregnancy/LaborSignsModal';
 import LatePregnancyRemindModal from './pregnancy/LatePregnancyRemindModal';
+import PregnancyGuidesModal from './PregnancyGuidesModal';
 
 export default function PregnancyHomeView({ profile, code, onEditProfile }) {
     const [stats, setStats] = useState(null);
@@ -20,6 +21,8 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
     const [showConvertBabyModal, setShowConvertBabyModal] = useState(false);
     const [showLaborSignsModal, setShowLaborSignsModal] = useState(false);
     const [showLateRemindModal, setShowLateRemindModal] = useState(false);
+    const [showGuidesModal, setShowGuidesModal] = useState(false);
+    const [guidesInitialTab, setGuidesInitialTab] = useState('weeks');
     const timelineRef = useRef(null);
 
     // Drag-to-scroll refs (Desktop mouse & Touch)
@@ -59,6 +62,11 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
         if (targetBtn) {
             targetBtn.scrollIntoView({ behavior, block: 'nearest', inline: 'center' });
         }
+    }, []);
+
+    const openGuidesModal = useCallback((tab = 'weeks') => {
+        setGuidesInitialTab(tab);
+        setShowGuidesModal(true);
     }, []);
 
     // Center initial active week on load
@@ -168,7 +176,11 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                 </h2>
                 {isCurrentWeek ? (
                     <div className="flex flex-col items-center gap-1.5">
-                        <p className="text-purple-600/80 font-bold text-sm">Ngày thứ {stats.days} của thai kỳ</p>
+                        <p className="text-purple-700/90 font-bold text-sm">
+                            {stats.days > 0 ? `Tuần ${stats.weeks} + ${stats.days} ngày` : `Tuần ${stats.weeks} tròn`}
+                            <span className="text-purple-400 font-normal mx-1.5">•</span>
+                            Ngày thứ {stats.totalDaysPassed} của thai kỳ
+                        </p>
                         {profile?.estimatedDueDate && (
                             <button
                                 type="button"
@@ -315,32 +327,85 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                 </div>
             </section>
 
-            {/* Card 5: Lời khuyên dinh dưỡng & Cảnh báo bác sĩ (Weekly Advice & Alerts từ Stitch) */}
-            <section className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/80 flex flex-col gap-3 text-left">
-                <div className="flex items-center gap-3">
-                    <span className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center shadow-xs">
-                        <span className="material-symbols-outlined text-2xl">tips_and_updates</span>
-                    </span>
-                    <div>
-                        <h4 className="font-headline font-bold text-base text-gray-800">Lời khuyên tuần {selectedWeek}</h4>
-                        <p className="text-xs text-gray-500">Chăm sóc sức khỏe mẹ & bé</p>
+            {/* Card 5: Lời khuyên dinh dưỡng, Thai giáo & Cảnh báo bác sĩ */}
+            <section className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/80 flex flex-col gap-3.5 text-left">
+                <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center shadow-xs">
+                            <span className="material-symbols-outlined text-2xl">tips_and_updates</span>
+                        </span>
+                        <div>
+                            <h4 className="font-headline font-bold text-base text-gray-800">Lời khuyên tuần {selectedWeek}</h4>
+                            <p className="text-xs text-gray-500">Chăm sóc sức khỏe mẹ & bé</p>
+                        </div>
                     </div>
+                    <button
+                        type="button"
+                        onClick={() => openGuidesModal('weeks')}
+                        className="text-xs font-bold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-xl border border-purple-200/60 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-2xs"
+                        title="Mở cẩm nang 42 tuần thai kỳ"
+                    >
+                        <span className="material-symbols-outlined text-[15px]">menu_book</span>
+                        <span>Xem 42 tuần</span>
+                    </button>
                 </div>
+
                 <div className="flex flex-col gap-2.5">
+                    {weeklyAdvice.babyDevelopment && (
+                        <div className="p-3.5 rounded-2xl bg-blue-50/60 border border-blue-100 text-xs text-blue-950 flex gap-2.5 items-start">
+                            <span className="material-symbols-outlined text-blue-600 text-[18px] shrink-0 mt-0.5">child_care</span>
+                            <div>
+                                <span className="font-bold block mb-0.5 text-blue-900">Bé phát triển tuần này:</span>
+                                <span className="leading-relaxed">{weeklyAdvice.babyDevelopment}</span>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-xs text-emerald-950 flex gap-2.5 items-start">
                         <span className="material-symbols-outlined text-emerald-600 text-[18px] shrink-0 mt-0.5">nutrition</span>
                         <div>
                             <span className="font-bold block mb-0.5 text-emerald-900">Dinh dưỡng khuyên dùng:</span>
-                            <span>{weeklyAdvice.diet}</span>
+                            <span className="leading-relaxed">{weeklyAdvice.diet}</span>
                         </div>
                     </div>
+
+                    {weeklyAdvice.thaiGiaoTip && (
+                        <div className="p-3.5 rounded-2xl bg-purple-50/60 border border-purple-100 text-xs text-purple-950 flex gap-2.5 items-start">
+                            <span className="material-symbols-outlined text-purple-600 text-[18px] shrink-0 mt-0.5">psychology</span>
+                            <div>
+                                <span className="font-bold block mb-0.5 text-purple-900">Gợi ý Thai Giáo tuần {selectedWeek}:</span>
+                                <span className="leading-relaxed">{weeklyAdvice.thaiGiaoTip}</span>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="p-3.5 rounded-2xl bg-rose-50/60 border border-rose-100 text-xs text-rose-950 flex gap-2.5 items-start">
                         <span className="material-symbols-outlined text-rose-600 text-[18px] shrink-0 mt-0.5">warning</span>
                         <div>
                             <span className="font-bold block mb-0.5 text-rose-900">Dấu hiệu cần gọi bác sĩ:</span>
-                            <span>{weeklyAdvice.warning}</span>
+                            <span className="leading-relaxed">{weeklyAdvice.warning}</span>
                         </div>
                     </div>
+                </div>
+
+                {/* Quick Action Buttons for Thai Giáo & EASY */}
+                <div className="pt-2 border-t border-purple-100/60 flex flex-col sm:flex-row gap-2">
+                    <button
+                        type="button"
+                        onClick={() => openGuidesModal('thaigiao')}
+                        className="flex-1 py-2 px-3 rounded-xl bg-purple-50/70 hover:bg-purple-100/80 border border-purple-200/60 text-purple-800 text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                    >
+                        <span className="material-symbols-outlined text-[16px] text-purple-600">psychology</span>
+                        <span>Bí kíp Thai Giáo (5 giác quan)</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => openGuidesModal('easy')}
+                        className="flex-1 py-2 px-3 rounded-xl bg-pink-50/70 hover:bg-pink-100/80 border border-pink-200/60 text-[#861949] text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer shadow-2xs"
+                    >
+                        <span className="material-symbols-outlined text-[16px] text-[#861949]">child_care</span>
+                        <span>Phương pháp EASY (Tự ngủ)</span>
+                    </button>
                 </div>
             </section>
 
@@ -469,6 +534,14 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                     onSuccess={() => window.location.reload()}
                 />
             )}
+
+            {/* Pregnancy Guides Modal (42 Tuần, Thai Giáo, EASY) */}
+            <PregnancyGuidesModal
+                isOpen={showGuidesModal}
+                onClose={() => setShowGuidesModal(false)}
+                currentWeek={stats?.weeks ?? 0}
+                initialTab={guidesInitialTab}
+            />
         </div>
     );
 }

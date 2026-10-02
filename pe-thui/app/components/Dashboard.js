@@ -20,6 +20,7 @@ import NotificationBanner from './NotificationBanner';
 import PhotoJournal from './PhotoJournal';
 import BabyHomeView from './BabyHomeView';
 import JournalMilestonesView from './journal/JournalMilestonesView';
+import ProfileSettingsView from './profile/ProfileSettingsView';
 import PregnancyHomeView from './PregnancyHomeView';
 import PregnancyCheckups from './PregnancyCheckups';
 import PregnancyJournal from './PregnancyJournal';
@@ -193,6 +194,16 @@ export default function Dashboard({ profile, code }) {
                     return <PregnancyJournal code={code} />;
                 }
                 return <JournalMilestonesView profile={profile} code={code} />;
+            case 'settings':
+                return (
+                    <ProfileSettingsView 
+                        profile={profile} 
+                        code={code} 
+                        records={records}
+                        onEditProfile={() => setShowEditProfile(true)}
+                        onOpenShare={() => setShowShare(true)}
+                    />
+                );
             case 'home':
             default:
                 if (profile.mode === 'pregnancy') {

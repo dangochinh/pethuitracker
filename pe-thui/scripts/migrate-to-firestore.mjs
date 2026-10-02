@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import path from 'path';
 
-const SHEET_ID = '11zjtgJtpz5iBF2tI-hFOAWkYkTOWbKy8gJCOYnRUjGs';
+const SHEET_ID = process.env.GOOGLE_SHEET_ID || '184jVfvHBVirALH04rp-OWVS7drnE2u_y27G8oLknsqs';
 
 function getCredentials() {
     const possiblePaths = [

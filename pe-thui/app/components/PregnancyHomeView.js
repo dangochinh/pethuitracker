@@ -274,7 +274,7 @@ export default function PregnancyHomeView({ profile, code }) {
             </section>
 
             {/* Card 3: Máy đếm cử động thai (Fetal Kick Counter từ Stitch) */}
-            <KickCounter selectedWeek={selectedWeek} />
+            <KickCounter selectedWeek={selectedWeek} code={code} />
 
             {/* Card 4: Lịch khám thai sắp tới (Prenatal Checkup Card từ Stitch) */}
             <section className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/80 flex flex-col gap-3 text-left">

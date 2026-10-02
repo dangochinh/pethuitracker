@@ -19,6 +19,7 @@ import ExitConfirmDialog from './ExitConfirmDialog';
 import NotificationBanner from './NotificationBanner';
 import PhotoJournal from './PhotoJournal';
 import BabyHomeView from './BabyHomeView';
+import JournalMilestonesView from './journal/JournalMilestonesView';
 import PregnancyHomeView from './PregnancyHomeView';
 import PregnancyCheckups from './PregnancyCheckups';
 import PregnancyJournal from './PregnancyJournal';
@@ -191,7 +192,7 @@ export default function Dashboard({ profile, code }) {
                 if (profile.mode === 'pregnancy') {
                     return <PregnancyJournal code={code} />;
                 }
-                return <PhotoJournal code={code} />;
+                return <JournalMilestonesView profile={profile} code={code} />;
             case 'home':
             default:
                 if (profile.mode === 'pregnancy') {

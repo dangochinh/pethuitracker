@@ -4,7 +4,7 @@ import { VACCINES } from './data/vaccines.js';
 import { assessWeight, assessHeight } from './calculations.js';
 
 /**
- * Tính toán tuổi chi tiết của bé (tháng, ngày)
+ * Tính toán tuổi chi tiết của bé (tháng, ngày - không cần đơn vị năm)
  */
 export function formatBabyAge(dob, toDate = new Date()) {
     if (!dob) return { totalMonths: 0, days: 0, formatted: '0 ngày tuổi' };
@@ -15,17 +15,47 @@ export function formatBabyAge(dob, toDate = new Date()) {
     const days = end.diff(startPlusMonths, 'day');
 
     let formatted = '';
-    const years = Math.floor(totalMonths / 12);
-    const months = totalMonths % 12;
-
-    if (years > 0) formatted += `${years} tuổi `;
-    if (months > 0) formatted += `${months} tháng `;
-    if (days > 0 || (years === 0 && months === 0)) formatted += `${days} ngày tuổi`;
+    if (totalMonths > 0) {
+        formatted += `${totalMonths} tháng `;
+    }
+    if (days > 0 || totalMonths === 0) {
+        formatted += `${days} ngày tuổi`;
+    }
 
     return {
         totalMonths,
         days,
         formatted: formatted.trim()
+    };
+}
+
+/**
+ * Đếm ngược số ngày tới sinh nhật tiếp theo của bé
+ */
+export function getDaysUntilNextBirthday(dob, toDate = new Date()) {
+    if (!dob) return null;
+    const now = dayjs(toDate).startOf('day');
+    const birth = dayjs(dob).startOf('day');
+    let nextBday = birth.year(now.year());
+    if (nextBday.isBefore(now, 'day')) {
+        nextBday = nextBday.add(1, 'year');
+    }
+    const daysUntil = nextBday.diff(now, 'day');
+    const nextAge = nextBday.diff(birth, 'year');
+
+    let label = '';
+    if (daysUntil === 0) {
+        label = `Hôm nay sinh nhật tròn ${nextAge} tuổi! 🎂🎉`;
+    } else if (daysUntil === 1) {
+        label = `Ngày mai sinh nhật tròn ${nextAge} tuổi! 🎂`;
+    } else {
+        label = `Còn ${daysUntil} ngày nữa tới sinh nhật tròn ${nextAge} tuổi`;
+    }
+
+    return {
+        daysUntil,
+        nextAge,
+        label
     };
 }
 

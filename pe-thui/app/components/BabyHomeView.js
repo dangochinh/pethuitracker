@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { 
     formatBabyAge, 
+    getDaysUntilNextBirthday,
     getLatestActivitiesSummary, 
     getTeethingArchData, 
     getUpcomingVaccination, 
@@ -35,6 +36,7 @@ export default function BabyHomeView({
 
     // Tính toán số liệu
     const ageInfo = formatBabyAge(profile?.dob);
+    const nextBirthday = getDaysUntilNextBirthday(profile?.dob);
     const latestWeightRecord = records.find(r => r.weight > 0);
     const latestHeightRecord = records.find(r => r.height > 0);
     const weightStatus = latestWeightRecord ? assessWeight(latestWeightRecord.weight, latestWeightRecord.ageMonths) : null;
@@ -213,10 +215,28 @@ export default function BabyHomeView({
 
                     <div className="flex items-center gap-2 mt-1">
                         <span className="text-sm font-medium text-gray-600">{ageInfo.formatted}</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
-                        <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 uppercase tracking-wider font-extrabold border border-teal-200/50">
-                            {weightStatus?.status || 'Chuẩn WHO'}
-                        </span>
+                        {nextBirthday && (
+                            <>
+                                <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                                <span 
+                                    className={`inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full font-bold border transition-colors ${
+                                        nextBirthday.daysUntil === 0
+                                            ? 'bg-amber-100 text-amber-800 border-amber-300 animate-pulse'
+                                            : nextBirthday.daysUntil <= 30
+                                                ? 'bg-rose-50 text-[#861949] border-rose-200'
+                                                : 'bg-teal-50 text-teal-700 border-teal-200/50'
+                                    }`}
+                                    title={nextBirthday.label}
+                                >
+                                    <span>🎂</span>
+                                    <span>
+                                        {nextBirthday.daysUntil === 0 
+                                            ? `Hôm nay sinh nhật tròn ${nextBirthday.nextAge} tuổi!` 
+                                            : `Còn ${nextBirthday.daysUntil} ngày nữa tới SN`}
+                                    </span>
+                                </span>
+                            </>
+                        )}
                     </div>
 
                     {/* Share Code Pill */}

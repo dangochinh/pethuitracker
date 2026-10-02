@@ -6,19 +6,27 @@ import {
     getLatestActivitiesSummary,
     getTeethingArchData,
     getUpcomingVaccination,
-    getKeepsakeMilestone
+    getKeepsakeMilestone,
+    getDaysUntilNextBirthday
 } from '../app/lib/baby-utils.js';
 
 test('1. formatBabyAge correctly formats baby age in months and days', () => {
-    // Bé sinh cách đây 45 ngày (1 tháng 15 ngày xấp xỉ)
+    // Bé sinh cách đây 45 ngày (1 tháng 14 ngày)
     const baseDate = new Date('2026-06-15');
     const dob = '2026-05-01';
     const age = formatBabyAge(dob, baseDate);
 
     assert.equal(age.totalMonths, 1);
     assert.equal(age.days, 14);
-    assert.ok(age.formatted.includes('1 tháng'));
-    assert.ok(age.formatted.includes('ngày tuổi'));
+    assert.equal(age.formatted, '1 tháng 14 ngày tuổi');
+
+    // Bé trên 1 tuổi (ví dụ 19 tháng tuổi - không hiển thị 'tuổi' mà chuyển thành '19 tháng 1 ngày tuổi')
+    const toddlerDob = '2025-03-01';
+    const toddlerCheckDate = new Date('2026-10-02');
+    const toddlerAge = formatBabyAge(toddlerDob, toddlerCheckDate);
+    assert.equal(toddlerAge.totalMonths, 19);
+    assert.equal(toddlerAge.days, 1);
+    assert.equal(toddlerAge.formatted, '19 tháng 1 ngày tuổi');
 
     // Sơ sinh (5 ngày tuổi)
     const newbornDob = '2026-06-10';
@@ -31,6 +39,12 @@ test('1. formatBabyAge correctly formats baby age in months and days', () => {
     const emptyAge = formatBabyAge(null);
     assert.equal(emptyAge.totalMonths, 0);
     assert.equal(emptyAge.formatted, '0 ngày tuổi');
+
+    // Đếm ngược sinh nhật
+    const bday = getDaysUntilNextBirthday('2025-03-01', new Date('2026-10-02'));
+    assert.equal(bday.nextAge, 2);
+    assert.equal(bday.daysUntil, 150);
+    assert.ok(bday.label.includes('150 ngày'));
 });
 
 test('2. getLatestActivitiesSummary extracts most recent feeding, sleep, and diaper events', () => {

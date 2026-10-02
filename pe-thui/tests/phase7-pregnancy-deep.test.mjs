@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculatePregnancyWeeks, getUpcomingCheckup, getWeeklyAdvice } from '../app/lib/pregnancy-utils.js';
+import { 
+    calculatePregnancyWeeks, 
+    getUpcomingCheckup, 
+    getWeeklyAdvice,
+    isLatePregnancy,
+    getLaborSignsGuide
+} from '../app/lib/pregnancy-utils.js';
 
 test('Phase 7: calculatePregnancyWeeks edge cases & trimesters', () => {
     // 20 tuần nữa sinh => hiện tại khoảng tuần 20
@@ -72,4 +78,43 @@ test('Phase 7: Weekly dietary & medical warning advice', () => {
     // Tam cá nguyệt 3: DHA / Omega-3
     const adviceLate = getWeeklyAdvice(32);
     assert.ok(adviceLate.diet.toLowerCase().includes('dha') || adviceLate.diet.toLowerCase().includes('omega'), 'Tam cá nguyệt 3 khuyên dùng DHA/Omega');
+});
+
+test('Phase 7+: isLatePregnancy calculation & popup triggers', () => {
+    // Chưa đến tuần cuối (> 21 ngày và < 37 tuần)
+    assert.equal(isLatePregnancy(32, 56), false, 'Tuần 32 còn 56 ngày => Không phải tuần cuối');
+    assert.equal(isLatePregnancy(36, 28), false, 'Tuần 36 còn 28 ngày => Chưa đạt ngưỡng 21 ngày');
+
+    // Đạt mốc tuần 37 trở lên (thai đủ tháng)
+    assert.equal(isLatePregnancy(37, 21), true, 'Tuần 37 => Tuần cuối thai kỳ');
+    assert.equal(isLatePregnancy(38, 14), true, 'Tuần 38 => Tuần cuối thai kỳ');
+    assert.equal(isLatePregnancy(40, 0), true, 'Tuần 40 (ngày dự sinh) => Tuần cuối thai kỳ');
+    assert.equal(isLatePregnancy(41, 0), true, 'Tuần 41 (quá ngày dự sinh) => Tuần cuối thai kỳ');
+
+    // Đạt mốc còn <= 21 ngày (3 tuần cuối) kể cả khi tuần tính toán là 35-36
+    assert.equal(isLatePregnancy(36, 20), true, 'Còn 20 ngày => Kích hoạt cảnh báo tuần cuối');
+    assert.equal(isLatePregnancy(36, 7), true, 'Còn 7 ngày => Kích hoạt cảnh báo tuần cuối');
+});
+
+test('Phase 7+: getLaborSignsGuide medical correctness', () => {
+    const guide = getLaborSignsGuide();
+    assert.ok(Array.isArray(guide) && guide.length === 3, 'Cẩm nang có đủ 3 cấp độ: sớm, chuyển dạ thật, và cấp cứu');
+
+    const early = guide.find(g => g.category === 'early');
+    const active = guide.find(g => g.category === 'active');
+    const emergency = guide.find(g => g.category === 'emergency');
+
+    assert.ok(early && active && emergency, 'Đủ 3 danh mục early, active, emergency');
+
+    // Kiểm tra quy tắc 5-1-1 và vỡ ối trong active
+    const has511 = active.items.some(item => item.id === 'contractions_511');
+    const hasWaterBreak = active.items.some(item => item.id === 'water_break');
+    assert.ok(has511, 'Active category phải có quy tắc chuyển dạ 5-1-1');
+    assert.ok(hasWaterBreak, 'Active category phải có dấu hiệu Vỡ ối');
+
+    // Kiểm tra dấu hiệu nguy hiểm cấp cứu
+    const hasBleeding = emergency.items.some(item => item.id === 'heavy_bleeding');
+    const hasPreeclampsia = emergency.items.some(item => item.id === 'preeclampsia');
+    assert.ok(hasBleeding, 'Emergency phải có cảnh báo chảy máu ồ ạt');
+    assert.ok(hasPreeclampsia, 'Emergency phải có cảnh báo tiền sản giật');
 });

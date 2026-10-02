@@ -163,6 +163,121 @@ export function filterBagItems(items = [], category = 'all') {
     return items.filter(it => it && it.category === category);
 }
 
+export function isLatePregnancy(weeks, daysRemaining) {
+    if (typeof weeks === 'number' && weeks >= 37) return true;
+    if (typeof daysRemaining === 'number' && daysRemaining <= 21 && daysRemaining >= 0) return true;
+    return false;
+}
+
+export function getLaborSignsGuide() {
+    return [
+        {
+            category: 'early',
+            categoryName: 'Dấu hiệu sớm (Sắp chuyển dạ)',
+            badge: 'Theo dõi tại nhà',
+            badgeColor: 'bg-[#006972]/10 text-[#006972] border-[#006972]/20',
+            description: 'Có thể xuất hiện vài ngày hoặc vài tuần trước khi sinh. Cơ thể mẹ đang chuẩn bị sẵn sàng.',
+            items: [
+                {
+                    id: 'drop',
+                    icon: 'arrow_downward',
+                    title: 'Sa bụng bầu (Bụng tụt xuống)',
+                    summary: 'Đầu bé di chuyển sâu vào tiểu khung để chuẩn bị chào đời.',
+                    detail: 'Mẹ sẽ cảm thấy dễ thở hơn, bớt tức ngực và dạ dày, nhưng lại đi tiểu thường xuyên hơn và cảm thấy nặng nề, tức nhẹ ở vùng chậu xương mu.'
+                },
+                {
+                    id: 'plug',
+                    icon: 'water_drop',
+                    title: 'Bong nút nhầy cổ tử cung (Nhớt hồng)',
+                    summary: 'Nút nhầy bảo vệ cổ tử cung bong ra khi cổ tử cung bắt đầu giãn mở.',
+                    detail: 'Chất nhầy đặc quánh màu trắng đục, hồng nhạt hoặc nâu sẫm tiết ra ở âm đạo. Đây là tín hiệu chuyển dạ có thể bắt đầu trong vài giờ hoặc vài ngày tới.'
+                },
+                {
+                    id: 'backache',
+                    icon: 'accessibility_new',
+                    title: 'Đau lưng dưới âm ỉ & Chuột rút',
+                    summary: 'Các dây chằng và khớp xương chậu giãn nở tối đa.',
+                    detail: 'Cảm giác đau mỏi nhức nhối dọc thắt lưng lan ra vùng hông và đùi dưới, tương tự cảm giác đau bụng kinh nhưng nặng hơn.'
+                },
+                {
+                    id: 'braxton',
+                    icon: 'speed',
+                    title: 'Cơn gò Braxton Hicks dày hơn',
+                    summary: 'Cơn gò giả tập dượt cho tử cung.',
+                    detail: 'Bụng căng cứng thành từng đợt nhưng chưa có chu kỳ đều đặn, không tăng dần về cường độ và thường dịu bớt khi mẹ đổi tư thế nằm nghiêng hoặc nghỉ ngơi.'
+                }
+            ]
+        },
+        {
+            category: 'active',
+            categoryName: 'Chuyển dạ thực sự (CẦN ĐẾN VIỆN NGAY)',
+            badge: 'Đến bệnh viện',
+            badgeColor: 'bg-[#861949]/10 text-[#861949] border-[#861949]/20',
+            description: 'Quá trình chuyển dạ đã chính thức bắt đầu. Hãy mang giỏ đồ và đến viện đã đăng ký sinh.',
+            items: [
+                {
+                    id: 'contractions_511',
+                    icon: 'timer',
+                    title: 'Cơn gò tử cung dồn dập (Quy tắc 5-1-1)',
+                    summary: '5 phút/cơn – Kéo dài 1 phút – Liên tục trong 1 giờ.',
+                    detail: 'Cơn gò diễn ra đều đặn, nhịp nhàng. Bụng gò cứng như đá, đau từ thắt lưng lan vòng ra phía trước bụng. Cường độ đau tăng dần và KHÔNG giảm dù mẹ nằm nghỉ hay đi lại.'
+                },
+                {
+                    id: 'water_break',
+                    icon: 'waves',
+                    title: 'VỠ ỐI (Rỉ ối hoặc ối vỡ ào ạt)',
+                    summary: 'Nước ối chảy ra từ âm đạo. ĐẾN VIỆN NGAY LẬP TỨC!',
+                    detail: 'Dịch lỏng trong suốt hoặc hơi đục chảy liên tục không kiểm soát được bằng cơ thắt bàng quang. Dù có cơn đau bụng hay chưa, mẹ cần đến viện ngay để tránh nguy cơ nhiễm trùng ối và sa dây rốn.'
+                },
+                {
+                    id: 'bloody_show',
+                    icon: 'bloodtype',
+                    title: 'Ra máu báo chuyển dạ',
+                    summary: 'Cổ tử cung mở rộng làm vỡ các mao mạch nhỏ.',
+                    detail: 'Chảy dịch nhầy kèm máu tươi hoặc hồng đậm báo hiệu cổ tử cung đang mở tích cực để chuẩn bị đưa bé ra ngoài.'
+                }
+            ]
+        },
+        {
+            category: 'emergency',
+            categoryName: 'Dấu hiệu nguy hiểm (CẤP CỨU KHẨN CẤP)',
+            badge: 'Cấp cứu 115',
+            badgeColor: 'bg-red-500/10 text-red-700 border-red-500/20',
+            description: 'Đến ngay cơ sở y tế gần nhất hoặc gọi cấp cứu nếu gặp bất kỳ dấu hiệu nào dưới đây:',
+            items: [
+                {
+                    id: 'heavy_bleeding',
+                    icon: 'warning',
+                    title: 'Chảy máu âm đạo đỏ tươi ồ ạt',
+                    summary: 'Nguy cơ nhau bong non hoặc nhau tiền đạo đe dọa tính mạng.',
+                    detail: 'Máu đỏ tươi ra nhiều ướt đẫm băng vệ sinh kèm theo bụng cứng đờ liên tục.'
+                },
+                {
+                    id: 'green_amniotic',
+                    icon: 'report_problem',
+                    title: 'Nước ối có màu xanh rêu hoặc vàng sậm đục',
+                    summary: 'Dấu hiệu bé đã thải phân su vào buồng ối do ngạt/suy thai.',
+                    detail: 'Cần can thiệp y khoa khẩn cấp để hút phân su, tránh bé hít dịch ối vào phổi khi cất tiếng khóc.'
+                },
+                {
+                    id: 'low_fetal_movement',
+                    icon: 'pets',
+                    title: 'Thai máy giảm đột ngột hoặc ngưng cử động',
+                    summary: 'Bé cử động ít hơn 10 lần trong 2 giờ sau khi mẹ đã uống nước ngọt.',
+                    detail: 'Cần đo tim thai và Doppler mạch máu ngay để đánh giá sức khỏe thai nhi.'
+                },
+                {
+                    id: 'preeclampsia',
+                    icon: 'medical_information',
+                    title: 'Đau đầu dữ dội, hoa mắt, nhìn mờ, phù nề mặt',
+                    summary: 'Dấu hiệu tiền sản giật nặng đe dọa tính mạng mẹ và bé.',
+                    detail: 'Huyết áp tăng cao đột ngột, phù mặt và tay, đau vùng thượng vị dưới xương ức.'
+                }
+            ]
+        }
+    ];
+}
+
 export function evaluateKickCount(count = 0, target = 10) {
     const safeCount = Math.max(0, count || 0);
     const remaining = Math.max(0, target - safeCount);

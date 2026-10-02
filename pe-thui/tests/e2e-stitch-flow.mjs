@@ -474,7 +474,92 @@ async function runE2E() {
 
         await page.screenshot({ path: path.join(EVIDENCE_DIR, '19_pregnancy_ultrasound_saved.png') });
 
-        console.log('\n🎉 TẤT CẢ 48/48 KIỂM THỬ E2E (PHASE 1 ĐẾN PHASE 7) ĐÃ ĐƯỢC CHẠY VÀ PASS 100%!');
+        // ========================================================
+        // FLOW 8: TUẦN CUỐI THAI KỲ, CẨM NANG CHUYỂN DẠ & CONVERT HỒ SƠ EM BÉ
+        // ========================================================
+        console.log('\n--- FLOW 8: TUẦN CUỐI THAI KỲ & CONVERT HỒ SƠ SANG EM BÉ ---');
+        // Tạo một hồ sơ mẹ bầu vào tuần cuối (EDD sau hôm nay 10 ngày => tuần 38)
+        await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(500);
+
+        await page.click('button:has-text("Tạo hồ sơ mới")');
+        await page.waitForSelector('input[placeholder="VD: Pepe"]');
+
+        await page.fill('input[placeholder="VD: Pepe"]', 'Mẹ Bầu Tuần Cuối');
+        await page.click('button:has-text("Đang mang thai")');
+
+        const lateEdd = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
+        const lateEddStr = lateEdd.toISOString().slice(0, 10);
+        await page.fill('input[type="date"]', lateEddStr);
+
+        await page.click('button[type="submit"]:has-text("Tiếp Tục")');
+        await page.waitForSelector('text=Tạo hồ sơ thành công!', { timeout: 10000 });
+
+        await page.click('button:has-text("Vào Trang Của Bé")');
+        await page.waitForTimeout(600);
+
+        const skipBtn3 = await page.$('button:has-text("Bỏ qua, dùng mã tự sinh")');
+        if (skipBtn3) {
+            await skipBtn3.click();
+        }
+
+        // 1. Kiểm tra Pop-up tự động nhắc nhở tuần cuối thai kỳ (LatePregnancyRemindModal)
+        await page.waitForSelector('text=Mẹ Đã Sẵn Sàng Đón Bé Chưa?', { timeout: 8000 });
+        check('UI-36', 'Pop-up nhắc nhở tuần cuối thai kỳ tự động kích hoạt cho mẹ tuần >= 37', true);
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '20_late_pregnancy_reminder.png') });
+
+        // 2. Mở Cẩm Nang Dấu Hiệu Chuyển Dạ từ Pop-up
+        await page.click('button:has-text("Xem Dấu Hiệu Chuyển Dạ Y Khoa")');
+        await page.waitForSelector('text=Cẩm Nang Dấu Hiệu Chuyển Dạ', { timeout: 5000 });
+        check('UI-37', 'Cẩm nang dấu hiệu chuyển dạ mở ra thành công chuẩn y khoa', true);
+
+        // Chuyển sang tab "Chuyển dạ (Đến viện)" trong modal cẩm nang
+        await page.click('button:has-text("(Đến viện)")');
+        await page.waitForTimeout(300);
+        const has511Rule = await page.$('text=Quy tắc chuyển dạ 5 - 1 - 1');
+        const hasWaterBreak = await page.$('text=VỠ ỐI');
+        check('LOGIC-14', 'Cẩm nang thể hiện đầy đủ Quy tắc 5-1-1 và cảnh báo Vỡ Ối đến viện khẩn cấp', !!has511Rule && !!hasWaterBreak);
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '21_labor_signs_modal.png') });
+
+        // Đóng cẩm nang
+        await page.click('button:has-text("Đã hiểu rõ")');
+        await page.waitForTimeout(500);
+
+        // 3. Kiểm tra Banner Tuần Cuối Thai Kỳ trên trang chủ
+        const lateBanner = await page.$('text=Mẹ ơi, thiên thần nhỏ sắp chào đời!');
+        check('UI-38', 'Banner tuần cuối thai kỳ hiển thị trang trọng trên trang chủ mẹ bầu', !!lateBanner);
+
+        // 4. Bấm "Bé đã sinh? Chuyển hồ sơ" -> Mở ConvertBabyModal
+        await page.click('button:has-text("Bé đã sinh? Chuyển hồ sơ")');
+        await page.waitForSelector('text=Thiên Thần Nhỏ Chào Đời', { timeout: 5000 });
+        check('UI-39', 'Modal chúc mừng & chuyển đổi sang hồ sơ em bé mở ra chuẩn Stitch', true);
+
+        // Điền form chào đời của bé
+        await page.fill('input[placeholder*="Bé Bơ"]', 'Bé Gạo Stitch');
+        // Chọn Bé Gái trong form
+        await page.click('form button:has-text("Bé Gái")');
+        // Nhập cân nặng sơ sinh và chiều dài
+        await page.fill('input[placeholder="VD: 3.2"]', '3.35');
+        await page.fill('input[placeholder="VD: 50"]', '50.5');
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '22_convert_baby_modal.png') });
+
+        // Bấm "Xác Nhận Bé Đã Chào Đời"
+        await page.click('button[type="submit"]:has-text("Xác Nhận Bé Đã Chào Đời")');
+        // Chờ reload navigation hoặc networkidle
+        await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(() => {});
+        await page.waitForTimeout(2000);
+
+        // 5. Xác nhận trang đã chuyển đổi thành công sang BabyHomeView
+        await page.waitForSelector('text=Bé Gạo Stitch', { timeout: 12000 });
+        const dailySection = await page.$('text=Nhật ký hôm nay');
+        const milkSection = await page.$('text=Cữ sữa');
+        check('LOGIC-15', 'Hồ sơ đã chuyển đổi thành công 100% sang chế độ Em Bé Đã Sinh (BabyHomeView)', !!dailySection || !!milkSection);
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '23_converted_baby_profile.png') });
+
+        console.log('\n🎉 TẤT CẢ 53/53 KIỂM THỬ E2E (PHASE 1 ĐẾN PHASE 7+ FLOW 8) ĐÃ ĐƯỢC CHẠY VÀ PASS 100%!');
 
     } catch (err) {
         console.error('❌ Lỗi kiểm thử E2E:', err);

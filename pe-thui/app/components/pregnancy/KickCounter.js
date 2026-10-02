@@ -126,9 +126,8 @@ export default function KickCounter({ selectedWeek, code }) {
                     >
                         <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                     </button>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-bold text-[10px] uppercase tracking-wider border border-purple-200/50">
-                        <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
-                        Đang theo dõi
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-emerald-50 border border-emerald-200/60" title="Đang theo dõi">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     </span>
                 </div>
             </div>

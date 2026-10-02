@@ -18,6 +18,7 @@ import useBackHandler from '../hooks/useBackHandler';
 import ExitConfirmDialog from './ExitConfirmDialog';
 import NotificationBanner from './NotificationBanner';
 import PhotoJournal from './PhotoJournal';
+import BabyHomeView from './BabyHomeView';
 import PregnancyHomeView from './PregnancyHomeView';
 import PregnancyCheckups from './PregnancyCheckups';
 import PregnancyJournal from './PregnancyJournal';
@@ -132,6 +133,24 @@ export default function Dashboard({ profile, code }) {
         fetchDailyData();
     };
 
+    const handleQuickMarkVaccine = async (vaccineId) => {
+        try {
+            const today = new Date().toISOString().slice(0, 10);
+            await fetch('/api/vaccines', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code,
+                    vaccineId,
+                    date: today
+                })
+            });
+            fetchAllData();
+        } catch (e) {
+            console.error('Quick mark vaccine failed:', e);
+        }
+    };
+
     useEffect(() => {
         fetchAllData();
         fetchDailyData();
@@ -179,27 +198,23 @@ export default function Dashboard({ profile, code }) {
                     return <PregnancyHomeView profile={profile} code={code} />;
                 }
                 return (
-                    <HomeView 
+                    <BabyHomeView 
                         profile={profile} 
-                        records={records} 
-                        ageInfo={ageInfo} 
-                        daysToBirthday={daysToBirthday} 
-                        latest={latest} 
-                        setView={setView} 
-                        teethingRecords={teethingRecords} 
-                        vaccineRecords={vaccineRecords} 
-                        setShowEditProfile={setShowEditProfile}
                         code={code}
+                        records={records} 
                         feedings={feedings}
                         sleeps={sleeps}
                         diapers={diapers}
-                        activeSleep={activeSleep}
+                        teethingRecords={teethingRecords} 
+                        vaccineRecords={vaccineRecords} 
+                        setView={setView} 
+                        setShowEditProfile={setShowEditProfile}
+                        setShowShare={setShowShare}
                         onFeed={() => setShowFeedModal(true)}
                         onSleep={() => setShowSleepModal(true)}
                         onDiaper={() => setShowDiaperModal(true)}
-                        onDeleteFeeding={handleDeleteFeeding}
-                        onDeleteSleep={handleDeleteSleep}
-                        onDeleteDiaper={handleDeleteDiaper}
+                        onMeasure={() => setShowAdd(true)}
+                        onQuickMarkVaccine={handleQuickMarkVaccine}
                     />
                 );
         }

@@ -261,7 +261,7 @@ export default function BabyHomeView({
                                     <span>
                                         {nextBirthday.daysUntil === 0 
                                             ? `Hôm nay sinh nhật tròn ${nextBirthday.nextAge} tuổi!` 
-                                            : `Còn ${nextBirthday.daysUntil} ngày nữa tới SN`}
+                                            : `Còn ${nextBirthday.daysUntil} ngày`}
                                     </span>
                                 </span>
                             </>

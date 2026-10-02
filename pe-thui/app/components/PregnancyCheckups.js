@@ -86,20 +86,18 @@ export default function PregnancyCheckups({ profile, code }) {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-center px-2">
-                <h2 className="font-headline text-xl font-extrabold text-purple-900 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg">medical_services</span>
-                    Lịch Khám Thai
+            <div className="flex justify-between items-center px-1">
+                <h2 className="font-headline text-2xl font-bold text-[#861949] flex items-center gap-2">
+                    <span className="material-symbols-outlined text-2xl text-[#861949]">medical_services</span>
+                    Sổ Khám Thai Định Kỳ
                 </h2>
-                <div className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+                <div className="bg-[#861949]/10 text-[#861949] border border-[#861949]/20 px-3.5 py-1 rounded-full text-xs font-bold shadow-sm">
                     Mẹ đang tuần {currentWeek}
                 </div>
             </div>
 
-            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[1.15rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-purple-100 before:via-purple-200 before:to-purple-100">
+            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[1.15rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[#861949]/10 before:via-[#861949]/25 before:to-[#861949]/10">
                 {standardCheckups.map((checkup, idx) => {
-                    // Logic to determine if a checkup is past, current, or future
-                    // This is rough parsing of the week strings like "11 - 13 tuần"
                     const match = checkup.weeks.match(/(\d+)/g);
                     const minW = parseInt(match[0]);
                     const maxW = match.length > 1 ? parseInt(match[1]) : minW;
@@ -111,10 +109,10 @@ export default function PregnancyCheckups({ profile, code }) {
                     return (
                         <div key={checkup.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
                             {/* Icon */}
-                            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10 ${
-                                status === 'past' ? 'bg-green-100 text-green-500' : 
-                                status === 'current' ? 'bg-purple-500 text-white shadow-purple-500/30' : 
-                                'bg-gray-100 text-gray-300'
+                            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10 transition-all ${
+                                status === 'past' ? 'bg-emerald-50 text-emerald-600 ring-2 ring-emerald-200' : 
+                                status === 'current' ? 'bg-[#861949] text-white shadow-[#861949]/30 ring-4 ring-[#861949]/20' : 
+                                'bg-stone-100 text-stone-300 ring-1 ring-stone-200'
                             }`}>
                                 {status === 'past' ? <FaCheckCircle size={18} /> : 
                                  status === 'current' ? <span className="material-symbols-outlined text-lg animate-pulse">adjust</span> : 
@@ -122,30 +120,34 @@ export default function PregnancyCheckups({ profile, code }) {
                             </div>
 
                             {/* Card */}
-                            <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl bg-white border shadow-sm transition-all hover:shadow-md ml-4 md:ml-0 relative">
+                            <div className={`w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl bg-white/85 backdrop-blur-sm border transition-all hover:shadow-md ml-4 md:ml-0 relative ${
+                                status === 'current' ? 'border-[#861949]/30 shadow-md ring-1 ring-[#861949]/15' : 'border-[#861949]/10 shadow-sm'
+                            }`}>
                                 {status === 'current' && (
-                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl blur opacity-20 -z-10"></div>
+                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#861949]/20 to-[#006972]/20 rounded-2xl blur-sm opacity-50 -z-10"></div>
                                 )}
-                                <div className={`border-l-4 ${checkup.important ? 'border-pink-500' : 'border-purple-300'} pl-3 py-1`}>
+                                <div className={`border-l-4 ${checkup.important ? 'border-[#861949]' : 'border-[#006972]/40'} pl-3 py-0.5`}>
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className={`text-xs font-black tracking-widest uppercase ${status === 'current' ? 'text-purple-600' : 'text-gray-400'}`}>
+                                        <span className={`text-[11px] font-black tracking-widest uppercase ${status === 'current' ? 'text-[#861949]' : 'text-stone-400'}`}>
                                             Tuần {checkup.weeks}
                                         </span>
                                         {checkup.important && (
-                                            <span className="text-[9px] font-bold bg-pink-100 text-pink-600 px-2 py-0.5 rounded-md uppercase">Quan trọng</span>
+                                            <span className="text-[9px] font-black bg-[#861949]/10 text-[#861949] border border-[#861949]/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                                Quan trọng
+                                            </span>
                                         )}
                                     </div>
-                                    <h3 className={`font-bold ${status === 'current' ? 'text-gray-900' : 'text-gray-700'}`}>
+                                    <h3 className={`font-headline text-base font-bold ${status === 'current' ? 'text-stone-900' : 'text-stone-700'}`}>
                                         {checkup.title}
                                     </h3>
-                                    <p className="text-xs text-gray-500 mt-1 font-medium leading-relaxed">
+                                    <p className="text-xs text-stone-600 mt-1 font-normal leading-relaxed">
                                         {checkup.description}
                                     </p>
                                     
                                     <div className="mt-3 flex flex-wrap gap-1.5">
                                         {checkup.tests.map(test => (
-                                            <span key={test} className="inline-flex items-center gap-1 text-[10px] font-bold bg-gray-50 border border-gray-100 text-gray-600 px-2 py-1 rounded-lg">
-                                                <FaFileMedical className="text-gray-400" /> {test}
+                                            <span key={test} className="inline-flex items-center gap-1 text-[10px] font-medium bg-[#006972]/5 border border-[#006972]/15 text-[#006972] px-2.5 py-1 rounded-lg">
+                                                <FaFileMedical className="text-[#006972]/70" /> {test}
                                             </span>
                                         ))}
                                     </div>
@@ -157,8 +159,8 @@ export default function PregnancyCheckups({ profile, code }) {
             </div>
             
             <div className="pb-8 text-center px-6">
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wide">
-                    Lưu ý: Lịch khám mang tính tham khảo. Mẹ hãy tuân thủ chỉ định của Bác sĩ chuyên khoa nhé!
+                <p className="text-[11px] text-stone-400 font-medium">
+                    Lưu ý: Lịch khám mang tính chuẩn y khoa tham khảo. Mẹ hãy luôn tuân thủ chỉ định của Bác sĩ trực tiếp theo dõi nhé!
                 </p>
             </div>
         </div>

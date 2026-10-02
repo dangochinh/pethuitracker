@@ -50,7 +50,7 @@ export default function PregnancyGrowth({ code, profile }) {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center text-center">
                 <div className="animate-bounce text-4xl mb-3">⚖️</div>
-                <p className="text-purple-600 font-bold tracking-wide animate-pulse">Đang tải hồ sơ...</p>
+                <p className="text-[#861949] font-headline font-bold tracking-wide animate-pulse">Đang tải hồ sơ sức khoẻ...</p>
             </div>
         );
     }
@@ -76,9 +76,9 @@ export default function PregnancyGrowth({ code, profile }) {
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
             return (
-                <div className="bg-white p-3 border border-gray-100 rounded-xl shadow-lg">
-                    <p className="text-gray-500 text-xs font-bold mb-1">{label}</p>
-                    <p className="text-purple-600 font-black text-sm">{payload[0].value} kg</p>
+                <div className="bg-white/95 backdrop-blur-sm p-3 border border-[#861949]/15 rounded-xl shadow-lg">
+                    <p className="text-stone-500 text-xs font-bold mb-1">{label}</p>
+                    <p className="text-[#861949] font-headline font-bold text-sm">{payload[0].value} kg</p>
                 </div>
             );
         }
@@ -87,62 +87,67 @@ export default function PregnancyGrowth({ code, profile }) {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center px-2">
-                <h2 className="font-headline text-xl font-extrabold text-purple-900 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-lg">monitor_weight</span>
-                    Sức khoẻ của Mẹ
+            <div className="flex justify-between items-center px-1">
+                <h2 className="font-headline text-2xl font-bold text-[#861949] flex items-center gap-2">
+                    <span className="material-symbols-outlined text-2xl text-[#861949]">monitor_weight</span>
+                    Sức Khoẻ Của Mẹ
                 </h2>
                 <button
                     onClick={() => setShowAdd(true)}
-                    className="flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full font-bold text-xs hover:bg-purple-200 transition-colors"
+                    className="flex items-center gap-1.5 bg-[#861949] text-white px-3.5 py-1.5 rounded-full font-bold text-xs hover:bg-[#6e143c] shadow-sm transition-all active:scale-95"
                 >
                     <span className="material-symbols-outlined text-sm">add</span>
-                    Thêm
+                    Thêm Số Đo
                 </button>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-                <div className="bg-purple-50 rounded-2xl p-4 border border-purple-100 flex flex-col justify-center items-center text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400 mb-1">Cân nặng hiện tại</span>
-                    <span className="text-2xl font-black text-purple-700">{currentWeight ? `${currentWeight} kg` : '--'}</span>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-[#861949]/15 shadow-sm flex flex-col justify-center items-center text-center">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#861949]/70 mb-1">Cân nặng hiện tại</span>
+                    <span className="font-headline text-3xl font-bold text-[#861949]">{currentWeight ? `${currentWeight} kg` : '--'}</span>
                 </div>
-                <div className="bg-pink-50 rounded-2xl p-4 border border-pink-100 flex flex-col justify-center items-center text-center">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-pink-400 mb-1">Đã tăng</span>
-                    <span className="text-2xl font-black text-pink-600">{formatGain()}</span>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-[#006972]/15 shadow-sm flex flex-col justify-center items-center text-center">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#006972]/70 mb-1">Tổng đã tăng</span>
+                    <span className="font-headline text-3xl font-bold text-[#006972]">{formatGain()}</span>
                 </div>
             </div>
 
             {entries.length > 1 && (
-                <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 h-64">
+                <div className="bg-white/80 backdrop-blur-sm p-4 rounded-3xl shadow-sm border border-[#861949]/10 h-64">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 'bold' }} dy={10} />
-                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#9ca3af', fontWeight: 'bold' }} domain={['auto', 'auto']} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#fae3dc" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#7d5260', fontWeight: 'bold' }} dy={10} />
+                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#7d5260', fontWeight: 'bold' }} domain={['auto', 'auto']} />
                             <Tooltip content={<CustomTooltip />} />
-                            <Line type="monotone" dataKey="weight" name="Cân nặng" stroke="#a855f7" strokeWidth={3} dot={{ r: 4, fill: '#a855f7', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#a855f7', stroke: '#fff', strokeWidth: 2 }} />
+                            <Line type="monotone" dataKey="weight" name="Cân nặng" stroke="#861949" strokeWidth={3} dot={{ r: 4, fill: '#861949', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6, fill: '#861949', stroke: '#fff', strokeWidth: 2 }} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
             )}
 
-            <div className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm">
-                <div className="bg-gray-50 px-5 py-3 border-b border-gray-100 flex justify-between items-center">
-                    <h3 className="font-bold text-sm text-gray-700">Lịch sử cân nặng</h3>
+            <div className="bg-white/80 backdrop-blur-sm rounded-[2rem] border border-[#861949]/10 overflow-hidden shadow-sm">
+                <div className="bg-[#861949]/5 px-5 py-3 border-b border-[#861949]/10 flex justify-between items-center">
+                    <h3 className="font-headline font-bold text-sm text-[#861949]">Lịch Sử Cân Nặng</h3>
+                    <span className="text-[10px] font-bold text-stone-500 uppercase">{entries.length} lần đo</span>
                 </div>
                 {entries.length === 0 ? (
-                    <div className="p-6 text-center text-sm text-gray-400 font-medium">Chưa có dữ liệu.</div>
+                    <div className="p-8 text-center text-sm text-stone-400 font-medium">Chưa có số đo cân nặng nào được lưu.</div>
                 ) : (
-                    <div className="divide-y divide-gray-50">
+                    <div className="divide-y divide-[#861949]/5">
                         {entries.slice().reverse().map(e => (
-                            <div key={e.id} className="p-4 flex items-center justify-between">
+                            <div key={e.id} className="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
                                 <div>
-                                    <p className="font-bold text-gray-800 text-lg">{e.weight} kg</p>
-                                    <div className="flex gap-2 text-xs text-gray-500 font-medium mt-1">
+                                    <p className="font-headline font-bold text-stone-800 text-lg">{e.weight} kg</p>
+                                    <div className="flex gap-2 text-xs text-stone-500 font-medium mt-1 items-center">
                                         <span>{e.date ? new Date(e.date).toLocaleDateString('vi-VN') : ''}</span>
-                                        {e.gestationalAge && <span className="bg-purple-100 text-purple-700 px-1.5 rounded uppercase font-bold">{e.gestationalAge}</span>}
+                                        {e.gestationalAge && (
+                                            <span className="bg-[#861949]/10 text-[#861949] border border-[#861949]/20 px-2 py-0.5 rounded text-[10px] uppercase font-bold">
+                                                {e.gestationalAge}
+                                            </span>
+                                        )}
                                     </div>
-                                    {e.note && <p className="text-xs text-gray-400 mt-1">{e.note}</p>}
+                                    {e.note && <p className="text-xs text-stone-500 mt-1 italic">{e.note}</p>}
                                 </div>
                                 <button onClick={() => handleDelete(e.id)} className="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
                                     <span className="material-symbols-outlined text-[16px]">delete</span>
@@ -206,71 +211,71 @@ function AddMotherWeightModal({ code, currentWeek, onClose, onSave }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
-            <div className="w-full max-w-sm bg-white rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl border-t sm:border border-purple-100 animate-in slide-in-from-bottom duration-500 max-h-[90dvh] flex flex-col p-6">
+        <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
+            <div className="w-full max-w-sm bg-white rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl border-t sm:border border-[#861949]/15 animate-in slide-in-from-bottom duration-500 max-h-[90dvh] flex flex-col p-6">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-lg font-black font-headline text-purple-900">Ghi Cân Nặng</h2>
-                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-all">
-                        <span className="material-symbols-outlined text-gray-500 text-xl">close</span>
+                    <h2 className="text-xl font-headline font-bold text-[#861949]">Ghi Số Đo Cân Nặng</h2>
+                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-stone-100 hover:bg-stone-200 transition-all">
+                        <span className="material-symbols-outlined text-stone-500 text-xl">close</span>
                     </button>
                 </div>
 
                 <div className="space-y-4">
                     <div>
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block mb-1">Ngày ghi</label>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1 block mb-1">Ngày ghi</label>
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-200"
+                            className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#861949]/20"
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block mb-1">Cân nặng (kg)</label>
+                            <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1 block mb-1">Cân nặng (kg)</label>
                             <input
                                 type="number"
                                 step="0.1"
                                 placeholder="VD: 55.5"
                                 value={weight}
                                 onChange={(e) => setWeight(e.target.value)}
-                                className="w-full bg-purple-50 border border-purple-200 text-purple-700 rounded-2xl px-4 py-3 text-lg font-black focus:outline-none focus:ring-2 focus:ring-purple-300"
+                                className="w-full bg-[#861949]/5 border border-[#861949]/20 text-[#861949] rounded-2xl px-4 py-3 text-lg font-black focus:outline-none focus:ring-2 focus:ring-[#861949]/30"
                             />
                         </div>
                         <div>
-                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block mb-1">Tuần thai</label>
+                            <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1 block mb-1">Tuần thai</label>
                             <input
                                 type="text"
                                 placeholder="VD: Tuần 12"
                                 value={gestationalAge}
                                 onChange={(e) => setGestationalAge(e.target.value)}
-                                className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-200"
+                                className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#861949]/20"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 block mb-1">Ghi chú thêm</label>
+                        <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1 block mb-1">Ghi chú thêm</label>
                         <input
                             type="text"
                             placeholder="Ốm nghén, thèm ăn..."
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-200"
+                            className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#861949]/20"
                         />
                     </div>
 
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full mt-4 py-4 bg-purple-600 text-white rounded-2xl font-bold text-base shadow-lg disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="w-full mt-4 py-4 bg-[#861949] hover:bg-[#6e143c] text-white rounded-2xl font-bold text-base shadow-lg shadow-[#861949]/25 disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2"
                     >
                         {saving ? (
                             <span className="material-symbols-outlined animate-spin">progress_activity</span>
                         ) : (
                             <span className="material-symbols-outlined">check</span>
                         )}
-                        {saving ? 'Đang lưu...' : 'Lưu thông tin'}
+                        {saving ? 'Đang lưu...' : 'Lưu Số Đo'}
                     </button>
                 </div>
             </div>

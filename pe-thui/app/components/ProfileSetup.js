@@ -96,9 +96,10 @@ export default function ProfileSetup({ onComplete }) {
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
 
             <div className="cute-card w-full max-w-sm p-8 text-center relative z-10 bg-white/90 backdrop-blur-xl">
-                <div className="w-24 h-24 bg-pink-100 rounded-full mx-auto flex items-center justify-center mb-4 border-4 border-white shadow-sm overflow-hidden text-pink-300">
-                    <FaBaby size={40} />
+                <div className="w-24 h-24 rounded-full mx-auto flex items-center justify-center mb-4 p-1 bg-white shadow-md border-2 border-pink-100 overflow-hidden">
+                    <img src="/logo-stitch.png" alt="Pe Thúi Tracker Logo" className="w-full h-full object-cover rounded-full" />
                 </div>
+
                 {successCode ? (
                     <div className="py-6 animate-in fade-in zoom-in duration-300">
                         <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl shadow-sm">

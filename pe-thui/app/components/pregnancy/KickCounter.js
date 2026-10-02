@@ -3,33 +3,75 @@
 import { useState, useEffect } from 'react';
 import { evaluateKickCount } from '../../lib/pregnancy-utils';
 
-export default function KickCounter({ selectedWeek }) {
+export default function KickCounter({ selectedWeek, code }) {
     const todayKey = new Date().toISOString().slice(0, 10);
     const [count, setCount] = useState(0);
     const [history, setHistory] = useState([]);
+    const [showChart, setShowChart] = useState(true);
+    const [weeklyHistory, setWeeklyHistory] = useState([]);
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem(`pethui_kicks_${todayKey}`);
-            if (saved) {
+    // Tải dữ liệu hôm nay & 7 ngày gần nhất
+    const loadKickData = () => {
+        if (typeof window === 'undefined') return;
+        const prefix = code ? `pethui_${code}_kicks_` : 'pethui_kicks_';
+
+        // Load today
+        const savedToday = localStorage.getItem(`${prefix}${todayKey}`) || localStorage.getItem(`pethui_kicks_${todayKey}`);
+        if (savedToday) {
+            try {
+                const parsed = JSON.parse(savedToday);
+                setCount(parsed.count || 0);
+                setHistory(parsed.history || []);
+            } catch (e) {}
+        } else {
+            setCount(0);
+            setHistory([]);
+        }
+
+        // Load 7 days history
+        const days = [];
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().slice(0, 10);
+            const dayLabel = i === 0 ? 'H.nay' : `${d.getDate()}/${d.getMonth() + 1}`;
+            const raw = localStorage.getItem(`${prefix}${dateStr}`) || localStorage.getItem(`pethui_kicks_${dateStr}`);
+            let dayCount = 0;
+            if (raw) {
                 try {
-                    const parsed = JSON.parse(saved);
-                    setCount(parsed.count || 0);
-                    setHistory(parsed.history || []);
+                    const parsed = JSON.parse(raw);
+                    dayCount = parsed.count || 0;
                 } catch (e) {}
             }
+            days.push({
+                date: dateStr,
+                label: dayLabel,
+                count: dayCount,
+                isToday: i === 0
+            });
         }
-    }, [todayKey]);
+        setWeeklyHistory(days);
+    };
+
+    useEffect(() => {
+        loadKickData();
+    }, [todayKey, code]);
 
     const saveKicks = (newCount, newHistory) => {
         setCount(newCount);
         setHistory(newHistory);
         if (typeof window !== 'undefined') {
-            localStorage.setItem(`pethui_kicks_${todayKey}`, JSON.stringify({
+            const prefix = code ? `pethui_${code}_kicks_` : 'pethui_kicks_';
+            const payload = JSON.stringify({
                 count: newCount,
                 history: newHistory,
                 date: todayKey
-            }));
+            });
+            localStorage.setItem(`${prefix}${todayKey}`, payload);
+            localStorage.setItem(`pethui_kicks_${todayKey}`, payload); // fallback
+
+            // Update weekly history state
+            setWeeklyHistory(prev => prev.map(item => item.isToday ? { ...item, count: newCount } : item));
         }
     };
 
@@ -37,7 +79,7 @@ export default function KickCounter({ selectedWeek }) {
         const now = new Date();
         const timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
         const newCount = count + 1;
-        const newHistory = [timeStr, ...history].slice(0, 30);
+        const newHistory = [timeStr, ...history].slice(0, 50);
         
         saveKicks(newCount, newHistory);
 
@@ -55,6 +97,10 @@ export default function KickCounter({ selectedWeek }) {
 
     const kickStatus = evaluateKickCount(count);
 
+    // Tính toán biểu đồ cột 7 ngày
+    const maxBarCount = Math.max(12, ...weeklyHistory.map(d => d.count));
+    const targetGoal = 10;
+
     return (
         <section className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/80 flex flex-col gap-4 text-left">
             {/* Header */}
@@ -68,10 +114,23 @@ export default function KickCounter({ selectedWeek }) {
                         <span className="text-xs text-gray-500 font-medium">Mục tiêu ≥ 10 lần / 2 giờ</span>
                     </div>
                 </div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-bold text-[10px] uppercase tracking-wider border border-purple-200/50">
-                    <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
-                    Đang theo dõi
-                </span>
+
+                <div className="flex items-center gap-1.5">
+                    <button
+                        type="button"
+                        onClick={() => setShowChart(!showChart)}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all cursor-pointer ${
+                            showChart ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                        }`}
+                        title="Bật/Tắt biểu đồ theo dõi"
+                    >
+                        <span className="material-symbols-outlined text-[18px]">bar_chart</span>
+                    </button>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-bold text-[10px] uppercase tracking-wider border border-purple-200/50">
+                        <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse"></span>
+                        Đang theo dõi
+                    </span>
+                </div>
             </div>
 
             {/* Counter Interaction Area */}
@@ -87,7 +146,7 @@ export default function KickCounter({ selectedWeek }) {
                         {kickStatus.isTargetMet ? (
                             <>
                                 <span className="material-symbols-outlined text-[16px] text-teal-600">check_circle</span>
-                                <span className="text-teal-700 font-bold">Bé rất năng động hôm nay!</span>
+                                <span className="text-teal-700 font-bold">Đạt chuẩn! Bé rất năng động</span>
                             </>
                         ) : kickStatus.count > 0 ? (
                             <>
@@ -110,12 +169,87 @@ export default function KickCounter({ selectedWeek }) {
                 </button>
             </div>
 
+            {/* Visualizer Chart: Biểu đồ 7 ngày cử động thai */}
+            {showChart && weeklyHistory.length > 0 && (
+                <div className="bg-[#fff9fa] rounded-2xl p-4 border border-pink-100/70 flex flex-col gap-2">
+                    <div className="flex items-center justify-between text-xs">
+                        <span className="font-bold text-gray-700 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[16px] text-[#861949]">insights</span>
+                            Biểu đồ cử động 7 ngày gần nhất
+                        </span>
+                        <div className="flex items-center gap-2 text-[10px] text-gray-500">
+                            <span className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-teal-500 inline-block"></span>
+                                ≥10 đạt chuẩn
+                            </span>
+                            <span className="flex items-center gap-1">
+                                <span className="w-2 h-0.5 bg-rose-400 border-b border-dashed inline-block"></span>
+                                Mốc chuẩn
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Chart Bars */}
+                    <div className="relative pt-6 pb-2">
+                        {/* Target line (10 kicks) */}
+                        <div 
+                            className="absolute left-0 right-0 border-b border-dashed border-rose-300 pointer-events-none z-10 flex items-center justify-end"
+                            style={{ bottom: `${Math.round((targetGoal / maxBarCount) * 88 + 26)}px` }}
+                        >
+                            <span className="text-[9px] font-bold text-rose-500 bg-rose-50 px-1 rounded-sm mr-1">
+                                10 lần
+                            </span>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-2 items-end h-28 px-1">
+                            {weeklyHistory.map((day) => {
+                                const heightPercent = Math.min(100, Math.max(8, Math.round((day.count / maxBarCount) * 100)));
+                                const isGoalMet = day.count >= 10;
+                                return (
+                                    <div key={day.date} className="flex flex-col items-center gap-1.5 h-full justify-end group">
+                                        {/* Value Label */}
+                                        <span className={`text-[10px] font-black transition-all ${
+                                            day.isToday ? 'text-purple-900 scale-110' : 'text-gray-500'
+                                        }`}>
+                                            {day.count}
+                                        </span>
+
+                                        {/* Bar */}
+                                        <div className="w-full bg-gray-100/80 rounded-t-lg h-22 flex items-end overflow-hidden p-0.5">
+                                            <div 
+                                                style={{ height: `${heightPercent}%` }}
+                                                className={`w-full rounded-t-md transition-all duration-500 ${
+                                                    day.isToday
+                                                        ? isGoalMet
+                                                            ? 'bg-gradient-to-t from-teal-600 to-teal-400 shadow-xs'
+                                                            : 'bg-gradient-to-t from-purple-600 to-pink-500 shadow-xs'
+                                                        : isGoalMet
+                                                            ? 'bg-teal-400/80'
+                                                            : day.count > 0 ? 'bg-purple-300/80' : 'bg-gray-200'
+                                                }`}
+                                            ></div>
+                                        </div>
+
+                                        {/* Date Label */}
+                                        <span className={`text-[9px] font-bold truncate ${
+                                            day.isToday ? 'text-[#861949] font-black' : 'text-gray-400'
+                                        }`}>
+                                            {day.label}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Recent kicks history tag list & reset */}
             {history.length > 0 && (
                 <div className="flex items-center justify-between text-xs text-gray-500 pt-1 border-t border-gray-100">
                     <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 shrink-0">Gần nhất:</span>
-                        {history.slice(0, 4).map((time, idx) => (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 shrink-0">Lần đạp gần nhất:</span>
+                        {history.slice(0, 5).map((time, idx) => (
                             <span key={idx} className="bg-purple-100/70 text-purple-800 text-[11px] font-semibold px-2 py-0.5 rounded-md shrink-0">
                                 {time}
                             </span>
@@ -132,3 +266,4 @@ export default function KickCounter({ selectedWeek }) {
         </section>
     );
 }
+

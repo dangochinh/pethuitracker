@@ -120,6 +120,14 @@ export default function ConvertBabyModal({ profile, code, onClose, onSuccess, in
                 estimatedDueDate: profile?.estimatedDueDate || null
             });
 
+            // 4. Đặt cờ kích hoạt hiệu ứng tung hoa chúc mừng
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem('pethui_flower_celebration', JSON.stringify({
+                    name: name.trim(),
+                    type: 'baby_born'
+                }));
+            }
+
             if (onSuccess) {
                 onSuccess();
             } else {

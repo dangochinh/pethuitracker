@@ -289,7 +289,15 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
 
                         <button 
                             type="button"
-                            onClick={() => router.push(`/${p.code}`)}
+                            onClick={() => {
+                                if (typeof window !== 'undefined') {
+                                    sessionStorage.setItem('pethui_flower_celebration', JSON.stringify({
+                                        name: p.name,
+                                        type: 'switch_profile'
+                                    }));
+                                }
+                                router.push(`/${p.code}`);
+                            }}
                             className="px-3.5 py-1.5 rounded-full bg-gray-100 hover:bg-purple-100 text-[#861949] text-xs font-bold active:scale-95 transition-all cursor-pointer"
                         >
                             Chọn

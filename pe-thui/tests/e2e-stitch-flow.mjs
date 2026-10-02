@@ -553,6 +553,21 @@ async function runE2E() {
 
         // 5. Xác nhận trang đã chuyển đổi thành công sang BabyHomeView
         await page.waitForSelector('text=Bé Gạo Stitch', { timeout: 12000 });
+
+        // 6. Kiểm tra hiệu ứng tung hoa chúc mừng khi chuyển đổi hồ sơ
+        const celebrationCanvas = await page.$('canvas');
+        const celebrationBanner = await page.$('text=Chúc Mừng Bé') || await page.$('text=Bắt đầu hành trình cùng con');
+        check('UI-42', 'Hiệu ứng tung hoa và banner chúc mừng hiển thị lộng lẫy khi chuyển đổi hồ sơ em bé chào đời', !!celebrationCanvas || !!celebrationBanner);
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '26_flower_celebration_effect.png') });
+
+        // Đóng banner chúc mừng để vào trang bé
+        const closeBannerBtn = await page.$('button:has-text("Bắt đầu hành trình cùng con")');
+        if (closeBannerBtn) {
+            await closeBannerBtn.click();
+            await page.waitForTimeout(500);
+        }
+
         const dailySection = await page.$('text=Nhật ký hôm nay');
         const milkSection = await page.$('text=Cữ sữa');
         check('LOGIC-15', 'Hồ sơ đã chuyển đổi thành công 100% sang chế độ Em Bé Đã Sinh (BabyHomeView)', !!dailySection || !!milkSection);

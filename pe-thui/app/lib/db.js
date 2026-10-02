@@ -117,6 +117,9 @@ export async function getGrowthRecords(code) {
             ageMonths: Number(d.ageMonths) || 0,
             weight: Number(d.weight) || 0,
             height: Number(d.height) || 0,
+            type: d.type || '',
+            gestationalAge: d.gestationalAge || '',
+            note: d.note || '',
         };
     });
 
@@ -132,26 +135,34 @@ export async function getGrowthRecords(code) {
 export async function addGrowthRecord(code, record) {
     const db = getFirestore();
     const growthCol = db.collection('babies').doc(code).collection('growth');
-    const docRef = await growthCol.add({
+    const docData = {
         date: record.date || '',
         ageMonths: Number(record.ageMonths) || 0,
         weight: Number(record.weight) || 0,
         height: Number(record.height) || 0,
+        type: record.type || '',
+        gestationalAge: record.gestationalAge || '',
+        note: record.note || '',
         createdAt: new Date(),
-    });
-    return { id: docRef.id, ...record };
+    };
+    const docRef = await growthCol.add(docData);
+    return { id: docRef.id, ...docData };
 }
 
 export async function updateGrowthRecord(code, id, record) {
     const db = getFirestore();
     const docRef = db.collection('babies').doc(code).collection('growth').doc(String(id));
-    await docRef.set({
+    const updateData = {
         date: record.date || '',
         ageMonths: Number(record.ageMonths) || 0,
         weight: Number(record.weight) || 0,
         height: Number(record.height) || 0,
         updatedAt: new Date(),
-    }, { merge: true });
+    };
+    if (record.type !== undefined) updateData.type = record.type;
+    if (record.gestationalAge !== undefined) updateData.gestationalAge = record.gestationalAge;
+    if (record.note !== undefined) updateData.note = record.note;
+    await docRef.set(updateData, { merge: true });
 }
 
 export async function deleteGrowthRecord(code, id) {

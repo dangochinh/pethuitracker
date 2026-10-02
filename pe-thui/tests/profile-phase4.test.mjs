@@ -6,7 +6,9 @@ import {
     saveProfileToStorage,
     removeProfileFromStorage,
     formatFamilyShareCode,
-    generateBackupDataPayload
+    generateBackupDataPayload,
+    isProfileUnlocked,
+    setProfileUnlocked
 } from '../app/lib/profile-utils.js';
 
 // Mock localStorage cho Node.js testing environment
@@ -122,4 +124,23 @@ test('4. generateBackupDataPayload creates comprehensive Firebase JSON backup wi
     assert.equal(payload.meta.totalEntries, 4);
     assert.equal(payload.meta.syncEngine, 'Firebase Firestore Realtime');
     assert.ok(payload.exportedAt);
+});
+
+test('5. isProfileUnlocked and setProfileUnlocked properly toggle edit permissions per baby code', () => {
+    const mockStorage = new MockLocalStorage();
+    const code = 'HANA010426';
+
+    // Ban đầu chưa mở khoá
+    assert.equal(isProfileUnlocked(code, mockStorage), false);
+
+    // Mở khoá
+    setProfileUnlocked(code, true, mockStorage);
+    assert.equal(isProfileUnlocked(code, mockStorage), true);
+
+    // Hồ sơ khác vẫn bị khoá
+    assert.equal(isProfileUnlocked('MOCHI', mockStorage), false);
+
+    // Khoá lại
+    setProfileUnlocked(code, false, mockStorage);
+    assert.equal(isProfileUnlocked(code, mockStorage), false);
 });

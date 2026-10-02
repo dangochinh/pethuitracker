@@ -27,6 +27,8 @@ import PregnancyJournal from './PregnancyJournal';
 import PregnancyGrowth from './PregnancyGrowth';
 import ShareModal from './ShareModal';
 import FlowerCelebration from './FlowerCelebration';
+import PinAuthModal from './ui/PinAuthModal';
+import { isProfileUnlocked, setProfileUnlocked } from '../lib/profile-utils';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
@@ -43,6 +45,25 @@ export default function Dashboard({ profile, code }) {
     const [editingRecord, setEditingRecord] = useState(null);
     const [view, setView] = useState('home'); // home, growth, health, teething
     const [showExitConfirm, setShowExitConfirm] = useState(false);
+
+    // PIN Authentication & View-only state
+    const [isUnlocked, setIsUnlocked] = useState(false);
+    const [showPinAuthModal, setShowPinAuthModal] = useState(false);
+    const [pendingAction, setPendingAction] = useState(null);
+
+    useEffect(() => {
+        setIsUnlocked(isProfileUnlocked(code));
+    }, [code]);
+
+    // Hàm bọc kiểm tra quyền: Nếu profile có PIN và máy này chưa mở khoá thì hiện popup PIN
+    const requirePin = (actionCallback) => {
+        if (!profile?.hasPin || isUnlocked || isProfileUnlocked(code)) {
+            actionCallback();
+        } else {
+            setPendingAction(() => actionCallback);
+            setShowPinAuthModal(true);
+        }
+    };
 
     // Daily tracking state
     const [feedings, setFeedings] = useState([]);
@@ -216,8 +237,11 @@ export default function Dashboard({ profile, code }) {
                         profile={profile} 
                         code={code} 
                         records={records}
-                        onEditProfile={() => setShowEditProfile(true)}
+                        onEditProfile={() => requirePin(() => setShowEditProfile(true))}
                         onOpenShare={() => setShowShare(true)}
+                        onPinUpdated={() => {
+                            setIsUnlocked(isProfileUnlocked(code));
+                        }}
                     />
                 );
             case 'home':
@@ -236,13 +260,13 @@ export default function Dashboard({ profile, code }) {
                         teethingRecords={teethingRecords} 
                         vaccineRecords={vaccineRecords} 
                         setView={setView} 
-                        setShowEditProfile={setShowEditProfile}
+                        setShowEditProfile={() => requirePin(() => setShowEditProfile(true))}
                         setShowShare={setShowShare}
-                        onFeed={() => setShowFeedModal(true)}
-                        onSleep={() => setShowSleepModal(true)}
-                        onDiaper={() => setShowDiaperModal(true)}
-                        onMeasure={() => setShowAdd(true)}
-                        onQuickMarkVaccine={handleQuickMarkVaccine}
+                        onFeed={() => requirePin(() => setShowFeedModal(true))}
+                        onSleep={() => requirePin(() => setShowSleepModal(true))}
+                        onDiaper={() => requirePin(() => setShowDiaperModal(true))}
+                        onMeasure={() => requirePin(() => setShowAdd(true))}
+                        onQuickMarkVaccine={(vaccineId) => requirePin(() => handleQuickMarkVaccine(vaccineId))}
                     />
                 );
         }
@@ -250,6 +274,24 @@ export default function Dashboard({ profile, code }) {
 
     return (
         <div className="min-h-screen bg-background pb-24 relative">
+            {/* View Only Mode Indicator Banner */}
+            {profile?.hasPin && !isUnlocked && (
+                <div className="bg-amber-500/15 border-b border-amber-500/20 px-4 py-2 flex items-center justify-between text-xs text-amber-900 sticky top-0 z-[60] backdrop-blur-md">
+                    <div className="flex items-center gap-1.5 font-bold">
+                        <span className="material-symbols-outlined text-[16px]">visibility</span>
+                        <span>Chế độ chỉ xem (View Only)</span>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setShowPinAuthModal(true)}
+                        className="px-2.5 py-1 rounded-full bg-amber-600 text-white font-extrabold text-[10px] uppercase tracking-wider hover:bg-amber-700 active:scale-95 transition-all shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                        <span className="material-symbols-outlined text-[12px]">lock_open</span>
+                        <span>Mở quyền sửa</span>
+                    </button>
+                </div>
+            )}
+
             {/* Global Floating Buttons */}
             {view === 'home' && (
                 <div className="absolute top-6 right-6 z-50 flex gap-2">
@@ -259,7 +301,7 @@ export default function Dashboard({ profile, code }) {
                     <button onClick={() => setShowInfo(true)} className="w-10 h-10 flex items-center justify-center bg-white text-gray-400 hover:text-primary rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border border-gray-100">
                         <span className="material-symbols-outlined text-xl">help</span>
                     </button>
-                    <button onClick={() => setShowEditProfile(true)} className="w-10 h-10 flex items-center justify-center bg-white text-gray-400 hover:text-primary rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border border-gray-100">
+                    <button onClick={() => setView('settings')} className="w-10 h-10 flex items-center justify-center bg-white text-gray-400 hover:text-primary rounded-full shadow-sm hover:shadow-md transition-all active:scale-95 border border-gray-100" title="Cài đặt">
                         <span className="material-symbols-outlined text-xl">settings</span>
                     </button>
                 </div>
@@ -272,7 +314,7 @@ export default function Dashboard({ profile, code }) {
             </div>
             {profile.mode !== 'pregnancy' && view !== 'teething' && view !== 'health' && view !== 'journal' && (
                 <button 
-                    onClick={() => setShowAdd(true)}
+                    onClick={() => requirePin(() => setShowAdd(true))}
                     className="fixed bottom-32 right-6 w-16 h-16 bg-soft-gradient text-on-primary rounded-full shadow-[0_20px_40px_rgba(165,51,97,0.4)] flex items-center justify-center z-[100] active:scale-90 transition-all border-4 border-white hover:bottom-34"
                 >
                     <span className="material-symbols-outlined text-3xl">add</span>
@@ -286,6 +328,27 @@ export default function Dashboard({ profile, code }) {
             {showEditProfile && <EditProfileModal profile={profile} code={code} onClose={() => setShowEditProfile(false)} onSave={(newCode) => { if (newCode && newCode !== code) { router.push(`/${newCode}`); } else { window.location.reload(); } }} />}
             {editingRecord && <EditRecordModal profile={profile} code={code} record={editingRecord} onClose={() => setEditingRecord(null)} onSave={fetchAllData} />}
             {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
+
+            {/* PIN Authentication Modal */}
+            {showPinAuthModal && (
+                <PinAuthModal
+                    code={code}
+                    babyName={profile?.name}
+                    onSuccess={() => {
+                        setProfileUnlocked(code, true);
+                        setIsUnlocked(true);
+                        setShowPinAuthModal(false);
+                        if (pendingAction) {
+                            pendingAction();
+                            setPendingAction(null);
+                        }
+                    }}
+                    onClose={() => {
+                        setShowPinAuthModal(false);
+                        setPendingAction(null);
+                    }}
+                />
+            )}
 
             {/* Daily Tracking Modals */}
             {showFeedModal && <FeedingModal code={code} onClose={() => setShowFeedModal(false)} onSave={fetchDailyData} />}

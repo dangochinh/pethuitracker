@@ -18,6 +18,7 @@ export async function getBaby(code) {
         telegramChatId: data.telegramChatId || '',
         mode: data.mode || (data.estimatedDueDate ? 'pregnancy' : 'born'),
         estimatedDueDate: data.estimatedDueDate || null,
+        hasPin: Boolean(data.editPin && String(data.editPin).trim().length === 4),
     };
 }
 
@@ -28,11 +29,57 @@ export async function checkBabyExists(code) {
     return doc.exists;
 }
 
+export async function verifyBabyPin(code, pin) {
+    if (!code) return { success: false, message: 'Thiếu mã bé' };
+    const db = getFirestore();
+    const doc = await db.collection('babies').doc(code).get();
+    if (!doc.exists) return { success: false, message: 'Hồ sơ không tồn tại' };
+    const data = doc.data();
+    const currentPin = data.editPin ? String(data.editPin).trim() : '';
+    if (!currentPin) {
+        // Chưa đặt PIN thì coi như hợp lệ
+        return { success: true, hasPin: false };
+    }
+    const cleanInputPin = String(pin || '').trim();
+    if (cleanInputPin === currentPin) {
+        return { success: true, hasPin: true };
+    }
+    return { success: false, hasPin: true, message: 'Mã PIN không chính xác' };
+}
+
+export async function updateBabyPin(code, newPin, oldPin = null) {
+    if (!code) throw new Error('Code is required');
+    const db = getFirestore();
+    const ref = db.collection('babies').doc(code);
+    const doc = await ref.get();
+    if (!doc.exists) throw new Error('Hồ sơ không tồn tại');
+    const currentPin = doc.data()?.editPin ? String(doc.data().editPin).trim() : '';
+
+    // Nếu đã có PIN thì bắt buộc phải nhập đúng oldPin (trừ khi oldPin match)
+    if (currentPin) {
+        if (String(oldPin || '').trim() !== currentPin) {
+            throw new Error('Mã PIN hiện tại không đúng');
+        }
+    }
+
+    const cleanNewPin = newPin ? String(newPin).trim() : null;
+    if (cleanNewPin && !/^\d{4}$/.test(cleanNewPin)) {
+        throw new Error('Mã PIN phải bao gồm đúng 4 chữ số');
+    }
+
+    await ref.set({
+        editPin: cleanNewPin,
+        updatedAt: new Date(),
+    }, { merge: true });
+
+    return { success: true, hasPin: Boolean(cleanNewPin) };
+}
+
 export async function createOrUpdateBaby(code, data) {
     if (!code) throw new Error('Code is required');
     const db = getFirestore();
     const ref = db.collection('babies').doc(code);
-    await ref.set({
+    const payload = {
         code,
         name: data.name || '',
         gender: data.gender || '',
@@ -42,7 +89,11 @@ export async function createOrUpdateBaby(code, data) {
         mode: data.mode || (data.estimatedDueDate ? 'pregnancy' : 'born'),
         estimatedDueDate: data.estimatedDueDate || null,
         updatedAt: new Date(),
-    }, { merge: true });
+    };
+    if (data.editPin !== undefined) {
+        payload.editPin = data.editPin ? String(data.editPin).trim() : null;
+    }
+    await ref.set(payload, { merge: true });
 }
 
 export async function renameBabyCode(oldCode, newCode) {

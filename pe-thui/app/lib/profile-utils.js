@@ -90,3 +90,27 @@ export function generateBackupDataPayload(code, profile, allRecords = {}) {
         }
     };
 }
+
+/**
+ * Quản lý trạng thái mở khoá quyền chỉnh sửa bằng mã PIN trên thiết bị
+ */
+export function isProfileUnlocked(code, storage = typeof window !== 'undefined' ? window.localStorage : null) {
+    if (!storage || !code) return false;
+    try {
+        const raw = storage.getItem(`pethui_unlocked_${code}`);
+        return raw === 'true';
+    } catch (e) {
+        return false;
+    }
+}
+
+export function setProfileUnlocked(code, isUnlocked = true, storage = typeof window !== 'undefined' ? window.localStorage : null) {
+    if (!storage || !code) return;
+    try {
+        if (isUnlocked) {
+            storage.setItem(`pethui_unlocked_${code}`, 'true');
+        } else {
+            storage.removeItem(`pethui_unlocked_${code}`);
+        }
+    } catch (e) {}
+}

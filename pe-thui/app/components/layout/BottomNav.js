@@ -7,12 +7,13 @@ export default function BottomNav({ view, setView, mode }) {
         { id: 'journal', label: 'Siêu âm', icon: 'photo_library' },
         { id: 'health', label: 'Lịch khám', icon: 'medical_services' },
         { id: 'growth', label: 'Sức khoẻ mẹ', icon: 'monitor_weight' },
+        { id: 'settings', label: 'Hồ sơ', icon: 'dataset' },
     ] : [
-        { id: 'home', label: 'Trang chủ', icon: 'home' },
-        { id: 'journal', label: 'Kỷ niệm', icon: 'photo_library' },
-        { id: 'teething', label: 'Mọc răng', icon: 'dentistry' },
+        { id: 'home', label: 'Bé yêu', icon: 'child_care' },
+        { id: 'journal', label: 'Nhật ký', icon: 'auto_stories' },
         { id: 'health', label: 'Tiêm chủng', icon: 'medical_services' },
-        { id: 'growth', label: 'Phát triển', icon: 'trending_up' },
+        { id: 'growth', label: 'Tăng trưởng', icon: 'trending_up' },
+        { id: 'settings', label: 'Hồ sơ', icon: 'dataset' },
     ];
 
     return (

@@ -26,10 +26,12 @@ import PregnancyCheckups from './PregnancyCheckups';
 import PregnancyJournal from './PregnancyJournal';
 import PregnancyGrowth from './PregnancyGrowth';
 import ShareModal from './ShareModal';
+import FlowerCelebration from './FlowerCelebration';
 import { QuickActions, StatusBar, ActivityTimeline, FeedingModal, SleepModal, DiaperModal } from './DailyTracking';
 
 export default function Dashboard({ profile, code }) {
     const router = useRouter();
+    const [celebrationData, setCelebrationData] = useState(null);
     const [showShare, setShowShare] = useState(false);
     const [records, setRecords] = useState([]);
     const [vaccineRecords, setVaccineRecords] = useState([]);
@@ -67,6 +69,20 @@ export default function Dashboard({ profile, code }) {
         if (showExitConfirm) { setShowExitConfirm(false); return; }
         setShowExitConfirm(true);
     });
+
+    // Celebration on profile convert / switch
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const saved = sessionStorage.getItem('pethui_flower_celebration');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    setCelebrationData(parsed);
+                    sessionStorage.removeItem('pethui_flower_celebration');
+                } catch (e) {}
+            }
+        }
+    }, [code]);
 
     const todayStr = new Date().toISOString().slice(0, 10);
 
@@ -283,6 +299,15 @@ export default function Dashboard({ profile, code }) {
                         router.push('/');
                     }}
                     onCancel={() => setShowExitConfirm(false)}
+                />
+            )}
+
+            {/* Celebration Flower & Confetti Effect */}
+            {celebrationData && (
+                <FlowerCelebration
+                    name={celebrationData.name}
+                    type={celebrationData.type}
+                    onFinish={() => setCelebrationData(null)}
                 />
             )}
         </div>

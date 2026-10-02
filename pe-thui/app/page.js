@@ -114,10 +114,11 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
 
         <div ref={cardRef} className="cute-card w-full max-w-sm p-8 text-center relative z-10 bg-white/90 backdrop-blur-xl shadow-xl transition-all duration-500">
-          <div className="w-24 h-24 bg-pink-100 rounded-full mx-auto flex items-center justify-center mb-6 border-4 border-white shadow-sm text-pink-300">
-            <FaBaby size={40} />
+          <div className="w-24 h-24 rounded-full mx-auto flex items-center justify-center mb-5 p-1 bg-white shadow-md border-2 border-pink-100 overflow-hidden">
+            <img src="/logo-stitch.png" alt="Pe Thúi Tracker Logo" className="w-full h-full object-cover rounded-full" />
           </div>
           <h1 className="text-2xl font-bold text-gray-800 mb-2 tracking-tight">Pe Thúi Tracker</h1>
+
           <p className="text-gray-500 text-sm mb-8 font-medium">Lưu giữ hành trình khôn lớn</p>
 
           {/* List of previously saved babies */}

@@ -5,14 +5,17 @@ import { useRouter } from 'next/navigation';
 import { 
     getSavedProfilesFromStorage, 
     saveProfileToStorage, 
+    removeProfileFromStorage,
     formatFamilyShareCode, 
-    generateBackupDataPayload 
+    generateBackupDataPayload,
+    isProfileUnlocked,
+    setProfileUnlocked
 } from '../../lib/profile-utils';
 import { formatBabyAge } from '../../lib/baby-utils';
 import { calculatePregnancyWeeks } from '../../lib/pregnancy-utils';
 import ConvertBabyModal from '../pregnancy/ConvertBabyModal';
 
-export default function ProfileSettingsView({ profile, code, records = [], onEditProfile, onOpenShare }) {
+export default function ProfileSettingsView({ profile, code, records = [], onEditProfile, onOpenShare, onPinUpdated }) {
     const router = useRouter();
     const [savedProfiles, setSavedProfiles] = useState([]);
     const [copiedCode, setCopiedCode] = useState(false);
@@ -20,6 +23,16 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
     const [toastMessage, setToastMessage] = useState('');
     const [showConvertBabyModal, setShowConvertBabyModal] = useState(false);
     
+    // PIN Settings State
+    const [hasPin, setHasPin] = useState(Boolean(profile?.hasPin));
+    const [isUnlocked, setIsUnlocked] = useState(false);
+    const [showPinModal, setShowPinModal] = useState(false);
+    const [pinOld, setPinOld] = useState('');
+    const [pinNew, setPinNew] = useState('');
+    const [pinConfirm, setPinConfirm] = useState('');
+    const [pinError, setPinError] = useState('');
+    const [pinLoading, setPinLoading] = useState(false);
+
     // Reminders state
     const [reminders, setReminders] = useState({
         feeding: true,
@@ -27,6 +40,11 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
         checkup: true,
         temp: false
     });
+
+    useEffect(() => {
+        setHasPin(Boolean(profile?.hasPin));
+        setIsUnlocked(isProfileUnlocked(code));
+    }, [code, profile]);
 
     const babyAge = formatBabyAge(profile?.dob);
     const familyCode = formatFamilyShareCode(code);
@@ -202,8 +220,8 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
             <section className="space-y-3">
                 <div className="flex items-center justify-between px-1">
                     <div>
-                        <h3 className="font-headline font-bold text-sm text-gray-900">Hồ sơ theo dõi gia đình</h3>
-                        <p className="text-xs text-gray-500">Chuyển đổi nhanh giữa các bé hoặc thai kỳ</p>
+                        <h3 className="font-headline font-bold text-sm text-gray-900">Hồ sơ đã lưu trên thiết bị</h3>
+                        <p className="text-xs text-gray-500">Các bé đã đăng nhập trên máy này để chuyển đổi nhanh</p>
                     </div>
                     <span className="text-[10px] text-[#861949] px-2.5 py-1 rounded-full bg-pink-100 font-extrabold uppercase tracking-wider">
                         {savedProfiles.length} Hồ sơ
@@ -289,21 +307,38 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                             </div>
                         </div>
 
-                        <button 
-                            type="button"
-                            onClick={() => {
-                                if (typeof window !== 'undefined') {
-                                    sessionStorage.setItem('pethui_flower_celebration', JSON.stringify({
-                                        name: p.name,
-                                        type: 'switch_profile'
-                                    }));
-                                }
-                                router.push(`/${p.code}`);
-                            }}
-                            className="px-3.5 py-1.5 rounded-full bg-gray-100 hover:bg-purple-100 text-[#861949] text-xs font-bold active:scale-95 transition-all cursor-pointer"
-                        >
-                            Chọn
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button 
+                                type="button"
+                                onClick={() => {
+                                    if (typeof window !== 'undefined') {
+                                        sessionStorage.setItem('pethui_flower_celebration', JSON.stringify({
+                                            name: p.name,
+                                            type: 'switch_profile'
+                                        }));
+                                    }
+                                    router.push(`/${p.code}`);
+                                }}
+                                className="px-3.5 py-1.5 rounded-full bg-gray-100 hover:bg-purple-100 text-[#861949] text-xs font-bold active:scale-95 transition-all cursor-pointer"
+                            >
+                                Chọn
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm(`Bạn có chắc muốn xoá hồ sơ ${p.name} khỏi danh sách đã lưu trên máy này?`)) {
+                                        const updated = removeProfileFromStorage(p.code);
+                                        setSavedProfiles(updated);
+                                        showToast(`Đã xoá ${p.name} khỏi thiết bị`);
+                                    }
+                                }}
+                                className="w-8 h-8 rounded-full bg-gray-50 hover:bg-rose-50 text-gray-400 hover:text-rose-600 flex items-center justify-center transition-all cursor-pointer"
+                                title="Xoá khỏi máy này"
+                            >
+                                <span className="material-symbols-outlined text-[16px]">delete</span>
+                            </button>
+                        </div>
                     </div>
                 ))}
 
@@ -317,6 +352,218 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                     <span>Thêm bé mới hoặc tạo thai kỳ mới</span>
                 </button>
             </section>
+
+            {/* 4-Digit PIN Security Card */}
+            <section className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/70 space-y-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 flex items-center justify-center shadow-xs">
+                            <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                {hasPin ? 'shield_lock' : 'lock_open'}
+                            </span>
+                        </div>
+                        <div>
+                            <h3 className="font-headline font-bold text-sm text-gray-900">Bảo mật mã PIN 4 số</h3>
+                            <p className="text-xs text-gray-500">
+                                {hasPin ? 'Người lạ/khách chỉ được xem, cần PIN để sửa' : 'Chưa thiết lập - Bất kỳ ai có link đều sửa được'}
+                            </p>
+                        </div>
+                    </div>
+                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                        hasPin ? 'bg-teal-50 text-teal-700 border border-teal-200/50' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                        {hasPin ? 'Đang bảo vệ' : 'Chưa bật'}
+                    </span>
+                </div>
+
+                <div className="bg-[#fff8f8] rounded-2xl p-4 border border-pink-100/80 flex items-center justify-between">
+                    <div>
+                        <span className="text-xs font-bold text-gray-800 block">
+                            {hasPin ? (isUnlocked ? 'Thiết bị này: Đã mở quyền chỉnh sửa 🔓' : 'Thiết bị này: Chế độ chỉ xem 🔒') : 'Khuyến nghị đặt PIN để bảo vệ'}
+                        </span>
+                        <p className="text-[11px] text-gray-500 mt-0.5">
+                            {hasPin 
+                                ? 'Người thân hoặc máy khác quét mã QR sẽ chỉ có quyền xem nhật ký và biểu đồ.' 
+                                : 'Đặt mã PIN 4 số để ngăn người khác chỉnh sửa nhầm nhật ký của bé.'}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex gap-2">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setPinOld('');
+                            setPinNew('');
+                            setPinConfirm('');
+                            setPinError('');
+                            setShowPinModal(true);
+                        }}
+                        className="flex-1 py-3 px-4 rounded-xl bg-[#861949] hover:bg-[#6c123a] text-white font-bold text-xs shadow-xs transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                        <span className="material-symbols-outlined text-[16px]">password</span>
+                        <span>{hasPin ? 'Đổi mã PIN' : 'Thiết lập mã PIN 4 số'}</span>
+                    </button>
+
+                    {hasPin && isUnlocked && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setProfileUnlocked(code, false);
+                                setIsUnlocked(false);
+                                showToast('Đã khoá quyền chỉnh sửa trên máy này (Chuyển sang Chế độ xem)');
+                                onPinUpdated?.();
+                            }}
+                            className="py-3 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition-all cursor-pointer flex items-center gap-1"
+                            title="Chuyển máy này về chế độ chỉ xem"
+                        >
+                            <span className="material-symbols-outlined text-[16px]">lock</span>
+                            <span>Khoá lại</span>
+                        </button>
+                    )}
+                </div>
+            </section>
+
+            {/* Modal: Setup / Change PIN */}
+            {showPinModal && (
+                <div className="fixed inset-0 bg-on-surface/50 backdrop-blur-md z-[110] flex items-center justify-center p-4 animate-in fade-in duration-200">
+                    <div className="bg-white rounded-[2.5rem] p-6 max-w-sm w-full shadow-2xl border border-purple-100 flex flex-col text-left animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                            <div>
+                                <h3 className="font-headline font-black text-base text-gray-900">
+                                    {hasPin ? 'Thay đổi mã PIN' : 'Cài đặt mã PIN 4 số'}
+                                </h3>
+                                <p className="text-[11px] text-gray-500">Dùng để mở quyền chỉnh sửa trên các thiết bị</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setShowPinModal(false)}
+                                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 cursor-pointer"
+                            >
+                                <span className="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            setPinError('');
+                            if (hasPin && !pinOld) {
+                                setPinError('Vui lòng nhập mã PIN hiện tại');
+                                return;
+                            }
+                            if (!/^\d{4}$/.test(pinNew)) {
+                                setPinError('Mã PIN mới phải đúng 4 chữ số');
+                                return;
+                            }
+                            if (pinNew !== pinConfirm) {
+                                setPinError('Mã PIN xác nhận không trùng khớp');
+                                return;
+                            }
+
+                            setPinLoading(true);
+                            try {
+                                const res = await fetch('/api/pin', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        action: hasPin ? 'update' : 'set',
+                                        code,
+                                        oldPin: pinOld || null,
+                                        newPin: pinNew
+                                    })
+                                });
+                                const json = await res.json();
+                                if (res.ok && json.success) {
+                                    setProfileUnlocked(code, true);
+                                    setIsUnlocked(true);
+                                    setHasPin(true);
+                                    setShowPinModal(false);
+                                    showToast('Đã lưu mã PIN thành công!');
+                                    onPinUpdated?.();
+                                } else {
+                                    setPinError(json.message || 'Không thể lưu mã PIN');
+                                }
+                            } catch (err) {
+                                setPinError('Lỗi kết nối máy chủ');
+                            } finally {
+                                setPinLoading(false);
+                            }
+                        }} className="space-y-3.5 mt-4">
+                            {hasPin && (
+                                <div>
+                                    <label className="text-xs font-bold text-gray-700 block mb-1">Mã PIN hiện tại</label>
+                                    <input
+                                        type="password"
+                                        maxLength={4}
+                                        pattern="\d{4}"
+                                        inputMode="numeric"
+                                        value={pinOld}
+                                        onChange={(e) => setPinOld(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                        placeholder="••••"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg font-bold tracking-widest focus:border-[#861949] focus:outline-none"
+                                        required
+                                    />
+                                </div>
+                            )}
+
+                            <div>
+                                <label className="text-xs font-bold text-gray-700 block mb-1">Mã PIN mới (4 số)</label>
+                                <input
+                                    type="password"
+                                    maxLength={4}
+                                    pattern="\d{4}"
+                                    inputMode="numeric"
+                                    value={pinNew}
+                                    onChange={(e) => setPinNew(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                    placeholder="••••"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg font-bold tracking-widest focus:border-[#861949] focus:outline-none"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-xs font-bold text-gray-700 block mb-1">Nhập lại mã PIN mới</label>
+                                <input
+                                    type="password"
+                                    maxLength={4}
+                                    pattern="\d{4}"
+                                    inputMode="numeric"
+                                    value={pinConfirm}
+                                    onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                    placeholder="••••"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-center text-lg font-bold tracking-widest focus:border-[#861949] focus:outline-none"
+                                    required
+                                />
+                            </div>
+
+                            {pinError && (
+                                <div className="px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-semibold flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[16px]">error</span>
+                                    <span>{pinError}</span>
+                                </div>
+                            )}
+
+                            <div className="grid grid-cols-2 gap-2.5 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPinModal(false)}
+                                    className="py-3 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs cursor-pointer"
+                                >
+                                    Huỷ
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={pinLoading || pinNew.length !== 4 || pinConfirm.length !== 4}
+                                    className="py-3 px-4 rounded-xl bg-[#861949] hover:bg-[#6c123a] text-white font-bold text-xs shadow-md disabled:opacity-50 cursor-pointer"
+                                >
+                                    {pinLoading ? 'Đang lưu...' : 'Lưu mã PIN'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
 
             {/* Family Sharing & Permissions Card */}
             <section className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/70 space-y-4">

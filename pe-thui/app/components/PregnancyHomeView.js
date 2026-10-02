@@ -14,7 +14,7 @@ import ConvertBabyModal from './pregnancy/ConvertBabyModal';
 import LaborSignsModal from './pregnancy/LaborSignsModal';
 import LatePregnancyRemindModal from './pregnancy/LatePregnancyRemindModal';
 
-export default function PregnancyHomeView({ profile, code }) {
+export default function PregnancyHomeView({ profile, code, onEditProfile }) {
     const [stats, setStats] = useState(null);
     const [selectedWeek, setSelectedWeek] = useState(null);
     const [showConvertBabyModal, setShowConvertBabyModal] = useState(false);
@@ -167,7 +167,21 @@ export default function PregnancyHomeView({ profile, code }) {
                     {isCurrentWeek ? `Mẹ đang ở tuần ${stats.weeks}` : `Xem trước tuần ${selectedWeek}`}
                 </h2>
                 {isCurrentWeek ? (
-                    <p className="text-purple-600/80 font-bold text-sm">Ngày thứ {stats.days} của thai kỳ</p>
+                    <div className="flex flex-col items-center gap-1.5">
+                        <p className="text-purple-600/80 font-bold text-sm">Ngày thứ {stats.days} của thai kỳ</p>
+                        {profile?.estimatedDueDate && (
+                            <button
+                                type="button"
+                                onClick={() => onEditProfile?.()}
+                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 hover:bg-white text-purple-700 hover:text-[#861949] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer border border-purple-200/50"
+                                title="Bấm để chỉnh sửa ngày dự sinh hoặc thông tin"
+                            >
+                                <span className="material-symbols-outlined text-[14px]">event</span>
+                                <span>Dự sinh: {new Date(profile.estimatedDueDate).toLocaleDateString('vi-VN')}</span>
+                                <span className="material-symbols-outlined text-[13px] opacity-60">edit</span>
+                            </button>
+                        )}
+                    </div>
                 ) : (
                     <div className="flex justify-center mt-1">
                         <button 

@@ -247,7 +247,13 @@ export default function Dashboard({ profile, code }) {
             case 'home':
             default:
                 if (profile.mode === 'pregnancy') {
-                    return <PregnancyHomeView profile={profile} code={code} />;
+                    return (
+                        <PregnancyHomeView 
+                            profile={profile} 
+                            code={code} 
+                            onEditProfile={() => requirePin(() => setShowEditProfile(true))}
+                        />
+                    );
                 }
                 return (
                     <BabyHomeView 

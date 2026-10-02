@@ -168,7 +168,7 @@ export default function ConvertBabyModal({ profile, code, onClose, onSuccess, in
                         Chúc Mừng Gia Đình!
                     </h3>
                     <p className="text-xs text-gray-500 mt-1 max-w-xs leading-relaxed">
-                        Chuyển đổi hồ sơ từ thai kỳ sang em bé (kể cả sinh sớm) để bắt đầu theo dõi cữ bú, giấc ngủ, tiêm chủng và biểu đồ phát triển WHO.
+                        Chuyển đổi hồ sơ từ thai kỳ sang em bé để bắt đầu theo dõi cữ bú, giấc ngủ, tiêm chủng và biểu đồ phát triển WHO.
                     </p>
                 </div>
 

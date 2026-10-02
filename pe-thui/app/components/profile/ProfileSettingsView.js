@@ -9,6 +9,7 @@ import {
     generateBackupDataPayload 
 } from '../../lib/profile-utils';
 import { formatBabyAge } from '../../lib/baby-utils';
+import { calculatePregnancyWeeks } from '../../lib/pregnancy-utils';
 import ConvertBabyModal from '../pregnancy/ConvertBabyModal';
 
 export default function ProfileSettingsView({ profile, code, records = [], onEditProfile, onOpenShare }) {
@@ -29,6 +30,10 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
 
     const babyAge = formatBabyAge(profile?.dob);
     const familyCode = formatFamilyShareCode(code);
+    const pregnancyStats = (profile?.mode === 'pregnancy' && profile?.estimatedDueDate)
+        ? calculatePregnancyWeeks(profile.estimatedDueDate)
+        : null;
+    const canConvertPregnancy = pregnancyStats ? pregnancyStats.weeks >= 25 : false;
 
     const showToast = (msg) => {
         setToastMessage(msg);
@@ -244,18 +249,15 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                     </button>
                 </div>
 
-                {/* Quick Convert to Baby Profile if mode is pregnancy */}
-                {profile?.mode === 'pregnancy' && (
+                {/* Quick Convert to Baby Profile if mode is pregnancy & weeks >= 25 */}
+                {profile?.mode === 'pregnancy' && canConvertPregnancy && (
                     <div className="bg-gradient-to-r from-pink-50 via-rose-50 to-amber-50 rounded-[2rem] p-4 border border-pink-200/80 flex items-center justify-between shadow-xs">
                         <div className="flex items-center gap-3">
                             <span className="w-10 h-10 rounded-2xl bg-[#861949] text-white flex items-center justify-center shrink-0 shadow-xs">
                                 <span className="material-symbols-outlined text-[20px]">celebration</span>
                             </span>
                             <div>
-                                <div className="flex items-center gap-1.5">
-                                    <h4 className="font-headline font-bold text-xs sm:text-sm text-gray-900">Bé đã cất tiếng khóc?</h4>
-                                    <span className="text-[9px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded-full">Kể cả sinh sớm</span>
-                                </div>
+                                <h4 className="font-headline font-bold text-xs sm:text-sm text-gray-900">Bé đã cất tiếng khóc?</h4>
                                 <p className="text-[11px] text-gray-500 mt-0.5">Chuyển sang hồ sơ em bé để lưu cân nặng, chiều dài sơ sinh & cữ bú</p>
                             </div>
                         </div>

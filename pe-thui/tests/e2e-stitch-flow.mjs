@@ -605,9 +605,9 @@ async function runE2E() {
 
         await page.waitForSelector('text=Máy đếm cử động thai', { timeout: 10000 });
 
-        // 1. Kiểm tra Thẻ Force Chuyển Đổi hiển thị dù mới ở tuần 30 (chưa đến tuần 37)
-        const forceConvertCard = await page.$('text=Kể cả sinh sớm');
-        check('UI-40', 'Thẻ Force Chuyển Đổi hiển thị trực quan cho mẹ bầu mọi tuần thai', !!forceConvertCard);
+        // 1. Kiểm tra Thẻ Chuyển Đổi hiển thị ở dưới cùng cho thai kỳ từ tuần 25
+        const forceConvertCard = await page.$('text=Bé đã cất tiếng khóc?');
+        check('UI-40', 'Thẻ Chuyển Đổi hiển thị dưới cùng cho thai kỳ từ tuần 25 (Bé đã cất tiếng khóc?)', !!forceConvertCard);
 
         // 2. Nhấp nút "Chuyển đổi ngay"
         await page.click('button:has-text("Chuyển đổi ngay")');

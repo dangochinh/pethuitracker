@@ -462,10 +462,10 @@ export default function JournalMilestonesView({ profile, code }) {
                 </button>
             </div>
 
-            {/* Modal Drawer: Thêm nhật ký mới */}
+            {/* Modal: Thêm nhật ký mới */}
             {showAddModal && (
-                <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex flex-col justify-end p-0">
-                    <div className="bg-white rounded-t-[2.5rem] p-6 max-w-lg mx-auto w-full shadow-2xl flex flex-col space-y-4 max-h-[85vh] overflow-y-auto">
+                <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[2.5rem] p-6 max-w-md mx-auto w-full shadow-2xl flex flex-col space-y-4 max-h-[85vh] overflow-y-auto border border-purple-100/60 animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between pb-1 border-b border-gray-100">
                             <div>
                                 <span className="text-[10px] text-[#861949] font-bold uppercase tracking-wider">Thêm hoạt động</span>

@@ -169,6 +169,33 @@ export function isLatePregnancy(weeks, daysRemaining) {
     return false;
 }
 
+export function calculateGestationalAgeAtDate(eddString, targetDateString) {
+    if (!eddString || !targetDateString) return null;
+    const edd = new Date(eddString);
+    const target = new Date(targetDateString);
+    // 280 ngày trước EDD là ngày thụ thai ước tính
+    const conceptionDate = new Date(edd.getTime() - 280 * 24 * 60 * 60 * 1000);
+    const diffTime = target.getTime() - conceptionDate.getTime();
+    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    const cappedDays = Math.max(0, Math.min(totalDays, 294));
+    const weeks = Math.floor(cappedDays / 7);
+    const days = cappedDays % 7;
+    const isPreterm = weeks < 37;
+    
+    // Số ngày sớm hơn ngày dự sinh
+    const daysBeforeEdd = Math.round((edd.getTime() - target.getTime()) / (1000 * 60 * 60 * 24));
+    
+    return {
+        weeks,
+        days,
+        totalDays: cappedDays,
+        isPreterm,
+        daysBeforeEdd,
+        formatted: `${weeks} tuần ${days > 0 ? `${days} ngày` : ''}`.trim()
+    };
+}
+
 export function getLaborSignsGuide() {
     return [
         {

@@ -181,6 +181,18 @@ export default function PregnancyHomeView({ profile, code }) {
                     </div>
                 )}
 
+                {/* Nút tắt Force chuyển đổi hồ sơ khi bé sinh sớm / chào đời */}
+                <div className="flex justify-center mt-2.5">
+                    <button
+                        type="button"
+                        onClick={() => setShowConvertBabyModal(true)}
+                        className="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-[#861949] bg-white/90 hover:bg-white px-3.5 py-1.5 rounded-full transition-all active:scale-95 shadow-xs cursor-pointer border border-pink-200/80"
+                    >
+                        <span className="material-symbols-outlined text-[15px] text-[#861949]">celebration</span>
+                        <span>Bé đã sinh? Chuyển hồ sơ em bé (kể cả sinh sớm)</span>
+                    </button>
+                </div>
+
                 {/* Timeline Carousel with CS:GO Style Select Area */}
                 <div className="mt-6 relative">
                     {/* Background track line */}
@@ -373,6 +385,35 @@ export default function PregnancyHomeView({ profile, code }) {
                             </div>
                         </div>
                     </div>
+                </section>
+            )}
+
+            {/* Thẻ Force chuyển đổi hồ sơ khi sinh sớm (Luôn hiển thị nếu chưa vào tuần 37) */}
+            {!isLatePregnancy(stats.weeks, stats.daysRemaining) && (
+                <section className="bg-gradient-to-r from-pink-50 via-rose-50 to-amber-50 rounded-[2.5rem] p-5 shadow-xs border border-pink-200/80 flex items-center justify-between text-left">
+                    <div className="flex items-center gap-3.5">
+                        <span className="w-11 h-11 rounded-2xl bg-[#861949] text-white flex items-center justify-center shrink-0 shadow-sm shadow-[#861949]/20">
+                            <span className="material-symbols-outlined text-2xl">celebration</span>
+                        </span>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h4 className="font-headline font-bold text-sm text-gray-900">Bé đã cất tiếng khóc?</h4>
+                                <span className="text-[10px] text-amber-800 bg-amber-100 font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                    Kể cả sinh sớm
+                                </span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-0.5 leading-relaxed">
+                                Chuyển sang chế độ em bé bất cứ lúc nào để ghi nhận cân nặng, chiều dài sơ sinh và bắt đầu theo dõi cữ bú, giấc ngủ.
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setShowConvertBabyModal(true)}
+                        className="px-4 py-2.5 rounded-2xl bg-[#861949] hover:bg-[#6c123a] text-white font-headline font-bold text-xs shrink-0 shadow-sm active:scale-95 transition-all cursor-pointer ml-2"
+                    >
+                        Chuyển đổi ngay
+                    </button>
                 </section>
             )}
 

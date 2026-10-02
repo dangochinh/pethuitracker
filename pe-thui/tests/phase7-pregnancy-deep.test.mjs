@@ -5,6 +5,7 @@ import {
     getUpcomingCheckup, 
     getWeeklyAdvice,
     isLatePregnancy,
+    calculateGestationalAgeAtDate,
     getLaborSignsGuide
 } from '../app/lib/pregnancy-utils.js';
 
@@ -118,3 +119,22 @@ test('Phase 7+: getLaborSignsGuide medical correctness', () => {
     assert.ok(hasBleeding, 'Emergency phải có cảnh báo chảy máu ồ ạt');
     assert.ok(hasPreeclampsia, 'Emergency phải có cảnh báo tiền sản giật');
 });
+
+test('Phase 7+: calculateGestationalAgeAtDate accurately handles preterm birth (sinh sớm)', () => {
+    // 1. Trường hợp sinh non / sinh sớm (sinh sớm 6 tuần, tức tuần 34)
+    const edd = '2026-11-15';
+    const pretermBirth = '2026-10-04'; // Sớm 42 ngày (6 tuần) => Tuần 34
+    const pretermResult = calculateGestationalAgeAtDate(edd, pretermBirth);
+
+    assert.ok(pretermResult !== null, 'Tính được kết quả tuổi thai lúc sinh');
+    assert.equal(pretermResult.isPreterm, true, 'Xác định chính xác là sinh non (tuần < 37)');
+    assert.equal(pretermResult.weeks, 34, 'Tính chính xác tuần thai lúc sinh là tuần 34');
+    assert.ok(pretermResult.daysBeforeEdd > 0, 'Sớm hơn ngày dự sinh');
+
+    // 2. Trường hợp sinh đủ tháng (tuần 39 + 3 ngày)
+    const fullTermBirth = '2026-11-11';
+    const fullTermResult = calculateGestationalAgeAtDate(edd, fullTermBirth);
+    assert.equal(fullTermResult.isPreterm, false, 'Sinh ở tuần 39 là đủ tháng (không phải sinh non)');
+    assert.equal(fullTermResult.weeks, 39, 'Tuần thai 39');
+});
+

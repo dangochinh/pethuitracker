@@ -9,6 +9,7 @@ import {
     calculateBagProgress,
     filterBagItems,
     evaluateKickCount,
+    formatGestationalAge,
     INITIAL_HOSPITAL_BAG_ITEMS
 } from '../app/lib/pregnancy-utils.js';
 
@@ -165,3 +166,24 @@ test('7. evaluateKickCount accurately checks kick count against medical threshol
     assert.equal(edge.remaining, 10);
     assert.equal(edge.isTargetMet, false);
 });
+
+test('8. formatGestationalAge formats gestational age clearly into weeks and days', () => {
+    // Pure number
+    assert.equal(formatGestationalAge('21'), '21 tuần');
+    assert.equal(formatGestationalAge(21), '21 tuần');
+
+    // w and d notations
+    assert.equal(formatGestationalAge('20w3d'), '20 tuần 3 ngày');
+    assert.equal(formatGestationalAge('20W3D'), '20 tuần 3 ngày');
+    assert.equal(formatGestationalAge('21w'), '21 tuần');
+    assert.equal(formatGestationalAge('21W'), '21 tuần');
+
+    // Already formatted string
+    assert.equal(formatGestationalAge('20 tuần 3 ngày'), '20 tuần 3 ngày');
+    assert.equal(formatGestationalAge('21 tuần'), '21 tuần');
+
+    // Empty or falsy
+    assert.equal(formatGestationalAge(''), '');
+    assert.equal(formatGestationalAge(null), '');
+});
+

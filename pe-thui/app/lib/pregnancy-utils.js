@@ -316,3 +316,42 @@ export function evaluateKickCount(count = 0, target = 10) {
         isTargetMet
     };
 }
+
+/**
+ * Chuẩn hoá hiển thị tuổi thai rõ ràng:
+ * "21" -> "21 tuần"
+ * "20w3d" / "20 tuần 3 ngày" / "20w" -> "20 tuần 3 ngày"
+ */
+export function formatGestationalAge(val) {
+    if (!val) return '';
+    const str = String(val).trim();
+    if (!str) return '';
+
+    // Nếu đã có chữ "tuần" thì trả về nguyên bản
+    if (str.includes('tuần')) return str;
+
+    // Trường hợp "20w3d", "20w 3d", "20W3D"
+    const matchWd = str.match(/^(\d+)\s*[wW](?:\s*(\d+)\s*[dD])?$/);
+    if (matchWd) {
+        const weeks = matchWd[1];
+        const days = matchWd[2];
+        if (days && Number(days) > 0) {
+            return `${weeks} tuần ${days} ngày`;
+        }
+        return `${weeks} tuần`;
+    }
+
+    // Trường hợp chỉ có số thuần tuý: "21", "20"
+    if (/^\d+$/.test(str)) {
+        return `${str} tuần`;
+    }
+
+    // Trường hợp số kèm 'w' hoặc 'W': "21w"
+    const matchOnlyW = str.match(/^(\d+)\s*[wW]$/);
+    if (matchOnlyW) {
+        return `${matchOnlyW[1]} tuần`;
+    }
+
+    return str;
+}
+

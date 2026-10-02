@@ -7,6 +7,15 @@ export default function PregnancyJournal({ code }) {
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAdd, setShowAdd] = useState(false);
+    const [previewImage, setPreviewImage] = useState(null);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') setPreviewImage(null);
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     const fetchJournal = async () => {
         try {
@@ -87,12 +96,19 @@ export default function PregnancyJournal({ code }) {
                             {entry.photos && entry.photos.length > 0 && (
                                 <div className={`grid gap-0.5 ${entry.photos.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                                     {entry.photos.map((photo, i) => (
-                                        <div key={i} className="relative bg-gray-900">
+                                        <div 
+                                            key={i} 
+                                            onClick={() => setPreviewImage(photo)}
+                                            className="relative bg-gray-900 cursor-pointer group overflow-hidden"
+                                        >
                                             <img
                                                 src={photo}
                                                 alt="Ultrasound"
-                                                className="w-full h-full object-cover max-h-[300px] min-h-[200px]"
+                                                className="w-full h-full object-cover max-h-[300px] min-h-[200px] group-hover:scale-105 transition-transform duration-300"
                                             />
+                                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                                <span className="material-symbols-outlined text-white text-2xl bg-black/50 p-2 rounded-full backdrop-blur-sm shadow-md">zoom_in</span>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -146,6 +162,32 @@ export default function PregnancyJournal({ code }) {
             )}
 
             {showAdd && <AddUltrasoundModal code={code} onClose={() => setShowAdd(false)} onSave={fetchJournal} />}
+
+            {/* Image Preview Lightbox Modal */}
+            {previewImage && (
+                <div 
+                    className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 animate-in fade-in duration-200"
+                    onClick={() => setPreviewImage(null)}
+                >
+                    <button
+                        onClick={() => setPreviewImage(null)}
+                        className="absolute top-5 right-5 w-11 h-11 bg-white/20 hover:bg-white/40 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 z-10"
+                        title="Đóng (ESC)"
+                    >
+                        <span className="material-symbols-outlined text-2xl">close</span>
+                    </button>
+                    <div 
+                        className="relative max-w-full max-h-[88vh] flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <img
+                            src={previewImage}
+                            alt="Ultrasound preview"
+                            className="max-w-full max-h-[88vh] object-contain rounded-2xl shadow-2xl animate-in zoom-in-95 duration-200 select-none"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -158,10 +158,15 @@ async function migrate() {
                 if (!r || !r[0]) return;
                 const vId = r[0].trim();
                 const vRef = babyRef.collection('vaccines').doc(vId);
+                const scheduledDate = r[2] || '';
+                let administeredDate = r[1] || '';
+                if (!administeredDate && !scheduledDate) {
+                    administeredDate = dob || '2025-03-01';
+                }
                 batch.set(vRef, {
                     vaccineId: vId,
-                    administeredDate: r[1] || '',
-                    scheduledDate: r[2] || '',
+                    administeredDate,
+                    scheduledDate,
                     notes: r[3] || '',
                     updatedAt: new Date()
                 });

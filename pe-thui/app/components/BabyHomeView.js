@@ -211,7 +211,7 @@ export default function BabyHomeView({
             <NotificationBanner code={code} />
 
             {/* HERO PROFILE CARD: THE TACTILE KEEPSAKE */}
-            <div className="relative bg-white rounded-[2.5rem] p-6 pt-16 shadow-[0_4px_24px_rgba(165,51,97,0.08)] mt-6 border border-purple-100/60">
+            <div className="relative bg-white rounded-[2.5rem] p-6 pt-16 shadow-[0_4px_24px_rgba(165,51,97,0.08)] mt-14 border border-purple-100/60">
                 {/* Playful Background Accents */}
                 <div className="absolute -right-4 -top-4 w-28 h-28 rounded-full bg-pink-100/50 blur-2xl pointer-events-none"></div>
                 <div className="absolute -left-3 bottom-0 w-24 h-24 rounded-full bg-teal-50/70 blur-xl pointer-events-none"></div>

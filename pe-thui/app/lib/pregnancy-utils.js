@@ -90,3 +90,87 @@ export function getPregnancyWeekStats(weekNumber) {
     const fruitMap = getFruitMap();
     return fruitMap[w] || fruitMap[0];
 }
+
+export function getUpcomingCheckup(w) {
+    if (w <= 8) return { title: 'Khám thai lần đầu', type: 'Siêu âm 2D xác định vị trí & tim thai', weeks: '5 - 8 tuần', badge: 'Quan trọng' };
+    if (w <= 13) return { title: 'Đo độ mờ da gáy & Double Test', type: 'Siêu âm 4D sàng lọc dị tật bẩm sinh', weeks: '11 - 13 tuần', badge: 'Rất quan trọng' };
+    if (w <= 20) return { title: 'Khám thai định kỳ & Triple Test', type: 'Siêu âm kiểm tra phát triển & NIPT', weeks: '15 - 20 tuần', badge: 'Định kỳ' };
+    if (w <= 24) return { title: 'Khảo sát hình thái thai nhi', type: 'Siêu âm 4D chi tiết cơ quan (tim, não, tay chân)', weeks: '20 - 24 tuần', badge: 'Rất quan trọng' };
+    if (w <= 28) return { title: 'Tầm soát tiểu đường thai kỳ', type: 'Dung nạp đường huyết & Tiêm uốn ván mũi 1', weeks: '24 - 28 tuần', badge: 'Quan trọng' };
+    if (w <= 32) return { title: 'Đánh giá sự phát triển của thai', type: 'Kiểm tra ngôi thai, lượng ối & Tiêm uốn ván mũi 2', weeks: '28 - 32 tuần', badge: 'Quan trọng' };
+    if (w <= 36) return { title: 'Theo dõi ngôi thai & tăng trưởng', type: 'Siêu âm Doppler màu mạch máu rốn/não', weeks: '32 - 36 tuần', badge: 'Định kỳ' };
+    return { title: 'Khám thai hàng tuần trước sinh', type: 'Đo Non-Stress Test (NST) & chuẩn bị nhập viện', weeks: '37 - 40 tuần', badge: 'Gần sinh' };
+}
+
+export function getWeeklyAdvice(w) {
+    if (w < 13) {
+        return {
+            diet: 'Bổ sung Axit Folic (400mcg/ngày), uống đủ 2L nước, chia nhỏ 5-6 bữa để giảm ốm nghén.',
+            warning: 'Cần đến viện ngay nếu xuất hiện ra máu âm đạo, đau bụng dưới dữ dội hoặc nghén kiệt sức.'
+        };
+    }
+    if (w < 27) {
+        return {
+            diet: 'Bổ sung Canxi (1000-1200mg/ngày) và Sắt. Ăn thêm trứng, sữa, cá hồi và rau lá xanh đậm.',
+            warning: 'Cảnh báo đau đầu dữ dội, hoa mắt, phù tay chân đột ngột (dấu hiệu tiền sản giật).'
+        };
+    }
+    return {
+        diet: 'Tăng cường thực phẩm giàu DHA/Omega-3 cho não bé, đạm nạc. Giảm ăn mặn để hạn chế tích nước, phù chân.',
+        warning: 'Bé cử động ít hơn 10 lần trong 2 giờ, hoặc có rỉ ối, đau bụng co thắt từng cơn đều đặn cần vào viện ngay.'
+    };
+}
+
+export const INITIAL_HOSPITAL_BAG_ITEMS = [
+    // Cho bé
+    { id: 'b1', name: 'Quần áo sơ sinh & bao tay chân (3-5 bộ)', category: 'baby', checked: true },
+    { id: 'b2', name: 'Tã dán sơ sinh (size NB, 1 bịch)', category: 'baby', checked: true },
+    { id: 'b3', name: 'Khăn xô tắm & khăn quấn ủ ấm bé', category: 'baby', checked: true },
+    { id: 'b4', name: 'Nước muối sinh lý 0.9% & gạc rơ lưỡi', category: 'baby', checked: false },
+    { id: 'b5', name: 'Sữa non / Sữa công thức số 1 & bình sữa nhỏ', category: 'baby', checked: false },
+    { id: 'b6', name: 'Gối ôm chặn sơ sinh & nón che thóp', category: 'baby', checked: true },
+
+    // Cho mẹ
+    { id: 'm1', name: 'Quần áo mẹ mặc ngày xuất viện (rộng, cài cúc)', category: 'mom', checked: true },
+    { id: 'm2', name: 'Băng vệ sinh mama & quần lót dùng 1 lần', category: 'mom', checked: true },
+    { id: 'm3', name: 'Áo ngực cho con bú & miếng lót thấm sữa', category: 'mom', checked: false },
+    { id: 'm4', name: 'Máy hút sữa & túi trữ sữa non', category: 'mom', checked: false },
+    { id: 'm5', name: 'Vớ chân giữ ấm & tinh dầu tràm', category: 'mom', checked: true },
+    { id: 'm6', name: 'Bình nước giữ nhiệt & ly có ống hút', category: 'mom', checked: true },
+
+    // Giấy tờ
+    { id: 'd1', name: 'Căn cước công dân (CCCD) gắn chip của mẹ', category: 'docs', checked: true },
+    { id: 'd2', name: 'Thẻ BHYT (hoặc app VssID trên điện thoại)', category: 'docs', checked: true },
+    { id: 'd3', name: 'Hồ sơ khám thai, kết quả siêu âm, xét nghiệm', category: 'docs', checked: true },
+    { id: 'd4', name: 'Tiền mặt đặt cọc viện phí & thẻ ngân hàng', category: 'docs', checked: true },
+];
+
+export function calculateBagProgress(items = []) {
+    const totalCount = items.length;
+    const checkedCount = items.filter(i => i && i.checked).length;
+    const percent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+    return {
+        totalCount,
+        checkedCount,
+        percent,
+        isComplete: totalCount > 0 && checkedCount === totalCount
+    };
+}
+
+export function filterBagItems(items = [], category = 'all') {
+    if (!Array.isArray(items)) return [];
+    if (!category || category === 'all') return items;
+    return items.filter(it => it && it.category === category);
+}
+
+export function evaluateKickCount(count = 0, target = 10) {
+    const safeCount = Math.max(0, count || 0);
+    const remaining = Math.max(0, target - safeCount);
+    const isTargetMet = safeCount >= target;
+    return {
+        count: safeCount,
+        target,
+        remaining,
+        isTargetMet
+    };
+}

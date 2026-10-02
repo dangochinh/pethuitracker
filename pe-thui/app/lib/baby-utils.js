@@ -175,7 +175,7 @@ export function getTeethingArchData(teethingRecords = []) {
  */
 export function getUpcomingVaccination(dob, vaccineRecords = []) {
     if (!dob) return null;
-    const completedSet = new Set((vaccineRecords || []).filter(r => r.date).map(r => r.vaccineId));
+    const completedSet = new Set((vaccineRecords || []).filter(r => r.date || !r.scheduledDate).map(r => r.vaccineId));
     const birth = dayjs(dob);
     const now = dayjs();
     const currentAgeMonths = now.diff(birth, 'month');

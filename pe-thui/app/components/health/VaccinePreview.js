@@ -3,7 +3,7 @@
 import { VACCINES } from '../../lib/data/vaccines';
 
 export default function VaccinePreview({ records, dob }) {
-    const completedIds = new Set(records.filter(r => r.date).map(r => r.vaccineId));
+    const completedIds = new Set(records.filter(r => r.date || !r.scheduledDate).map(r => r.vaccineId));
     const completedCount = completedIds.size;
     const totalCount = VACCINES.length;
     const percentage = Math.round((completedCount / totalCount) * 100);

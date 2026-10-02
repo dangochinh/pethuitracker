@@ -28,6 +28,20 @@ export async function POST(request) {
     }
 }
 
+export async function PUT(request) {
+    try {
+        const body = await request.json();
+        const { code, id, ...entry } = body;
+        if (!code || !id) throw new Error('Code and id are required');
+
+        const { updateJournalEntry } = await import('../../lib/db');
+        const result = await updateJournalEntry(code, id, entry);
+        return NextResponse.json({ success: true, data: result });
+    } catch (err) {
+        return NextResponse.json({ success: false, error: err.message }, { status: 400 });
+    }
+}
+
 export async function DELETE(request) {
     try {
         const { searchParams } = new URL(request.url);
@@ -41,3 +55,4 @@ export async function DELETE(request) {
         return NextResponse.json({ success: false, error: err.message }, { status: 400 });
     }
 }
+

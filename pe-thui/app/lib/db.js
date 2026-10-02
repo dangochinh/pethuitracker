@@ -556,7 +556,34 @@ export async function addJournalEntry(code, entry) {
     return { id: docRef.id, ...entry };
 }
 
+export async function updateJournalEntry(code, id, entry) {
+    if (!code || !id) throw new Error('code and id required');
+    const db = getFirestore();
+    const docRef = db.collection('babies').doc(code).collection('journal').doc(id);
+    const data = {
+        updatedAt: new Date(),
+    };
+    if (entry.date) data.date = new Date(entry.date);
+    if (entry.photos !== undefined) data.photos = entry.photos;
+    if (entry.caption !== undefined) data.caption = entry.caption;
+    if (entry.tags !== undefined) data.tags = entry.tags;
+    if (entry.type !== undefined) data.type = entry.type;
+    if (entry.milestoneId !== undefined) data.milestoneId = entry.milestoneId;
+    if (entry.fetalWeight !== undefined) {
+        data.fetalWeight = entry.fetalWeight !== null ? Number(entry.fetalWeight) : null;
+    }
+    if (entry.heartRate !== undefined) {
+        data.heartRate = entry.heartRate !== null ? Number(entry.heartRate) : null;
+    }
+    if (entry.gestationalAge !== undefined) data.gestationalAge = entry.gestationalAge;
+    if (entry.isUltrasound !== undefined) data.isUltrasound = !!entry.isUltrasound;
+
+    await docRef.set(data, { merge: true });
+    return { id, ...entry };
+}
+
 export async function deleteJournalEntry(code, id) {
     const db = getFirestore();
     await db.collection('babies').doc(code).collection('journal').doc(id).delete();
 }
+

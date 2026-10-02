@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { compressImage } from '../lib/image-utils';
+import { formatGestationalAge } from '../lib/pregnancy-utils';
 
 export default function PregnancyJournal({ code }) {
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showAdd, setShowAdd] = useState(false);
+    const [editingEntry, setEditingEntry] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
 
     useEffect(() => {
@@ -64,8 +66,11 @@ export default function PregnancyJournal({ code }) {
                     Hồ Sơ Siêu Âm 4D
                 </h2>
                 <button
-                    onClick={() => setShowAdd(true)}
-                    className="flex items-center gap-1.5 bg-[#861949] text-white px-3.5 py-1.5 rounded-full font-bold text-xs hover:bg-[#6e143c] shadow-sm transition-all active:scale-95"
+                    onClick={() => {
+                        setEditingEntry(null);
+                        setShowAdd(true);
+                    }}
+                    className="flex items-center gap-1.5 bg-[#861949] text-white px-3.5 py-1.5 rounded-full font-bold text-xs hover:bg-[#6e143c] shadow-sm transition-all active:scale-95 cursor-pointer"
                 >
                     <span className="material-symbols-outlined text-sm">add_photo_alternate</span>
                     Thêm Ảnh Siêu Âm
@@ -84,13 +89,26 @@ export default function PregnancyJournal({ code }) {
                 <div className="space-y-6">
                     {entries.map(entry => (
                         <div key={entry.id} className="bg-white/85 backdrop-blur-sm border border-[#861949]/10 rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
-                            {/* Actions */}
-                            <button
-                                onClick={() => handleDelete(entry.id)}
-                                className="absolute top-4 right-4 w-8 h-8 bg-black/40 text-white rounded-full flex items-center justify-center backdrop-blur-md z-10 hover:bg-red-500 transition-colors"
-                            >
-                                <span className="material-symbols-outlined text-[16px]">delete</span>
-                            </button>
+                            {/* Action Buttons: Edit & Delete */}
+                            <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                                <button
+                                    onClick={() => {
+                                        setEditingEntry(entry);
+                                        setShowAdd(true);
+                                    }}
+                                    className="w-8 h-8 bg-black/40 hover:bg-[#861949] text-white rounded-full flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
+                                    title="Chỉnh sửa kết quả"
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">edit</span>
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(entry.id)}
+                                    className="w-8 h-8 bg-black/40 hover:bg-red-500 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
+                                    title="Xoá kết quả"
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">delete</span>
+                                </button>
+                            </div>
 
                             {/* Photos */}
                             {entry.photos && entry.photos.length > 0 && (
@@ -122,8 +140,8 @@ export default function PregnancyJournal({ code }) {
                                         {new Date(entry.date).toLocaleDateString('vi-VN')}
                                     </div>
                                     {entry.gestationalAge && (
-                                        <span className="bg-[#861949]/10 text-[#861949] border border-[#861949]/20 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase">
-                                            {entry.gestationalAge}
+                                        <span className="bg-[#861949]/10 text-[#861949] border border-[#861949]/20 px-3 py-1 rounded-full text-xs font-bold tracking-tight">
+                                            {formatGestationalAge(entry.gestationalAge)}
                                         </span>
                                     )}
                                 </div>
@@ -161,7 +179,17 @@ export default function PregnancyJournal({ code }) {
                 </div>
             )}
 
-            {showAdd && <AddUltrasoundModal code={code} onClose={() => setShowAdd(false)} onSave={fetchJournal} />}
+            {showAdd && (
+                <AddUltrasoundModal 
+                    code={code} 
+                    initialData={editingEntry}
+                    onClose={() => {
+                        setShowAdd(false);
+                        setEditingEntry(null);
+                    }} 
+                    onSave={fetchJournal} 
+                />
+            )}
 
             {/* Image Preview Lightbox Modal */}
             {previewImage && (
@@ -192,13 +220,18 @@ export default function PregnancyJournal({ code }) {
     );
 }
 
-function AddUltrasoundModal({ code, onClose, onSave }) {
-    const [photos, setPhotos] = useState([]);
-    const [caption, setCaption] = useState('');
-    const [gestationalAge, setGestationalAge] = useState('');
-    const [fetalWeight, setFetalWeight] = useState('');
-    const [heartRate, setHeartRate] = useState('');
-    const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+function AddUltrasoundModal({ code, initialData, onClose, onSave }) {
+    const isEdit = Boolean(initialData?.id);
+    const [photos, setPhotos] = useState(initialData?.photos || []);
+    const [caption, setCaption] = useState(initialData?.caption || '');
+    const [gestationalAge, setGestationalAge] = useState(initialData?.gestationalAge || '');
+    const [fetalWeight, setFetalWeight] = useState(initialData?.fetalWeight !== undefined && initialData?.fetalWeight !== null ? String(initialData.fetalWeight) : '');
+    const [heartRate, setHeartRate] = useState(initialData?.heartRate !== undefined && initialData?.heartRate !== null ? String(initialData.heartRate) : '');
+    const [date, setDate] = useState(
+        initialData?.date 
+            ? new Date(initialData.date).toISOString().slice(0, 10) 
+            : new Date().toISOString().slice(0, 10)
+    );
     const [saving, setSaving] = useState(false);
     const fileInputRef = useRef(null);
 
@@ -229,21 +262,30 @@ function AddUltrasoundModal({ code, onClose, onSave }) {
         }
         setSaving(true);
         try {
-            await fetch('/api/journal', {
-                method: 'POST',
+            const method = isEdit ? 'PUT' : 'POST';
+            const payload = {
+                code,
+                date: new Date(date).toISOString(),
+                caption,
+                photos,
+                fetalWeight: fetalWeight ? Number(fetalWeight) : null,
+                heartRate: heartRate ? Number(heartRate) : null,
+                gestationalAge,
+                type: 'ultrasound',
+                isUltrasound: true
+            };
+            if (isEdit) {
+                payload.id = initialData.id;
+            }
+
+            const res = await fetch('/api/journal', {
+                method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    code,
-                    date: new Date(date).toISOString(),
-                    caption,
-                    photos,
-                    fetalWeight: fetalWeight ? Number(fetalWeight) : null,
-                    heartRate: heartRate ? Number(heartRate) : null,
-                    gestationalAge,
-                    type: 'ultrasound',
-                    isUltrasound: true
-                }),
+                body: JSON.stringify(payload),
             });
+            const json = await res.json();
+            if (!json.success) throw new Error(json.error || 'Không thể lưu kết quả');
+
             onSave?.();
             onClose();
         } catch (err) {
@@ -257,8 +299,10 @@ function AddUltrasoundModal({ code, onClose, onSave }) {
         <div className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
             <div className="w-full max-w-md bg-white rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl border-t sm:border border-[#861949]/15 animate-in slide-in-from-bottom duration-500 max-h-[90dvh] flex flex-col">
                 <div className="flex justify-between items-center px-6 pt-6 pb-3">
-                    <h2 className="text-xl font-headline font-bold text-[#861949]">Lưu Kết Quả Siêu Âm</h2>
-                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-stone-100 hover:bg-stone-200 transition-all">
+                    <h2 className="text-xl font-headline font-bold text-[#861949]">
+                        {isEdit ? 'Chỉnh Sửa Kết Quả Siêu Âm' : 'Lưu Kết Quả Siêu Âm'}
+                    </h2>
+                    <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-stone-100 hover:bg-stone-200 transition-all cursor-pointer">
                         <span className="material-symbols-outlined text-stone-500 text-xl">close</span>
                     </button>
                 </div>
@@ -272,7 +316,7 @@ function AddUltrasoundModal({ code, onClose, onSave }) {
                                     <img src={p} alt="" className="w-full h-full object-cover opacity-90" />
                                     <button
                                         onClick={() => removePhoto(i)}
-                                        className="absolute top-2 right-2 w-7 h-7 bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm"
+                                        className="absolute top-2 right-2 w-7 h-7 bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer"
                                     >
                                         <span className="material-symbols-outlined text-sm">close</span>
                                     </button>
@@ -281,7 +325,7 @@ function AddUltrasoundModal({ code, onClose, onSave }) {
                             {photos.length < 2 && (
                                 <button
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="aspect-square rounded-2xl border-2 border-dashed border-[#861949]/30 text-[#861949] flex flex-col items-center justify-center bg-[#861949]/5 hover:bg-[#861949]/10 transition-colors"
+                                    className="aspect-square rounded-2xl border-2 border-dashed border-[#861949]/30 text-[#861949] flex flex-col items-center justify-center bg-[#861949]/5 hover:bg-[#861949]/10 transition-colors cursor-pointer"
                                 >
                                     <span className="material-symbols-outlined text-2xl">add_photo_alternate</span>
                                     <span className="text-xs font-bold mt-1">Thêm ảnh</span>
@@ -312,10 +356,10 @@ function AddUltrasoundModal({ code, onClose, onSave }) {
                             />
                         </div>
                         <div>
-                            <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1 block mb-1">Tuổi thai (VD: 12w3d)</label>
+                            <label className="text-[10px] font-bold text-stone-400 uppercase tracking-widest ml-1 block mb-1">Tuổi thai (VD: 20 tuần 3 ngày hoặc 21)</label>
                             <input
                                 type="text"
-                                placeholder="Tùy chọn"
+                                placeholder="VD: 20 tuần 3 ngày"
                                 value={gestationalAge}
                                 onChange={(e) => setGestationalAge(e.target.value)}
                                 className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#861949]/20"
@@ -360,17 +404,18 @@ function AddUltrasoundModal({ code, onClose, onSave }) {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full mt-2 py-4 bg-[#861949] hover:bg-[#6e143c] text-white rounded-2xl font-bold text-base shadow-lg shadow-[#861949]/25 disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="w-full mt-2 py-4 bg-[#861949] hover:bg-[#6e143c] text-white rounded-2xl font-bold text-base shadow-lg shadow-[#861949]/25 disabled:opacity-40 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                         {saving ? (
                             <span className="material-symbols-outlined animate-spin text-base">progress_activity</span>
                         ) : (
                             <span className="material-symbols-outlined text-base">check</span>
                         )}
-                        {saving ? 'Đang lưu...' : 'Lưu Kết Quả'}
+                        {saving ? 'Đang lưu...' : (isEdit ? 'Cập Nhật Kết Quả' : 'Lưu Kết Quả')}
                     </button>
                 </div>
             </div>
         </div>
     );
 }
+

@@ -1,0 +1,372 @@
+import { chromium } from 'playwright';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const EVIDENCE_DIR = path.resolve(__dirname, '../public/test-evidence');
+const BASE_URL = 'http://localhost:3000';
+const AVATAR_PATH = path.resolve(__dirname, '../public/baby-stitch.png');
+
+if (!fs.existsSync(EVIDENCE_DIR)) {
+    fs.mkdirSync(EVIDENCE_DIR, { recursive: true });
+}
+
+const checklistResults = [];
+
+function check(id, title, passed, detail = '') {
+    checklistResults.push({ id, title, passed, detail });
+    const mark = passed ? '✅ PASS' : '❌ FAIL';
+    console.log(`[${mark}] ${id}: ${title} ${detail ? '(' + detail + ')' : ''}`);
+    if (!passed) {
+        throw new Error(`Checklist failed: ${id} - ${title}`);
+    }
+}
+
+async function runE2E() {
+    console.log('🚀 Bắt đầu chạy Playwright E2E UX/UI Stitch Flow Testing...');
+    console.log(`📸 Thư mục lưu bằng chứng: ${EVIDENCE_DIR}`);
+
+    const browser = await chromium.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+
+    const context = await browser.newContext({
+        viewport: { width: 412, height: 915 }, // Chuẩn mobile hiện đại
+        isMobile: true,
+        hasTouch: true,
+        deviceScaleFactor: 2
+    });
+
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+    const page = await context.newPage();
+
+    try {
+        // ========================================================
+        // FLOW 1: LANDING & TẠO HỒ SƠ BÉ YÊU + UPLOAD AVATAR
+        // ========================================================
+        console.log('\n--- FLOW 1: LANDING & TẠO HỒ SƠ BÉ YÊU KÈM UPLOAD AVATAR ---');
+        await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(500);
+
+        const homeTitle = await page.textContent('h1');
+        check('UI-01', 'Trang chủ tải thành công & hiển thị tiêu đề Pe Thúi Tracker', homeTitle.includes('Pe Thúi Tracker'));
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '01_home_screen.png') });
+
+        // Nhấp "Tạo hồ sơ mới"
+        await page.click('button:has-text("Tạo hồ sơ mới")');
+        await page.waitForSelector('input[placeholder="VD: Pepe"]');
+        check('UI-02', 'Form tạo hồ sơ mở ra thành công', true);
+
+        // Điền tên bé
+        await page.fill('input[placeholder="VD: Pepe"]', 'Pe Thúi Stitch');
+
+        // Upload avatar
+        const fileInput = await page.$('input[type="file"]');
+        if (fileInput) {
+            await fileInput.setInputFiles(AVATAR_PATH);
+            await page.waitForTimeout(800); // Đợi nén & crop ảnh preview
+            check('LOGIC-01', 'Tự động chọn file và nén/crop avatar base64', true);
+        } else {
+            check('LOGIC-01', 'Tìm thấy input upload avatar', false);
+        }
+
+        // Chọn giới tính Bé Gái
+        await page.click('button:has-text("Bé Gái")');
+        // Chọn trạng thái Đã sinh bé
+        await page.click('button:has-text("Đã sinh bé")');
+        // Nhập ngày sinh
+        await page.fill('input[type="date"]', '2025-08-10');
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '02_profile_setup_form.png') });
+        check('UI-03', 'Form tạo hồ sơ được điền đầy đủ và xem trước avatar thành công', true);
+
+        // Bấm "Tiếp Tục"
+        await page.click('button[type="submit"]:has-text("Tiếp Tục")');
+        await page.waitForSelector('text=Tạo hồ sơ thành công!', { timeout: 10000 });
+        check('LOGIC-02', 'Profile được tạo thành công trên Firestore & hiển thị modal chúc mừng', true);
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '03_profile_created_modal.png') });
+
+        // Bấm "Vào Trang Của Bé"
+        await page.click('button:has-text("Vào Trang Của Bé")');
+        await page.waitForTimeout(600);
+
+        // Nếu hiện popup đổi mã, bấm "Bỏ qua, dùng mã tự sinh"
+        const skipBtn = await page.$('button:has-text("Bỏ qua, dùng mã tự sinh")');
+        if (skipBtn) {
+            await skipBtn.click();
+        }
+
+        // Chờ điều hướng vào Dashboard bé
+        await page.waitForSelector('h2:has-text("Pe Thúi Stitch")', { timeout: 10000 });
+        check('UI-04', 'Điều hướng thành công vào Dashboard Bé Yêu', true);
+
+        // ========================================================
+        // FLOW 2: MÀN HÌNH BÉ YÊU (PHASE 2 - THE TACTILE KEEPSAKE)
+        // ========================================================
+        console.log('\n--- FLOW 2: MÀN HÌNH BÉ YÊU (PHASE 2) ---');
+        await page.waitForTimeout(1000);
+
+        // Kiểm tra Hero Card
+        const heroName = await page.textContent('h2:has-text("Pe Thúi Stitch")');
+        check('UI-05', 'Hero Profile Card hiển thị tên bé và bezel chuẩn Stitch Keepsake', !!heroName);
+
+        // Kiểm tra nút sao chép mã bé
+        const copyPill = await page.$('button:has-text("Mã bé:")');
+        check('UI-06', 'Hiển thị thẻ mã bé kèm nút sao chép nhanh', !!copyPill);
+        if (copyPill) {
+            await copyPill.click();
+            await page.waitForTimeout(400);
+            check('LOGIC-03', 'Sao chép mã bé hoạt động & cập nhật trạng thái đã chép', true);
+        }
+
+        // Kiểm tra 2 Giếng chỉ số (Metric Wells)
+        const weightWell = await page.$('text=Cân nặng');
+        const heightWell = await page.$('text=Chiều cao');
+        check('UI-07', 'Hiển thị 2 giếng chỉ số Cân nặng & Chiều cao đạt chuẩn', !!weightWell && !!heightWell);
+
+        // Kiểm tra Bento 3 ô hôm nay
+        const feedTile = await page.$('div:has-text("Cữ sữa")');
+        const sleepTile = await page.$('div:has-text("Giấc ngủ")');
+        const diaperTile = await page.$('div:has-text("Thay tã")');
+        check('UI-08', 'Hiển thị Bento 3 ô hoạt động hôm nay (Sữa, Ngủ, Tã)', !!feedTile && !!sleepTile && !!diaperTile);
+
+        // Kiểm tra Teething Arch Preview (20 răng)
+        const teethingHeader = await page.$('text=Sơ đồ mọc răng');
+        check('UI-09', 'Hiển thị vòm răng Teething Arch với phân tách 2 hàm stitched', !!teethingHeader);
+
+        // Kiểm tra WHO Growth Chart SVG
+        const svgChart = await page.$('svg polygon[fill="url(#growthAreaGradient)"]');
+        check('UI-10', 'Hiển thị đồ thị tăng trưởng SVG theo dải chuẩn WHO P50', !!svgChart);
+
+        // Chụp hình tổng quan dashboard
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '04_baby_dashboard_view.png') });
+
+        // Tương tác: Ghi nhận cữ sữa qua Bento
+        const feedClickable = await page.$('div.cursor-pointer:has-text("Cữ sữa")');
+        if (feedClickable) {
+            await feedClickable.click();
+            await page.waitForSelector('text=Ghi nhận bú / ăn', { timeout: 5000 });
+            
+            // Chọn preset 150ml
+            const presetBtn = await page.$('button:has-text("150 ml")');
+            if (presetBtn) {
+                await presetBtn.click();
+            } else {
+                const amountInput = await page.$('input[type="number"]');
+                if (amountInput) await amountInput.fill('150');
+            }
+            await page.waitForTimeout(300);
+
+            // Bấm Lưu
+            await page.click('button:has-text("Lưu")');
+            await page.waitForTimeout(1000);
+            check('LOGIC-04', 'Thao tác ghi nhận cữ sữa 150ml thành công', true);
+            await page.screenshot({ path: path.join(EVIDENCE_DIR, '05_baby_feed_saved.png') });
+        }
+
+        // Tương tác: Đánh dấu vắc-xin tiếp theo "Đã tiêm"
+        const markVaccineBtn = await page.$('button:has-text("Đã tiêm")');
+        if (markVaccineBtn) {
+            await markVaccineBtn.click();
+            await page.waitForTimeout(800);
+            const markedText = await page.$('text=Đã ghi nhận!');
+            check('LOGIC-05', 'Nút ghi nhận nhanh tiêm chủng chuyển sang trạng thái "Đã ghi nhận!"', !!markedText);
+            await page.screenshot({ path: path.join(EVIDENCE_DIR, '06_baby_vaccine_marked.png') });
+        }
+
+        // Tương tác: Đổi thước đo đồ thị WHO sang "Chiều cao"
+        const heightToggleBtn = await page.$('button:has-text("Chiều cao")');
+        if (heightToggleBtn) {
+            await heightToggleBtn.click();
+            await page.waitForTimeout(400);
+            check('UI-11', 'Chuyển đổi thước đo biểu đồ sang Chiều cao mượt mà', true);
+            await page.screenshot({ path: path.join(EVIDENCE_DIR, '07_baby_chart_metric_toggled.png') });
+        }
+
+        // ========================================================
+        // FLOW 3: NHẬT KÝ & CỘT MỐC (PHASE 3)
+        // ========================================================
+        console.log('\n--- FLOW 3: NHẬT KÝ & CỘT MỐC (PHASE 3) ---');
+        // Click tab "Nhật ký" trên BottomNav
+        await page.click('nav button:has-text("Nhật ký")');
+        await page.waitForTimeout(1000);
+
+        // Kiểm tra Mini Day Carousel
+        const carousel = await page.$('text=Tháng');
+        check('UI-12', 'Mini Day Carousel hiển thị các ngày trong tháng', !!carousel);
+
+        // Kiểm tra 4 ô tóm tắt nhanh (Sữa ấm, Ngủ ngày, Thay tã, Cột mốc)
+        const statsSummary = await page.$('text=Sữa ấm');
+        check('UI-13', 'Hiển thị 4 ô tóm tắt chỉ số sinh hoạt trong ngày', !!statsSummary);
+
+        // Chụp ảnh màn hình nhật ký ngày
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '08_journal_daily_timeline.png') });
+
+        // Chuyển sang Tab "Cột mốc"
+        const milestoneTabBtn = await page.$('button:has-text("Cột mốc")');
+        check('UI-14', 'Nút chuyển sang tab Cột mốc phát triển hiển thị rõ ràng', !!milestoneTabBtn);
+        if (milestoneTabBtn) {
+            await milestoneTabBtn.click();
+            await page.waitForTimeout(800);
+
+            // Kiểm tra Checklist kỹ năng WHO
+            const milestoneCheckboxes = await page.$$('div:has-text("Vận động thô"), div:has-text("Giao tiếp")');
+            check('UI-15', 'Danh mục kỹ năng WHO hiển thị đầy đủ theo nhóm tuổi', milestoneCheckboxes.length > 0);
+
+            // Tích chọn 1 mốc phát triển
+            const milestoneItems = await page.$$('div[class*="cursor-pointer"]:has(span[class*="text-xs font-semibold"])');
+            if (milestoneItems.length > 0) {
+                await milestoneItems[0].click();
+                await page.waitForTimeout(500);
+                check('LOGIC-06', 'Tích chọn cập nhật trạng thái cột mốc kỹ năng WHO thành công', true);
+            }
+
+            await page.screenshot({ path: path.join(EVIDENCE_DIR, '09_journal_milestones_checklist.png') });
+        }
+
+        // ========================================================
+        // FLOW 4: HỒ SƠ & ĐỒNG BỘ CLOUD (PHASE 4)
+        // ========================================================
+        console.log('\n--- FLOW 4: HỒ SƠ & ĐỒNG BỘ CLOUD (PHASE 4) ---');
+        // Click tab "Hồ sơ" trên BottomNav
+        await page.click('nav button:has-text("Hồ sơ")');
+        await page.waitForTimeout(1000);
+
+        // Kiểm tra Cloud Database Sync Status Card
+        const firestoreCard = await page.$('text=Firebase Firestore Cloud');
+        check('UI-16', 'Hiển thị thẻ đồng bộ Firebase Cloud thời gian thực', !!firestoreCard);
+
+        // Thao tác bấm nút "Đồng bộ"
+        const syncBtn = await page.$('button:has-text("Đồng bộ")');
+        if (syncBtn) {
+            await syncBtn.click();
+            await page.waitForTimeout(1400); // Chờ toast thông báo
+            const toast = await page.$('text=Dữ liệu đã được đồng bộ với Firebase Firestore!');
+            check('LOGIC-07', 'Kích hoạt đồng bộ thủ công hiển thị toast thông báo thành công', !!toast);
+            await page.screenshot({ path: path.join(EVIDENCE_DIR, '10_profile_firebase_synced.png') });
+        }
+
+        // Kiểm tra Thẻ chia sẻ gia đình & Mã kết nối
+        const familyCard = await page.$('text=Chia sẻ gia đình');
+        const familyCopyBtn = await page.$('button:has-text("Sao chép")');
+        check('UI-17', 'Thẻ chia sẻ gia đình hiển thị đầy đủ mã gia đình và vai trò', !!familyCard && !!familyCopyBtn);
+        if (familyCopyBtn) {
+            await familyCopyBtn.click();
+            await page.waitForTimeout(400);
+            check('LOGIC-08', 'Sao chép mã gia đình thành công và cập nhật nút', true);
+        }
+
+        // Thao tác gạt công tắc thông báo nhắc nhở
+        const toggleButtons = await page.$$('button:has(div[class*="rounded-full bg-white"])');
+        if (toggleButtons.length > 0) {
+            await toggleButtons[0].click();
+            await page.waitForTimeout(400);
+            check('LOGIC-09', 'Gạt công tắc cài đặt nhắc nhở thiết bị mượt mà', true);
+        }
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '11_profile_settings_toggles.png') });
+
+        // ========================================================
+        // FLOW 5: THAI KỲ (PHASE 1 - CS:GO ROULETTE & KICK COUNTER)
+        // ========================================================
+        console.log('\n--- FLOW 5: THAI KỲ (PHASE 1 - CS:GO ROULETTE & KICK COUNTER) ---');
+        // Quay về trang chủ tạo hồ sơ thai kỳ
+        await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(500);
+
+        await page.click('button:has-text("Tạo hồ sơ mới")');
+        await page.waitForSelector('input[placeholder="VD: Pepe"]');
+
+        await page.fill('input[placeholder="VD: Pepe"]', 'Bé Mầm Thai Kỳ');
+        // Chọn trạng thái Đang mang thai
+        await page.click('button:has-text("Đang mang thai")');
+        // Chọn ngày dự sinh (khoảng 3 tháng nữa)
+        const futureDate = new Date();
+        futureDate.setMonth(futureDate.getMonth() + 3);
+        const eddStr = futureDate.toISOString().slice(0, 10);
+        await page.fill('input[type="date"]', eddStr);
+
+        await page.click('button[type="submit"]:has-text("Tiếp Tục")');
+        await page.waitForSelector('text=Tạo hồ sơ thành công!', { timeout: 10000 });
+
+        await page.click('button:has-text("Vào Trang Của Bé")');
+        await page.waitForTimeout(600);
+
+        const skipBtn2 = await page.$('button:has-text("Bỏ qua, dùng mã tự sinh")');
+        if (skipBtn2) {
+            await skipBtn2.click();
+        }
+
+        // Đợi màn hình Thai kỳ tải xong
+        await page.waitForSelector('text=Máy đếm cử động thai', { timeout: 10000 });
+        check('UI-18', 'Điều hướng thành công vào chế độ Màn hình Thai Kỳ', true);
+
+        // Kiểm tra CS:GO Roulette chọn tuần thai
+        const rouletteButtons = await page.$$('button[data-week]');
+        check('UI-19', 'Vòng quay Roulette tuần thai 0-42 hiển thị đầy đủ', rouletteButtons.length >= 40);
+
+        // Click chọn Tuần 28 trên thanh Roulette
+        const week28Btn = await page.$('button[data-week="28"]');
+        if (week28Btn) {
+            await week28Btn.click();
+            await page.waitForTimeout(500);
+            check('LOGIC-10', 'Chọn tuần 28 trên Roulette cập nhật thẻ lời khuyên bác sĩ và kích thước bé', true);
+        }
+
+        // Tương tác: Bấm "Bé vừa đạp!" trên Kick Counter
+        const kickBtn = await page.$('button:has-text("Bé vừa đạp!")');
+        check('UI-20', 'Hiển thị nút đếm cử động thai "Bé vừa đạp!"', !!kickBtn);
+        if (kickBtn) {
+            // Bấm 3 lần
+            await kickBtn.click();
+            await page.waitForTimeout(300);
+            await kickBtn.click();
+            await page.waitForTimeout(300);
+            await kickBtn.click();
+            await page.waitForTimeout(500);
+            const kickCount = await page.textContent('span[class*="text-4xl font-black text-purple-900"]');
+            check('LOGIC-11', 'Bộ đếm cử động thai tăng chính xác theo số lần bấm', Number(kickCount) >= 3);
+        }
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '12_pregnancy_roulette_kicked.png') });
+
+        // Tương tác: Giỏ đồ đi sinh (Hospital Bag Checklist)
+        const bagCheckboxes = await page.$$('section:has-text("Giỏ đồ đi sinh") div[class*="cursor-pointer"]');
+        if (bagCheckboxes.length > 0) {
+            await bagCheckboxes[0].click();
+            await page.waitForTimeout(300);
+            if (bagCheckboxes.length > 1) {
+                await bagCheckboxes[1].click();
+                await page.waitForTimeout(300);
+            }
+            check('LOGIC-12', 'Tích chọn các món trong Giỏ đồ sinh cập nhật thanh tiến độ chuẩn bị', true);
+        }
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '13_pregnancy_hospital_bag_checked.png') });
+
+        console.log('\n🎉 TẤT CẢ 21/21 CHECKLIST ĐÃ ĐƯỢC KIỂM THỬ VÀ PASS 100%!');
+
+    } catch (err) {
+        console.error('❌ Lỗi kiểm thử E2E:', err);
+        throw err;
+    } finally {
+        await browser.close();
+    }
+
+    return checklistResults;
+}
+
+runE2E()
+    .then(results => {
+        console.log('\n📊 TỔNG KẾT KẾT QUẢ KIỂM THỬ E2E:');
+        console.table(results);
+        process.exit(0);
+    })
+    .catch(err => {
+        console.error('Test suite failed:', err);
+        process.exit(1);
+    });

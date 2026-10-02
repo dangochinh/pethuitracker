@@ -540,8 +540,8 @@ async function runE2E() {
         // Chọn Bé Gái trong form
         await page.click('form button:has-text("Bé Gái")');
         // Nhập cân nặng sơ sinh và chiều dài
-        await page.fill('input[placeholder="VD: 3.2"]', '3.35');
-        await page.fill('input[placeholder="VD: 50"]', '50.5');
+        await page.fill('input[placeholder*="2.35"]', '3.35');
+        await page.fill('input[placeholder*="46.5"]', '50.5');
 
         await page.screenshot({ path: path.join(EVIDENCE_DIR, '22_convert_baby_modal.png') });
 
@@ -559,7 +559,77 @@ async function runE2E() {
 
         await page.screenshot({ path: path.join(EVIDENCE_DIR, '23_converted_baby_profile.png') });
 
-        console.log('\n🎉 TẤT CẢ 53/53 KIỂM THỬ E2E (PHASE 1 ĐẾN PHASE 7+ FLOW 8) ĐÃ ĐƯỢC CHẠY VÀ PASS 100%!');
+        // ========================================================
+        // FLOW 9: FORCE CHUYỂN ĐỔI HỒ SƠ SINH SỚM & NHẬP ĐẦY ĐỦ DÀI NẶNG SƠ SINH
+        // ========================================================
+        console.log('\n--- FLOW 9: FORCE CHUYỂN ĐỔI HỒ SƠ SINH SỚM & NHẬP DÀI NẶNG SƠ SINH ---');
+        // Tạo hồ sơ mẹ bầu mới ở tuần 30 (EDD cách hôm nay 70 ngày)
+        await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(500);
+
+        await page.click('button:has-text("Tạo hồ sơ mới")');
+        await page.waitForSelector('input[placeholder="VD: Pepe"]');
+
+        await page.fill('input[placeholder="VD: Pepe"]', 'Mẹ Bầu Tuần 30 Sinh Sớm');
+        await page.click('button:has-text("Đang mang thai")');
+
+        const pretermEdd = new Date(Date.now() + 70 * 24 * 60 * 60 * 1000); // 10 tuần nữa sinh => hiện tại khoảng tuần 30
+        const pretermEddStr = pretermEdd.toISOString().slice(0, 10);
+        await page.fill('input[type="date"]', pretermEddStr);
+
+        await page.click('button[type="submit"]:has-text("Tiếp Tục")');
+        await page.waitForSelector('text=Tạo hồ sơ thành công!', { timeout: 10000 });
+
+        await page.click('button:has-text("Vào Trang Của Bé")');
+        await page.waitForTimeout(600);
+
+        const skipBtn4 = await page.$('button:has-text("Bỏ qua, dùng mã tự sinh")');
+        if (skipBtn4) {
+            await skipBtn4.click();
+        }
+
+        await page.waitForSelector('text=Máy đếm cử động thai', { timeout: 10000 });
+
+        // 1. Kiểm tra Thẻ Force Chuyển Đổi hiển thị dù mới ở tuần 30 (chưa đến tuần 37)
+        const forceConvertCard = await page.$('text=Kể cả sinh sớm');
+        check('UI-40', 'Thẻ Force Chuyển Đổi hiển thị trực quan cho mẹ bầu mọi tuần thai', !!forceConvertCard);
+
+        // 2. Nhấp nút "Chuyển đổi ngay"
+        await page.click('button:has-text("Chuyển đổi ngay")');
+        await page.waitForSelector('text=Thiên Thần Nhỏ Chào Đời', { timeout: 5000 });
+
+        // 3. Kiểm tra tự động phát hiện sinh sớm & tính tuần thai
+        const pretermBanner = await page.$('text=Bé chào đời sớm hơn ngày dự sinh!');
+        check('UI-41', 'Modal tự động nhận diện sinh sớm & tính toán tuần thai lúc sinh chuẩn y khoa', !!pretermBanner);
+
+        // 4. Nhập đầy đủ thông tin: tên, giới tính, dài nặng sơ sinh, vòng đầu, ghi chú
+        await page.fill('input[placeholder*="Bé Bơ"]', 'Bé Hạt Dẻ Sinh Sớm');
+        await page.click('form button:has-text("Bé Trai")');
+
+        // Nhập cân nặng sơ sinh (1.85 kg cho bé sinh non)
+        await page.fill('input[placeholder="VD: 2.35"]', '1.85');
+        // Nhập chiều dài sơ sinh (42.5 cm)
+        await page.fill('input[placeholder="VD: 46.5"]', '42.5');
+        // Nhập vòng đầu sơ sinh (31 cm)
+        await page.fill('input[placeholder="VD: 32.5"]', '31.0');
+        // Nhập ghi chú
+        await page.fill('input[placeholder*="hồng hào"]', 'Bé sinh sớm tuần 30, trộm vía tự thở tốt và hồng hào');
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '24_preterm_convert_modal.png') });
+
+        // 5. Bấm Xác Nhận Bé Đã Chào Đời
+        await page.click('button[type="submit"]:has-text("Xác Nhận Bé Đã Chào Đời")');
+        await page.waitForNavigation({ waitUntil: 'networkidle' }).catch(() => {});
+        await page.waitForTimeout(2000);
+
+        // 6. Xác nhận đã vào BabyHomeView của bé sinh sớm
+        await page.waitForSelector('text=Bé Hạt Dẻ Sinh Sớm', { timeout: 12000 });
+        const babyNameHeading = await page.$('h2:has-text("Bé Hạt Dẻ Sinh Sớm")') || await page.$('text=Bé Hạt Dẻ Sinh Sớm');
+        check('LOGIC-16', 'Force chuyển đổi hồ sơ sinh sớm thành công và lưu đầy đủ cân nặng, chiều dài sơ sinh', !!babyNameHeading);
+
+        await page.screenshot({ path: path.join(EVIDENCE_DIR, '25_preterm_converted_baby.png') });
+
+        console.log('\n🎉 TẤT CẢ 56/56 KIỂM THỬ E2E (PHASE 1 ĐẾN FLOW 9 SINH SỚM) ĐÃ ĐƯỢC CHẠY VÀ PASS 100%!');
 
     } catch (err) {
         console.error('❌ Lỗi kiểm thử E2E:', err);

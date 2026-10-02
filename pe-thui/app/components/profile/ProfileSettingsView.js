@@ -252,8 +252,11 @@ export default function ProfileSettingsView({ profile, code, records = [], onEdi
                                 <span className="material-symbols-outlined text-[20px]">celebration</span>
                             </span>
                             <div>
-                                <h4 className="font-headline font-bold text-xs sm:text-sm text-gray-900">Bé đã cất tiếng khóc?</h4>
-                                <p className="text-[11px] text-gray-500 mt-0.5">Chuyển sang theo dõi cữ bú, giấc ngủ & tiêm chủng</p>
+                                <div className="flex items-center gap-1.5">
+                                    <h4 className="font-headline font-bold text-xs sm:text-sm text-gray-900">Bé đã cất tiếng khóc?</h4>
+                                    <span className="text-[9px] font-extrabold text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded-full">Kể cả sinh sớm</span>
+                                </div>
+                                <p className="text-[11px] text-gray-500 mt-0.5">Chuyển sang hồ sơ em bé để lưu cân nặng, chiều dài sơ sinh & cữ bú</p>
                             </div>
                         </div>
                         <button 

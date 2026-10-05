@@ -179,18 +179,18 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
     return (
         <div className="flex flex-col gap-3.5 pb-20">
             {/* Card 1: Header + Reel with CS:GO Select Area */}
-            <section className="mt-[38px] bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/70 text-center overflow-hidden relative">
+            <section className="mt-[38px] bg-white rounded-[2.5rem] px-5 py-4 shadow-sm border border-purple-100/70 text-center overflow-hidden relative">
                 <div className="absolute -top-4 -right-4 text-6xl opacity-10 blur-[2px] pointer-events-none">🤰</div>
                 <div className="absolute -bottom-4 -left-4 text-6xl opacity-10 blur-[2px] pointer-events-none">✨</div>
                 
-                {/* Baby Identity (Avatar, Name, Gender Badge) */}
-                <div className="flex flex-col items-center justify-center mb-3">
+                {/* Baby Identity (Avatar & Name) - Compact */}
+                <div className="flex flex-col items-center justify-center mb-1.5">
                     <div 
                         onClick={() => onEditProfile?.()}
-                        className="relative mb-2 cursor-pointer group"
+                        className="relative mb-1 cursor-pointer group"
                         title="Chỉnh sửa thông tin bé"
                     >
-                        <div className="w-16 h-16 rounded-full p-1 bg-white border-2 border-pink-200 shadow-sm overflow-hidden flex items-center justify-center transition-transform active:scale-95 duration-200">
+                        <div className="w-13 h-13 rounded-full p-0.5 bg-white border-2 border-pink-200 shadow-sm overflow-hidden flex items-center justify-center transition-transform active:scale-95 duration-200">
                             {profile?.avatar ? (
                                 <img 
                                     src={profile.avatar} 
@@ -199,75 +199,78 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                                     onError={(e) => { e.currentTarget.src = '/baby-stitch.png'; }}
                                 />
                             ) : (
-                                <div className="w-full h-full rounded-full bg-pink-50 flex items-center justify-center text-3xl">
+                                <div className="w-full h-full rounded-full bg-pink-50 flex items-center justify-center text-2xl">
                                     {profile?.gender === 'male' ? '👦' : profile?.gender === 'female' ? '👧' : '🤰'}
                                 </div>
                             )}
                         </div>
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#861949] text-white flex items-center justify-center shadow-xs text-xs">
+                        <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#861949] text-white flex items-center justify-center shadow-xs text-[11px]">
                             {profile?.gender === 'male' ? (
-                                <span className="material-symbols-outlined text-[13px]">male</span>
+                                <span className="material-symbols-outlined text-[12px]">male</span>
                             ) : profile?.gender === 'female' ? (
-                                <span className="material-symbols-outlined text-[13px]">female</span>
+                                <span className="material-symbols-outlined text-[12px]">female</span>
                             ) : (
-                                <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                                <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
                             )}
                         </div>
                     </div>
 
                     <div 
                         onClick={() => onEditProfile?.()}
-                        className="inline-flex items-center gap-1.5 cursor-pointer group"
+                        className="inline-flex items-center gap-1 cursor-pointer group"
                         title="Bấm để chỉnh sửa hồ sơ bé"
                     >
-                        <h2 className="font-headline font-black text-2xl text-gray-900 tracking-tight group-hover:text-[#861949] transition-colors">
+                        <h2 className="font-headline font-black text-xl text-gray-900 tracking-tight group-hover:text-[#861949] transition-colors leading-tight">
                             {profile?.name || 'Bé yêu'}
                         </h2>
-                        <span className="material-symbols-outlined text-[#861949] text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                        <span className="material-symbols-outlined text-[#861949] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                             verified
                         </span>
                     </div>
-
-                    <div className="flex items-center gap-1.5 mt-1">
-                        <span className="text-[11px] font-bold text-[#861949] bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200/50">
-                            {profile?.gender === 'male' ? 'Bé Trai' : profile?.gender === 'female' ? 'Bé Gái' : 'Thai Nhi'}
-                        </span>
-                    </div>
                 </div>
 
-                <div className="text-[#861949] font-headline font-black text-lg mb-1 transition-all">
-                    {isCurrentWeek ? `Mẹ & Bé đang ở tuần ${stats.weeks}` : `Xem trước tuần ${selectedWeek}`}
+                {/* Week Heading with highlighted week number */}
+                <div className="font-headline font-bold text-gray-700 text-base mb-0.5 transition-all">
+                    {isCurrentWeek ? (
+                        <>
+                            Mẹ & Bé đang ở <span className="text-[#861949] font-black text-lg">tuần {stats.weeks}</span>
+                        </>
+                    ) : (
+                        <>
+                            Xem trước <span className="text-purple-600 font-black text-lg">tuần {selectedWeek}</span>
+                        </>
+                    )}
                 </div>
                 {isCurrentWeek ? (
-                    <div className="flex flex-col items-center gap-1.5">
-                        <p className="text-[#861949]/90 font-bold text-sm">
+                    <div className="flex flex-col items-center gap-1">
+                        <p className="text-gray-500 font-medium text-xs">
                             {stats.days > 0 ? `Tuần ${stats.weeks} + ${stats.days} ngày` : `Tuần ${stats.weeks} tròn`}
-                            <span className="text-pink-300 font-normal mx-1.5">•</span>
+                            <span className="text-pink-300 font-normal mx-1">•</span>
                             Ngày thứ {stats.totalDaysPassed} của thai kỳ
                         </p>
-                        <div className="flex flex-wrap items-center justify-center gap-2 mt-0.5">
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-0.5">
                             {profile?.estimatedDueDate && (
                                 <button
                                     type="button"
                                     onClick={() => onEditProfile?.()}
-                                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50/70 hover:bg-pink-100/80 text-[#861949] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer border border-pink-200/50"
+                                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-pink-50/70 hover:bg-pink-100/80 text-[#861949] text-[11px] font-semibold shadow-2xs transition-all active:scale-95 cursor-pointer border border-pink-200/50"
                                     title="Bấm để chỉnh sửa ngày dự sinh hoặc thông tin"
                                 >
-                                    <span className="material-symbols-outlined text-[14px]">event</span>
+                                    <span className="material-symbols-outlined text-[13px]">event</span>
                                     <span>Dự sinh: {new Date(profile.estimatedDueDate).toLocaleDateString('vi-VN')}</span>
-                                    <span className="material-symbols-outlined text-[13px] opacity-60">edit</span>
+                                    <span className="material-symbols-outlined text-[12px] opacity-60">edit</span>
                                 </button>
                             )}
                             {code && (
                                 <button 
                                     onClick={handleCopyCode}
                                     type="button"
-                                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-50/80 hover:bg-purple-100/70 text-gray-700 transition-all active:scale-95 border border-purple-200/40 shadow-xs cursor-pointer text-xs font-semibold"
+                                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-50/80 hover:bg-purple-100/70 text-gray-700 transition-all active:scale-95 border border-purple-200/40 shadow-2xs cursor-pointer text-[11px] font-semibold"
                                     title="Sao chép mã bé"
                                 >
-                                    <span className="material-symbols-outlined text-[13px] text-[#861949]">tag</span>
-                                    <span className="text-xs font-bold text-[#861949]">#{code}</span>
-                                    <span className="material-symbols-outlined text-[13px] text-[#861949]">
+                                    <span className="material-symbols-outlined text-[12px] text-[#861949]">tag</span>
+                                    <span className="text-[11px] font-bold text-[#861949]">#{code}</span>
+                                    <span className="material-symbols-outlined text-[12px] text-[#861949]">
                                         {copiedCode ? 'check' : 'content_copy'}
                                     </span>
                                 </button>
@@ -275,37 +278,45 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex justify-center mt-1">
+                    <div className="flex justify-center mt-0.5">
                         <button 
                             onClick={() => handleWeekClick(stats.weeks)}
-                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#861949] bg-pink-100/70 hover:bg-pink-200/80 px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-xs cursor-pointer"
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#861949] bg-pink-100/70 hover:bg-pink-200/80 px-3 py-0.5 rounded-full transition-all active:scale-95 shadow-2xs cursor-pointer"
                             title="Quay lại tuần thực tế của bé"
                         >
                             <span>Quay lại tuần hiện tại ({stats.weeks})</span>
-                            <span className="text-sm leading-none">↩</span>
+                            <span className="text-xs leading-none">↩</span>
                         </button>
                     </div>
                 )}
 
 
                 {/* Timeline Carousel with CS:GO Style Select Area */}
-                <div className="mt-6 relative">
+                <div className="mt-3.5 relative">
                     {/* Background track line */}
                     <div className="absolute top-[36px] left-0 w-full h-1 bg-gray-100 -translate-y-1/2 rounded-full pointer-events-none"></div>
                     <div 
-                        className="absolute top-[36px] left-0 h-1 bg-[#861949]/40 -translate-y-1/2 rounded-full transition-all duration-150 pointer-events-none" 
+                        className={`absolute top-[36px] left-0 h-1 -translate-y-1/2 rounded-full transition-all duration-150 pointer-events-none ${
+                            isCurrentWeek ? 'bg-[#861949]/50' : 'bg-purple-400/40'
+                        }`}
                         style={{ width: `${Math.min(100, Math.max(0, (selectedWeek / 42) * 100))}%` }}
                     ></div>
                     
                     {/* CS:GO Selector Reticle / Select Area Frame */}
                     <div 
-                        className="pointer-events-none absolute left-1/2 top-[36px] -translate-x-1/2 -translate-y-1/2 z-20 w-[56px] h-[58px] rounded-2xl border-2 border-gray-900 shadow-[0_6px_20px_rgba(0,0,0,0.18)] bg-black/[0.02]"
+                        className={`pointer-events-none absolute left-1/2 top-[36px] -translate-x-1/2 -translate-y-1/2 z-20 w-[56px] h-[58px] rounded-2xl border-2 shadow-[0_6px_20px_rgba(0,0,0,0.18)] transition-colors duration-200 ${
+                            isCurrentWeek ? 'border-[#861949] bg-[#861949]/[0.03]' : 'border-purple-600 bg-purple-600/[0.03]'
+                        }`}
                         aria-hidden="true"
                     >
                         {/* Top indicator tick (CS:GO style) */}
-                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] border-t-gray-900"></div>
+                        <div className={`absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[7px] transition-colors duration-200 ${
+                            isCurrentWeek ? 'border-t-[#861949]' : 'border-t-purple-600'
+                        }`}></div>
                         {/* Bottom indicator tick (CS:GO style) */}
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[7px] border-b-gray-900"></div>
+                        <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[7px] transition-colors duration-200 ${
+                            isCurrentWeek ? 'border-b-[#861949]' : 'border-b-purple-600'
+                        }`}></div>
                     </div>
 
                     {/* Scrollable / Draggable Track */}
@@ -326,21 +337,35 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                             const isCurrent = w === stats.weeks;
                             const isPast = w < stats.weeks;
                             
+                            // Highlight "Tuần hiện tại" with prominent brand color (#861949)
+                            let circleStyle = '';
+                            if (isSelected && isCurrent) {
+                                circleStyle = 'bg-[#861949] text-white border-pink-200 scale-125 shadow-lg shadow-[#861949]/30';
+                            } else if (isSelected) {
+                                circleStyle = 'bg-purple-600 text-white border-purple-200 scale-125 shadow-lg';
+                            } else if (isCurrent) {
+                                circleStyle = 'bg-rose-100 text-[#861949] border-[#861949] font-black scale-110 shadow-md ring-2 ring-pink-300';
+                            } else if (isPast) {
+                                circleStyle = 'bg-purple-100 text-purple-400 border-white';
+                            } else {
+                                circleStyle = 'bg-white text-gray-400 border-white opacity-60';
+                            }
+                            
                             return (
                                 <button
                                     key={w}
                                     data-week={w}
                                     onClick={() => handleWeekClick(w)}
-                                    className={`shrink-0 flex flex-col items-center justify-center transition-all duration-150 snap-center outline-none focus:outline-none ${isCurrent ? 'is-current' : ''}`}
+                                    className={`shrink-0 flex flex-col items-center justify-center transition-all duration-150 snap-center outline-none focus:outline-none relative ${isCurrent ? 'is-current' : ''}`}
                                 >
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm border-4 transition-all duration-150 ${
-                                        isSelected ? 'bg-purple-600 text-white border-purple-200 scale-125 shadow-lg' : 
-                                        isCurrent ? 'bg-white text-purple-600 border-purple-300 shadow-md font-extrabold' :
-                                        isPast ? 'bg-purple-100 text-purple-400 border-white' :
-                                        'bg-white text-gray-400 border-white opacity-60'
-                                    }`}>
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm border-4 transition-all duration-150 ${circleStyle}`}>
                                         {w}
                                     </div>
+                                    {isCurrent && !isSelected && (
+                                        <span className="text-[8px] font-black text-[#861949] uppercase tracking-tighter absolute -bottom-1 whitespace-nowrap bg-white/90 px-1 rounded-full border border-pink-200">
+                                            Hiện tại
+                                        </span>
+                                    )}
                                 </button>
                             );
                         })}
@@ -350,7 +375,7 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                     </div>
                 </div>
                 
-                <p className="text-[9px] font-bold text-purple-400 uppercase tracking-widest mt-2">
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">
                     Kéo hoặc vuốt để đổi tuần
                 </p>
             </section>

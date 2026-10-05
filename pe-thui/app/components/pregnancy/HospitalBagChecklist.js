@@ -91,7 +91,7 @@ export default function HospitalBagChecklist() {
                 </div>
                 <div className="w-full bg-purple-100/60 h-2.5 rounded-full overflow-hidden">
                     <div 
-                        className="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full transition-all duration-300"
+                        className="h-full bg-[#861949] rounded-full transition-all duration-300"
                         style={{ width: `${progressPercent}%` }}
                     ></div>
                 </div>

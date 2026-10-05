@@ -133,7 +133,7 @@ export default function KickCounter({ selectedWeek, code }) {
             </div>
 
             {/* Counter Interaction Area */}
-            <div className="bg-gradient-to-br from-purple-50/70 to-pink-50/50 rounded-2xl p-4 flex items-center justify-between gap-3 border border-purple-100/60">
+            <div className="bg-[#861949]/5 rounded-2xl p-4 flex items-center justify-between gap-3 border border-[#861949]/15">
                 <div className="flex flex-col">
                     <div className="flex items-baseline gap-1.5">
                         <span className="font-headline text-4xl font-black text-purple-900 leading-none">
@@ -149,7 +149,7 @@ export default function KickCounter({ selectedWeek, code }) {
                             </>
                         ) : kickStatus.count > 0 ? (
                             <>
-                                <span className="material-symbols-outlined text-[16px] text-purple-500">favorite</span>
+                                <span className="material-symbols-outlined text-[16px] text-[#861949]">favorite</span>
                                 <span>Cần thêm {kickStatus.remaining} cử động nữa</span>
                             </>
                         ) : (
@@ -161,7 +161,7 @@ export default function KickCounter({ selectedWeek, code }) {
                 <button 
                     onClick={handleKick}
                     type="button"
-                    className="h-13 px-4 rounded-full bg-gradient-to-r from-purple-700 to-pink-600 hover:from-purple-800 hover:to-pink-700 text-white font-headline font-bold text-sm flex items-center gap-2 shadow-[0_6px_20px_rgba(165,51,97,0.3)] active:scale-95 transition-all cursor-pointer shrink-0"
+                    className="h-13 px-4 rounded-full bg-[#861949] hover:bg-[#6c123a] text-white font-headline font-bold text-sm flex items-center gap-2 shadow-md shadow-[#861949]/20 active:scale-95 transition-all cursor-pointer shrink-0"
                 >
                     <span className="material-symbols-outlined text-xl">touch_app</span>
                     <span>Bé vừa đạp!</span>
@@ -220,11 +220,11 @@ export default function KickCounter({ selectedWeek, code }) {
                                                 className={`w-full rounded-t-md transition-all duration-500 ${
                                                     day.isToday
                                                         ? isGoalMet
-                                                            ? 'bg-gradient-to-t from-teal-600 to-teal-400 shadow-xs'
-                                                            : 'bg-gradient-to-t from-purple-600 to-pink-500 shadow-xs'
+                                                            ? 'bg-teal-500 shadow-xs'
+                                                            : 'bg-[#861949] shadow-xs'
                                                         : isGoalMet
                                                             ? 'bg-teal-400/80'
-                                                            : day.count > 0 ? 'bg-purple-300/80' : 'bg-gray-200'
+                                                            : day.count > 0 ? 'bg-[#861949]/40' : 'bg-gray-200'
                                                 }`}
                                             ></div>
                                         </div>

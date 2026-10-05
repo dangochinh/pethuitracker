@@ -43,29 +43,32 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+        <div 
+            className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300"
+            onClick={onClose}
+        >
             <div 
-                className="bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-purple-100"
+                className="bg-white w-full max-w-2xl max-h-[90vh] rounded-t-[3rem] sm:rounded-[3rem] shadow-2xl flex flex-col overflow-hidden border-t sm:border border-gray-100 relative animate-in slide-in-from-bottom duration-500"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-purple-700 via-pink-600 to-[#861949] p-4 sm:p-5 text-white flex items-center justify-between shrink-0 shadow-sm">
+                <div className="px-6 py-5 flex justify-between items-center border-b border-gray-100 shrink-0 bg-white">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
-                            <span className="material-symbols-outlined text-2xl text-white">menu_book</span>
+                        <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 border border-purple-100/80">
+                            <span className="material-symbols-outlined text-2xl">menu_book</span>
                         </div>
                         <div>
-                            <h3 className="font-headline font-black text-lg sm:text-xl text-white tracking-tight flex items-center gap-1.5">
-                                Cẩm Nang Thai Kỳ & Bí Kíp Mẹ Bầu
-                            </h3>
-                            <p className="text-white/80 text-xs font-medium">
-                                Lời khuyên 42 tuần • Thai giáo khoa học • Phương pháp EASY
+                            <h2 className="text-lg sm:text-xl font-black font-headline text-gray-900 tracking-tight">
+                                Cẩm Nang Thai Kỳ ✨
+                            </h2>
+                            <p className="text-gray-500 text-xs font-medium">
+                                Lời khuyên 42 tuần • Thai giáo • Phương pháp EASY
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all active:scale-95 cursor-pointer"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 transition-all cursor-pointer active:scale-90 shrink-0"
                         title="Đóng cẩm nang"
                     >
                         <span className="material-symbols-outlined text-xl">close</span>
@@ -73,13 +76,13 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                 </div>
 
                 {/* Main Tabs Navigation */}
-                <div className="flex items-center bg-purple-50/70 p-1.5 border-b border-purple-100 shrink-0 gap-1.5">
+                <div className="flex items-center bg-gray-50/80 px-4 py-2 border-b border-gray-100 shrink-0 gap-2">
                     <button
                         onClick={() => setActiveTab('weeks')}
-                        className={`flex-1 py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`flex-1 py-2 px-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                             activeTab === 'weeks'
-                                ? 'bg-white text-purple-900 shadow-sm border border-purple-200/60'
-                                : 'text-gray-600 hover:text-purple-700 hover:bg-white/50'
+                                ? 'bg-white text-purple-700 shadow-xs border border-gray-200/80'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                         }`}
                     >
                         <span className="material-symbols-outlined text-[18px]">calendar_month</span>
@@ -87,10 +90,10 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                     </button>
                     <button
                         onClick={() => setActiveTab('thaigiao')}
-                        className={`flex-1 py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`flex-1 py-2 px-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                             activeTab === 'thaigiao'
-                                ? 'bg-white text-purple-900 shadow-sm border border-purple-200/60'
-                                : 'text-gray-600 hover:text-purple-700 hover:bg-white/50'
+                                ? 'bg-white text-purple-700 shadow-xs border border-gray-200/80'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                         }`}
                     >
                         <span className="material-symbols-outlined text-[18px]">psychology</span>
@@ -98,10 +101,10 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                     </button>
                     <button
                         onClick={() => setActiveTab('easy')}
-                        className={`flex-1 py-2.5 px-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        className={`flex-1 py-2 px-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                             activeTab === 'easy'
-                                ? 'bg-white text-purple-900 shadow-sm border border-purple-200/60'
-                                : 'text-gray-600 hover:text-purple-700 hover:bg-white/50'
+                                ? 'bg-white text-purple-700 shadow-xs border border-gray-200/80'
+                                : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                         }`}
                     >
                         <span className="material-symbols-outlined text-[18px]">child_care</span>
@@ -341,13 +344,13 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                     {activeTab === 'thaigiao' && (
                         <div className="space-y-4">
                             {/* Intro Banner */}
-                            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 rounded-2xl text-white shadow-sm flex items-start gap-3">
+                            <div className="bg-purple-50/70 border border-purple-100 p-4 rounded-2xl flex items-start gap-3 text-gray-800">
                                 <span className="text-3xl">🧠</span>
                                 <div>
-                                    <h4 className="font-headline font-bold text-base text-white">
+                                    <h4 className="font-headline font-bold text-base text-purple-900">
                                         Thai Giáo Khoa Học: Tình Yêu & Trí Tuệ
                                     </h4>
-                                    <p className="text-xs text-purple-100 mt-1 leading-relaxed">
+                                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                                         Thai giáo không phải ép con học sớm, mà là đánh thức các giác quan, nuôi dưỡng cảm xúc hạnh phúc và tạo cầu nối thiêng liêng giữa con và ba mẹ.
                                     </p>
                                 </div>
@@ -358,10 +361,10 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                                 {THAI_GIAO_GUIDES.map((guide) => (
                                     <div
                                         key={guide.id}
-                                        className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 sm:p-5 text-left space-y-3"
+                                        className="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-4 sm:p-5 text-left space-y-3"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${guide.color} text-white flex items-center justify-center shadow-xs shrink-0`}>
+                                            <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center shadow-2xs shrink-0">
                                                 <span className="material-symbols-outlined text-xl">{guide.icon}</span>
                                             </div>
                                             <div>
@@ -396,13 +399,13 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                     {activeTab === 'easy' && (
                         <div className="space-y-4">
                             {/* Intro Banner */}
-                            <div className="bg-gradient-to-r from-pink-600 to-[#861949] p-4 rounded-2xl text-white shadow-sm flex items-start gap-3">
+                            <div className="bg-pink-50/70 border border-pink-100 p-4 rounded-2xl flex items-start gap-3 text-gray-800">
                                 <span className="text-3xl">🍼</span>
                                 <div>
-                                    <h4 className="font-headline font-bold text-base text-white">
+                                    <h4 className="font-headline font-bold text-base text-pink-900">
                                         Phương Pháp EASY: Con Tự Lập - Mẹ Nhàn Tênh
                                     </h4>
-                                    <p className="text-xs text-pink-100 mt-1 leading-relaxed">
+                                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                                         Trang bị kiến thức EASY ngay từ thai kỳ giúp mẹ không bị sốc tâm lý hay trầm cảm sau sinh, hiểu đúng tiếng khóc và sinh lý giấc ngủ của con.
                                     </p>
                                 </div>
@@ -413,10 +416,10 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                                 {EASY_METHOD_GUIDES.map((guide) => (
                                     <div
                                         key={guide.id}
-                                        className="bg-white rounded-2xl border border-gray-200/90 shadow-xs p-4 sm:p-5 text-left space-y-3"
+                                        className="bg-white rounded-2xl border border-gray-200/80 shadow-xs p-4 sm:p-5 text-left space-y-3"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-2xl bg-gradient-to-br ${guide.color} text-white flex items-center justify-center shadow-xs shrink-0`}>
+                                            <div className="w-10 h-10 rounded-2xl bg-pink-50 text-pink-700 border border-pink-100 flex items-center justify-center shadow-2xs shrink-0">
                                                 <span className="material-symbols-outlined text-xl">{guide.icon}</span>
                                             </div>
                                             <div>
@@ -446,19 +449,13 @@ export default function PregnancyGuidesModal({ isOpen, onClose, currentWeek = 0,
                             </div>
                         </div>
                     )}
-                </div>
 
-                {/* Footer */}
-                <div className="p-3.5 sm:p-4 bg-white border-t border-gray-100 flex items-center justify-between shrink-0">
-                    <span className="text-xs text-gray-500">
-                        Kiến thức tham khảo theo hướng dẫn y khoa sản nhi & EASY Baby Whisperer.
-                    </span>
-                    <button
-                        onClick={onClose}
-                        className="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-bold text-xs shadow-xs transition-all active:scale-95 cursor-pointer"
-                    >
-                        Đã hiểu
-                    </button>
+                    {/* Disclaimer Footnote at end of scrollable content */}
+                    <div className="pt-6 pb-2 text-center border-t border-dashed border-gray-200">
+                        <p className="text-[11px] text-gray-400 font-medium">
+                            Kiến thức tham khảo theo hướng dẫn y khoa sản nhi & phương pháp EASY Baby Whisperer.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -158,7 +158,7 @@ export default function ConvertBabyModal({ profile, code, onClose, onSuccess, in
 
                 {/* Header */}
                 <div className="flex flex-col items-center text-center pt-2">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-100 via-amber-100 to-teal-50 flex items-center justify-center text-3xl mb-2.5 shadow-inner border-2 border-white animate-bounce">
+                    <div className="w-16 h-16 rounded-full bg-pink-50 border border-pink-200/80 flex items-center justify-center text-3xl mb-2.5">
                         🎉
                     </div>
                     <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#861949] bg-pink-50 px-3.5 py-1 rounded-full border border-pink-200/60 mb-1.5">

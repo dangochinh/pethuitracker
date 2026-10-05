@@ -96,7 +96,7 @@ export default function PregnancyCheckups({ profile, code }) {
                 </div>
             </div>
 
-            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[1.15rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[#861949]/10 before:via-[#861949]/25 before:to-[#861949]/10">
+            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[1.15rem] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-[#861949]/15">
                 {standardCheckups.map((checkup, idx) => {
                     const match = checkup.weeks.match(/(\d+)/g);
                     const minW = parseInt(match[0]);
@@ -123,9 +123,6 @@ export default function PregnancyCheckups({ profile, code }) {
                             <div className={`w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl bg-white/85 backdrop-blur-sm border transition-all hover:shadow-md ml-4 md:ml-0 relative ${
                                 status === 'current' ? 'border-[#861949]/30 shadow-md ring-1 ring-[#861949]/15' : 'border-[#861949]/10 shadow-sm'
                             }`}>
-                                {status === 'current' && (
-                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#861949]/20 to-[#006972]/20 rounded-2xl blur-sm opacity-50 -z-10"></div>
-                                )}
                                 <div className={`border-l-4 ${checkup.important ? 'border-[#861949]' : 'border-[#006972]/40'} pl-3 py-0.5`}>
                                     <div className="flex items-center justify-between mb-1">
                                         <span className={`text-[11px] font-black tracking-widest uppercase ${status === 'current' ? 'text-[#861949]' : 'text-stone-400'}`}>

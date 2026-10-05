@@ -17,7 +17,7 @@ export default function InfoModal({ onClose }) {
             content: (
                 <div className="space-y-2">
                     <p>
-                        Pe Thúi Tracker giúp ba mẹ theo dõi cân nặng, chiều cao, tiêm chủng, mọc răng và kỹ năng phát triển của bé.
+                        Babie Tracker giúp ba mẹ theo dõi cân nặng, chiều cao, tiêm chủng, mọc răng và kỹ năng phát triển của bé.
                     </p>
                     <p>
                         Dùng mã code nhanh, không cần đăng nhập, giao diện mobile thân thiện.
@@ -188,7 +188,7 @@ export default function InfoModal({ onClose }) {
                         </div>
                     ))}
                     <div className="pt-8 pb-10 text-center shrink-0 border-t border-dashed border-outline-variant/30">
-                        <p className="text-[10px] text-primary/40 font-black tracking-[3px] uppercase">From Pe Thúi Tracker with ❤️</p>
+                        <p className="text-[10px] text-primary/40 font-black tracking-[3px] uppercase">From Babie Tracker with ❤️</p>
                         <p className="text-[8px] text-on-surface-variant/30 uppercase mt-2">© 2026 All Rights Reserved</p>
                     </div>
                 </div>

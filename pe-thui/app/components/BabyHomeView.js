@@ -238,7 +238,7 @@ export default function BabyHomeView({
 
                     {/* Baby Identity & Status */}
                     <div className="flex items-center gap-1.5">
-                        <h2 className="font-headline font-bold text-2xl text-gray-900">{profile?.name || 'Pe Thúi'}</h2>
+                        <h2 className="font-headline font-bold text-2xl text-gray-900">{profile?.name || 'Bé yêu'}</h2>
                         <span className="material-symbols-outlined text-[#861949] text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                     </div>
 

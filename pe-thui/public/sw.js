@@ -1,7 +1,7 @@
-// Service Worker for Pe Thui Tracker — Push Notifications
+// Service Worker for Babie Tracker — Push Notifications
 
 self.addEventListener('push', (event) => {
-  let data = { title: 'Pe Thui Tracker', body: 'Bạn có thông báo mới!' };
+  let data = { title: 'Babie Tracker', body: 'Bạn có thông báo mới!' };
 
   try {
     data = event.data.json();

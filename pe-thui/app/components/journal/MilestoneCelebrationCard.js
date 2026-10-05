@@ -54,7 +54,7 @@ export default function MilestoneCelebrationCard({ milestone, ageText = '10M 14D
             {/* Title & Description */}
             <div>
                 <h3 className="font-headline font-bold text-base text-[#861949] leading-snug">
-                    {milestone.title || 'Pe Thúi tự đứng bám vịn & vỗ tay!'}
+                    {milestone.title || 'Bé tự đứng bám vịn & vỗ tay!'}
                 </h3>
                 <p className="text-xs text-gray-700 leading-relaxed mt-1 font-medium">
                     {milestone.subtitle || milestone.detail || 'Hôm nay con vịn thành ghế sofa đứng vững suốt 20 giây, miệng cười tít mắt rồi tự vỗ tay hoan hô trước sự reo mừng của cả nhà!'}

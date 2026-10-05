@@ -1,4 +1,4 @@
-// Telegram Bot helper for Pe Thui Tracker
+// Telegram Bot helper for Babie Tracker
 
 function getTelegramApi() {
   return `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`;

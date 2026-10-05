@@ -164,7 +164,7 @@ export default function JournalMilestonesView({ profile, code }) {
     // Mẫu cột mốc đặc biệt để hiển thị nếu chưa có ảnh
     const sampleMilestone = timeline.find(t => t.category === 'milestone') || {
         id: 'sample_m1',
-        title: `${profile?.name || 'Pe Thúi'} tự đứng bám vịn & vỗ tay!`,
+        title: `${profile?.name || 'Bé'} tự đứng bám vịn & vỗ tay!`,
         subtitle: 'Hôm nay con vịn thành ghế sofa đứng vững suốt 20 giây, miệng cười tít mắt rồi tự vỗ tay hoan hô trước sự reo mừng của cả nhà!',
         time: '16:00',
         period: '16:00 CHIỀU',
@@ -576,7 +576,7 @@ export default function JournalMilestonesView({ profile, code }) {
                                 disabled={isSubmitting}
                                 className="w-full py-3.5 rounded-full bg-[#861949] hover:bg-[#a53361] text-white font-headline font-bold text-xs transition-all active:scale-95 shadow-md cursor-pointer disabled:opacity-50"
                             >
-                                {isSubmitting ? 'Đang lưu...' : `Lưu kỷ niệm ${profile?.name || 'Pe Thúi'}`}
+                                {isSubmitting ? 'Đang lưu...' : `Lưu kỷ niệm ${profile?.name || 'bé'}`}
                             </button>
                         </form>
                     </div>

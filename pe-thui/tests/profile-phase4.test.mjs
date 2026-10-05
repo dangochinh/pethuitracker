@@ -112,7 +112,7 @@ test('4. generateBackupDataPayload creates comprehensive Firebase JSON backup wi
 
     const payload = generateBackupDataPayload(code, profile, records);
 
-    assert.equal(payload.app, 'PeThui Tracker');
+    assert.equal(payload.app, 'Babie Tracker');
     assert.equal(payload.baby.code, code);
     assert.equal(payload.baby.name, 'Pe Thúi');
     assert.equal(payload.records.growth.length, 1);

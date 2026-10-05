@@ -29,6 +29,69 @@ export async function checkBabyExists(code) {
     return doc.exists;
 }
 
+/**
+ * Tự động sinh mã cho bé mới:
+ * - Ưu tiên lấy tên bé làm code (in hoa, không dấu, viết liền).
+ * - Nếu đã có mã đó trong DB thì thêm ngày sinh (hoặc ngày dự sinh nếu thai kỳ) vào sau code.
+ */
+export async function generateUniqueBabyCode(name, dateStr, mode = 'born') {
+    const noAccents = String(name || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D');
+    const baseCode = noAccents.replace(/[^a-zA-Z0-9]/g, '').toUpperCase() || 'BABIE';
+
+    // 1. Kiểm tra mã cơ bản (lấy tên bé làm code)
+    const exists = await checkBabyExists(baseCode);
+    if (!exists) {
+        return baseCode;
+    }
+
+    // 2. Nếu đã có code đó trong DB -> thêm ngày sinh / ngày dự sinh vào sau code
+    const rawDate = dateStr || new Date().toISOString().slice(0, 10);
+    const parts = String(rawDate).split('-');
+    let dateSuffix = '';
+    if (parts.length >= 3) {
+        const [year, month, day] = parts;
+        const yy = year.slice(-2);
+        dateSuffix = `${day.padStart(2, '0')}${month.padStart(2, '0')}${yy}`;
+    } else {
+        const now = new Date();
+        const d = String(now.getDate()).padStart(2, '0');
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        dateSuffix = `${d}${m}${yy}`;
+    }
+
+    const codeWithDate = `${baseCode}${dateSuffix}`;
+    const existsWithDate = await checkBabyExists(codeWithDate);
+    if (!existsWithDate) {
+        return codeWithDate;
+    }
+
+    // 3. Dự phòng trường hợp trùng cả tên lẫn ngày: thử năm 4 chữ số (DDMMYYYY)
+    if (parts.length >= 3) {
+        const [year, month, day] = parts;
+        const codeWithFullYear = `${baseCode}${day.padStart(2, '0')}${month.padStart(2, '0')}${year}`;
+        const existsFull = await checkBabyExists(codeWithFullYear);
+        if (!existsFull) {
+            return codeWithFullYear;
+        }
+    }
+
+    // 4. Nếu vẫn trùng, thêm số thứ tự .1, .2...
+    for (let i = 1; i <= 99; i++) {
+        const candidate = `${codeWithDate}.${i}`;
+        const candidateExists = await checkBabyExists(candidate);
+        if (!candidateExists) {
+            return candidate;
+        }
+    }
+
+    return `${codeWithDate}.${Date.now().toString().slice(-4)}`;
+}
+
 export async function verifyBabyPin(code, pin) {
     if (!code) return { success: false, message: 'Thiếu mã bé' };
     const db = getFirestore();

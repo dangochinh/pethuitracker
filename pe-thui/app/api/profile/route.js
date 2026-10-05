@@ -1,4 +1,4 @@
-import { getBaby, createOrUpdateBaby, renameBabyCode } from '../../lib/db';
+import { getBaby, createOrUpdateBaby, renameBabyCode, generateUniqueBabyCode } from '../../lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -18,9 +18,16 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const body = await request.json();
-        const code = body.code;
+        let code = body.code;
         const oldCode = body.oldCode;
-        if (!code) throw new Error('Code is required');
+
+        // Tự động sinh mã nếu không có code hoặc body.autoCode === true
+        if (!code || body.autoCode) {
+            const targetDate = body.mode === 'pregnancy' ? body.estimatedDueDate : body.dob;
+            code = await generateUniqueBabyCode(body.name, targetDate, body.mode);
+        } else {
+            code = String(code).trim().toUpperCase();
+        }
 
         if (oldCode && oldCode !== code) {
             await renameBabyCode(oldCode, code);
@@ -65,7 +72,7 @@ export async function POST(request) {
             estimatedDueDate: estimatedDueDate || null,
         });
 
-        return NextResponse.json({ success: true, data: body });
+        return NextResponse.json({ success: true, data: { ...body, code } });
     } catch (err) {
         return NextResponse.json({ success: false, error: err.message }, { status: 400 });
     }

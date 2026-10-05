@@ -19,62 +19,32 @@ export default function ProfileSetup({ onComplete }) {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
     };
 
-    const generateCode = () => {
-        // e.g "tên bé là sóc" -> "SOC" -> "SOC010126.0226"
-        const cleanName = removeAccents(name.trim()).replace(/\s+/g, '').toUpperCase();
-        
-        let dateString = '';
-        if (mode === 'born' && dob) {
-            const [year, month, day] = dob.split('-');
-            const yy = year.slice(-2);
-            dateString = `${day}${month}${yy}`;
-        } else if (mode === 'pregnancy' && estimatedDueDate) {
-            const [year, month, day] = estimatedDueDate.split('-');
-            const yy = year.slice(-2);
-            dateString = `${day}${month}${yy}`;
-        } else {
-            // fallback
-            const today = new Date();
-            const d = String(today.getDate()).padStart(2, '0');
-            const m = String(today.getMonth() + 1).padStart(2, '0');
-            const yy = String(today.getFullYear()).slice(-2);
-            dateString = `${d}${m}${yy}`;
-        }
-
-        const today = new Date();
-        const loginM = String(today.getMonth() + 1).padStart(2, '0');
-        const loginY = String(today.getFullYear()).slice(-2);
-
-        return `${cleanName}${dateString}.${loginM}${loginY}`;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (!name) {
-            setError('Vui lòng nhập tên!');
+        if (!name.trim()) {
+            setError('Vui lòng nhập tên của bé!');
             return;
         }
         if (mode === 'born' && !dob) {
-            setError('Vui lòng nhập ngày sinh!');
+            setError('Vui lòng chọn ngày sinh của bé!');
             return;
         }
         if (mode === 'pregnancy' && !estimatedDueDate) {
-            setError('Vui lòng nhập ngày dự sinh!');
+            setError('Vui lòng chọn ngày dự sinh (EDD)!');
             return;
         }
 
         setSaving(true);
         try {
-            const newCode = generateCode();
-            await fetch('/api/profile', {
+            const res = await fetch('/api/profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    code: newCode, 
-                    name, 
+                    autoCode: true,
+                    name: name.trim(), 
                     gender, 
                     dob: mode === 'born' ? dob : null, 
                     avatar,
@@ -82,7 +52,13 @@ export default function ProfileSetup({ onComplete }) {
                     estimatedDueDate: mode === 'pregnancy' ? estimatedDueDate : null
                 })
             });
-            setSuccessCode(newCode);
+            const json = await res.json();
+            if (json.success && json.data?.code) {
+                setSuccessCode(json.data.code);
+            } else {
+                setError(json.error || 'Có lỗi xảy ra khi tạo hồ sơ. Vui lòng thử lại.');
+                setSaving(false);
+            }
         } catch (e) {
             setError('Lỗi kết nối đến máy chủ. Vui lòng thử lại.');
             setSaving(false);
@@ -113,12 +89,23 @@ export default function ProfileSetup({ onComplete }) {
                             <p className="text-2xl font-black text-pink-500 tracking-widest break-all">{successCode}</p>
                         </div>
 
-                        <button
-                            onClick={() => setShowChangeCode(true)}
-                            className="w-full cute-button-primary py-4 text-lg"
-                        >
-                            Vào Trang Của Bé
-                        </button>
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => onComplete(successCode)}
+                                className="w-full cute-button-primary py-4 text-base font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                            >
+                                <span>Vào Trang Của Bé Ngay</span>
+                                <span className="text-xl">🎉</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowChangeCode(true)}
+                                className="w-full py-2.5 text-xs font-bold text-gray-400 hover:text-[#861949] transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                            >
+                                <span className="material-symbols-outlined text-[15px]">edit</span>
+                                <span>Đổi sang mã khác nếu muốn</span>
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <>

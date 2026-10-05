@@ -87,7 +87,7 @@ export default function ChangeCodeModal({ autoCode, profile, onComplete }) {
                     Đặt mã dễ nhớ cho bé!
                 </h2>
                 <p className="text-sm text-on-surface-variant/70 text-center mb-6 leading-relaxed font-medium">
-                    Mã tự sinh khá dài. Bạn có thể đặt lại thành tên bé hoặc bất cứ thứ gì dễ nhớ hơn nhé&nbsp;🎀
+                    Bạn có thể giữ nguyên mã tự sinh này hoặc đổi sang mã khác theo ý muốn nhé&nbsp;🎀
                 </p>
 
                 {/* Mã hiện tại */}

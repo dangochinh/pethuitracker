@@ -23,7 +23,19 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
     const [showLateRemindModal, setShowLateRemindModal] = useState(false);
     const [showGuidesModal, setShowGuidesModal] = useState(false);
     const [guidesInitialTab, setGuidesInitialTab] = useState('weeks');
+    const [copiedCode, setCopiedCode] = useState(false);
     const timelineRef = useRef(null);
+
+    const handleCopyCode = async () => {
+        if (!code) return;
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopiedCode(true);
+            setTimeout(() => setCopiedCode(false), 2000);
+        } catch (e) {
+            console.error('Failed to copy code', e);
+        }
+    };
 
     // Drag-to-scroll refs (Desktop mouse & Touch)
     const isDraggingRef = useRef(false);
@@ -171,9 +183,61 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                 <div className="absolute -top-4 -right-4 text-6xl opacity-10 blur-[2px] pointer-events-none">🤰</div>
                 <div className="absolute -bottom-4 -left-4 text-6xl opacity-10 blur-[2px] pointer-events-none">✨</div>
                 
-                <h2 className="text-[#861949] font-headline font-black text-2xl mb-1 transition-all">
-                    {isCurrentWeek ? `Mẹ đang ở tuần ${stats.weeks}` : `Xem trước tuần ${selectedWeek}`}
-                </h2>
+                {/* Baby Identity (Avatar, Name, Gender Badge) */}
+                <div className="flex flex-col items-center justify-center mb-3">
+                    <div 
+                        onClick={() => onEditProfile?.()}
+                        className="relative mb-2 cursor-pointer group"
+                        title="Chỉnh sửa thông tin bé"
+                    >
+                        <div className="w-16 h-16 rounded-full p-1 bg-white border-2 border-pink-200 shadow-sm overflow-hidden flex items-center justify-center transition-transform active:scale-95 duration-200">
+                            {profile?.avatar ? (
+                                <img 
+                                    src={profile.avatar} 
+                                    alt={profile?.name || 'Bé yêu'} 
+                                    className="w-full h-full object-cover rounded-full"
+                                    onError={(e) => { e.currentTarget.src = '/baby-stitch.png'; }}
+                                />
+                            ) : (
+                                <div className="w-full h-full rounded-full bg-pink-50 flex items-center justify-center text-3xl">
+                                    {profile?.gender === 'male' ? '👦' : profile?.gender === 'female' ? '👧' : '🤰'}
+                                </div>
+                            )}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#861949] text-white flex items-center justify-center shadow-xs text-xs">
+                            {profile?.gender === 'male' ? (
+                                <span className="material-symbols-outlined text-[13px]">male</span>
+                            ) : profile?.gender === 'female' ? (
+                                <span className="material-symbols-outlined text-[13px]">female</span>
+                            ) : (
+                                <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div 
+                        onClick={() => onEditProfile?.()}
+                        className="inline-flex items-center gap-1.5 cursor-pointer group"
+                        title="Bấm để chỉnh sửa hồ sơ bé"
+                    >
+                        <h2 className="font-headline font-black text-2xl text-gray-900 tracking-tight group-hover:text-[#861949] transition-colors">
+                            {profile?.name || 'Bé yêu'}
+                        </h2>
+                        <span className="material-symbols-outlined text-[#861949] text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                            verified
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 mt-1">
+                        <span className="text-[11px] font-bold text-[#861949] bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200/50">
+                            {profile?.gender === 'male' ? 'Bé Trai' : profile?.gender === 'female' ? 'Bé Gái' : 'Thai Nhi'}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="text-[#861949] font-headline font-black text-lg mb-1 transition-all">
+                    {isCurrentWeek ? `Mẹ & Bé đang ở tuần ${stats.weeks}` : `Xem trước tuần ${selectedWeek}`}
+                </div>
                 {isCurrentWeek ? (
                     <div className="flex flex-col items-center gap-1.5">
                         <p className="text-[#861949]/90 font-bold text-sm">
@@ -181,18 +245,34 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                             <span className="text-pink-300 font-normal mx-1.5">•</span>
                             Ngày thứ {stats.totalDaysPassed} của thai kỳ
                         </p>
-                        {profile?.estimatedDueDate && (
-                            <button
-                                type="button"
-                                onClick={() => onEditProfile?.()}
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50/70 hover:bg-pink-100/80 text-[#861949] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer border border-pink-200/50"
-                                title="Bấm để chỉnh sửa ngày dự sinh hoặc thông tin"
-                            >
-                                <span className="material-symbols-outlined text-[14px]">event</span>
-                                <span>Dự sinh: {new Date(profile.estimatedDueDate).toLocaleDateString('vi-VN')}</span>
-                                <span className="material-symbols-outlined text-[13px] opacity-60">edit</span>
-                            </button>
-                        )}
+                        <div className="flex flex-wrap items-center justify-center gap-2 mt-0.5">
+                            {profile?.estimatedDueDate && (
+                                <button
+                                    type="button"
+                                    onClick={() => onEditProfile?.()}
+                                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50/70 hover:bg-pink-100/80 text-[#861949] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer border border-pink-200/50"
+                                    title="Bấm để chỉnh sửa ngày dự sinh hoặc thông tin"
+                                >
+                                    <span className="material-symbols-outlined text-[14px]">event</span>
+                                    <span>Dự sinh: {new Date(profile.estimatedDueDate).toLocaleDateString('vi-VN')}</span>
+                                    <span className="material-symbols-outlined text-[13px] opacity-60">edit</span>
+                                </button>
+                            )}
+                            {code && (
+                                <button 
+                                    onClick={handleCopyCode}
+                                    type="button"
+                                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-50/80 hover:bg-purple-100/70 text-gray-700 transition-all active:scale-95 border border-purple-200/40 shadow-xs cursor-pointer text-xs font-semibold"
+                                    title="Sao chép mã bé"
+                                >
+                                    <span className="material-symbols-outlined text-[13px] text-[#861949]">tag</span>
+                                    <span className="text-xs font-bold text-[#861949]">#{code}</span>
+                                    <span className="material-symbols-outlined text-[13px] text-[#861949]">
+                                        {copiedCode ? 'check' : 'content_copy'}
+                                    </span>
+                                </button>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <div className="flex justify-center mt-1">
@@ -281,7 +361,7 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                     {selectedStats.emoji}
                 </div>
                 <h3 className="font-headline font-bold text-lg text-gray-800 mb-2">
-                    Bé to bằng <span className="text-purple-600 font-extrabold">{selectedStats.name}</span>
+                    {profile?.name || 'Bé'} to bằng <span className="text-purple-600 font-extrabold">{selectedStats.name}</span>
                 </h3>
                 <div className="flex gap-4 mt-2 w-full justify-center">
                     <div className="bg-purple-50 border border-purple-100 text-purple-700 px-4 py-2.5 rounded-2xl flex-1 max-w-[120px] transition-all">

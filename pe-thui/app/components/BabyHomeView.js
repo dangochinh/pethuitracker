@@ -11,6 +11,7 @@ import {
 } from '../lib/baby-utils';
 import { assessWeight, assessHeight } from '../lib/calculations';
 import NotificationBanner from './NotificationBanner';
+import SweetSpotCard from './SweetSpotCard';
 
 export default function BabyHomeView({
     profile,
@@ -404,6 +405,14 @@ export default function BabyHomeView({
                     </div>
                 </div>
             </div>
+
+            {/* SWEETSPOT® SMART SLEEP PREDICTION CARD (PRO FEATURE) */}
+            <SweetSpotCard
+                profile={profile}
+                sleeps={sleeps}
+                activeSleep={sleeps.find(s => !s.endTime) || null}
+                onSleep={onSleep}
+            />
 
             {/* INTERACTIVE TEETHING ARCH PREVIEW */}
             <div className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/70 relative overflow-hidden">

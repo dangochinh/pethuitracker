@@ -115,9 +115,9 @@ export default function Home() {
 
         <div ref={cardRef} className="cute-card w-full max-w-sm p-8 text-center relative z-10 bg-white/90 backdrop-blur-xl shadow-xl transition-all duration-500">
           <div className="w-24 h-24 rounded-full mx-auto flex items-center justify-center mb-5 p-1 bg-white shadow-md border-2 border-pink-100 overflow-hidden">
-            <img src="/logo-stitch.png" alt="Pe Thúi Tracker Logo" className="w-full h-full object-cover rounded-full" />
+            <img src="/logo-stitch.png" alt="Babie Tracker Logo" className="w-full h-full object-cover rounded-full" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2 tracking-tight">Pe Thúi Tracker</h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-2 tracking-tight">Babie Tracker</h1>
 
           <p className="text-gray-500 text-sm mb-8 font-medium">Lưu giữ hành trình khôn lớn</p>
 
@@ -190,7 +190,7 @@ export default function Home() {
         </div>
 
         <p className="mt-6 text-[10px] text-primary/50 font-bold tracking-wide relative z-10 text-center">
-          From Pe Thui Tracker with ❤️ | ver {APP_VERSION}
+          From Babie Tracker with ❤️ | ver {APP_VERSION}
         </p>
       </div>
 

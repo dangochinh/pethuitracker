@@ -64,7 +64,7 @@ export function formatFamilyShareCode(code) {
  */
 export function generateBackupDataPayload(code, profile, allRecords = {}) {
     return {
-        app: 'PeThui Tracker',
+        app: 'Babie Tracker',
         version: '1.6.0',
         exportedAt: new Date().toISOString(),
         baby: {

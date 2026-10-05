@@ -90,7 +90,7 @@ export async function POST(request) {
       if (parts.length < 2) {
         await sendTelegramMessage(chatId,
           `Xin chào ${firstName}! 👋\n\n` +
-          `Để liên kết Pe Thui Tracker, hãy gửi:\n\n` +
+          `Để liên kết Babie Tracker, hãy gửi:\n\n` +
           `<b>/start MÃ_CODE_CỦA_BÉ</b>\n\n` +
           `Ví dụ: <code>/start SOC010125.0426</code>\n\n` +
           `Bạn có thể tìm mã code trong app, mục Thông Tin Bé.`
@@ -376,7 +376,7 @@ export async function POST(request) {
     // ==========================================
     if (text.startsWith('/help') || text.startsWith('/status') || text === '/h') {
       await sendTelegramMessage(chatId,
-        `🤖 <b>Pe Thui Tracker Bot</b>\n\n` +
+        `🤖 <b>Babie Tracker Bot</b>\n\n` +
         `📋 <b>Các lệnh:</b>\n\n` +
         `• /start MÃ_CODE — Liên kết tài khoản\n` +
         `• /lichtiem — 📅 Xem lịch tiêm sắp tới\n` +

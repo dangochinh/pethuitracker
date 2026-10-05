@@ -1,4 +1,4 @@
-# 👶 Pe Thúi Tracker
+# 👶 Babie Tracker
 
 > *Lưu giữ hành trình khôn lớn* — A personal baby & pregnancy tracking application with the Stitch Design System.
 
@@ -8,7 +8,7 @@
 
 ## 📖 About
 
-**Pe Thúi Tracker** is a mobile-first Progressive Web App designed to help parents track and visualize their baby's growth journey — from pregnancy all the way through early childhood. The app features a warm, handcrafted "Tactile Keepsake" design system with pastel tones, rounded corners, and gentle animations that make tracking feel like filling a baby scrapbook.
+**Babie Tracker** is a mobile-first Progressive Web App designed to help parents track and visualize their baby's growth journey — from pregnancy all the way through early childhood. The app features a warm, handcrafted "Tactile Keepsake" design system with pastel tones, rounded corners, and gentle animations that make tracking feel like filling a baby scrapbook.
 
 ## ✨ Features
 

@@ -97,7 +97,7 @@ export default function ProfileSetup({ onComplete }) {
 
             <div className="cute-card w-full max-w-sm p-8 text-center relative z-10 bg-white/90 backdrop-blur-xl">
                 <div className="w-24 h-24 rounded-full mx-auto flex items-center justify-center mb-4 p-1 bg-white shadow-md border-2 border-pink-100 overflow-hidden">
-                    <img src="/logo-stitch.png" alt="Pe Thúi Tracker Logo" className="w-full h-full object-cover rounded-full" />
+                    <img src="/logo-stitch.png" alt="Babie Tracker Logo" className="w-full h-full object-cover rounded-full" />
                 </div>
 
                 {successCode ? (

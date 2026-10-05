@@ -23,7 +23,7 @@ export default function ShareModal({ code, onClose }) {
         if (navigator.share) {
             try {
                 await navigator.share({
-                    title: 'Pe Thúi Tracker',
+                    title: 'Babie Tracker',
                     text: 'Cùng xem hồ sơ của bé nhé!',
                     url: shareUrl,
                 });

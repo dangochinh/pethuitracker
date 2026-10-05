@@ -21,42 +21,104 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    // 1. If user explicitly chose "Về trang chủ", stay on home page and skip auto-redirect
     if (sessionStorage.getItem('pe_thui_logout')) {
       sessionStorage.removeItem('pe_thui_logout');
+      loadBabies();
+      return;
     }
 
-    // Load saved baby codes from local storage
-    const loadBabies = async () => {
-      let codes = [];
-      try {
+    // 2. PWA auto-login: redirect straight to saved baby profile on cold open
+    let savedCode = null;
+    try {
+      savedCode = localStorage.getItem('pe_thui_last_code');
+      if (!savedCode) {
         const stored = localStorage.getItem('pe_thui_babies');
-        if (stored) codes = JSON.parse(stored);
-      } catch (e) {
-        // Handle legacy case
-        const legacy = localStorage.getItem('pe_thui_last_code');
-        if (legacy) codes = [legacy];
-      }
-
-      if (codes.length === 0) return;
-
-      // Automatically fetch basic info for these babies
-      const results = [];
-      for (const c of codes) {
-        try {
-          const res = await fetch(`/api/profile?code=${c}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success && data.profile) {
-              results.push({ code: c, ...data.profile });
-            }
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            savedCode = parsed[0];
           }
-        } catch(e) {}
+        }
       }
-      setSavedBabies(results);
+      if (!savedCode) {
+        const pethuiProfiles = localStorage.getItem('pethui_saved_profiles');
+        if (pethuiProfiles) {
+          const parsed = JSON.parse(pethuiProfiles);
+          if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.code) {
+            savedCode = parsed[0].code;
+          }
+        }
+      }
+    } catch (e) {}
+
+    if (savedCode) {
+      setRedirecting(true);
+      router.replace(`/${savedCode}`);
+      return;
+    }
+
+    // 3. First-time or new user: load saved babies list
+    loadBabies();
+  }, [router]);
+
+  // Load saved baby codes from local storage
+  const loadBabies = async () => {
+    let codes = [];
+    try {
+      const stored = localStorage.getItem('pe_thui_babies');
+      if (stored) codes = JSON.parse(stored);
+    } catch (e) {
+      const legacy = localStorage.getItem('pe_thui_last_code');
+      if (legacy) codes = [legacy];
+    }
+
+    if (!codes || codes.length === 0) {
+      try {
+        const pethuiProfiles = localStorage.getItem('pethui_saved_profiles');
+        if (pethuiProfiles) {
+          const parsed = JSON.parse(pethuiProfiles);
+          if (Array.isArray(parsed)) {
+            codes = parsed.map(p => p.code).filter(Boolean);
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (codes.length === 0) return;
+
+    // Fetch profile details for saved babies
+    const results = [];
+    for (const c of codes) {
+      try {
+        const res = await fetch(`/api/profile?code=${c}`);
+        if (res.ok) {
+          const data = await res.json();
+          const profileData = data.data || data.profile;
+          if (data.success && profileData) {
+            results.push({ code: c, ...profileData });
+          }
+        }
+      } catch(e) {}
+    }
+    setSavedBabies(results);
+  };
+
+  // Intercept the back button when a modal is open so it closes the modal instead of exiting
+  useEffect(() => {
+    const isGuardNeeded = showInfo || isCreating;
+    if (!isGuardNeeded) return;
+
+    history.pushState({ __loginGuard: true }, '');
+
+    const handle = () => {
+      if (showInfo) { setShowInfo(false); return; }
+      if (isCreating) { setIsCreating(false); return; }
     };
 
-    loadBabies();
-  }, []);
+    window.addEventListener('popstate', handle);
+    return () => window.removeEventListener('popstate', handle);
+  }, [showInfo, isCreating]);
 
   const formatCode = (str) => {
     const noAccents = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
@@ -75,11 +137,9 @@ export default function Home() {
     try {
       const stored = localStorage.getItem('pe_thui_babies');
       let codes = stored ? JSON.parse(stored) : [];
-      if (!codes.includes(c)) {
-        codes.push(c);
-        localStorage.setItem('pe_thui_babies', JSON.stringify(codes));
-      }
-      localStorage.setItem('pe_thui_last_code', c); // For backward compatibility
+      codes = [c, ...codes.filter(item => item !== c)];
+      localStorage.setItem('pe_thui_babies', JSON.stringify(codes));
+      localStorage.setItem('pe_thui_last_code', c);
     } catch (e) {}
     router.push(`/${c}`);
   };
@@ -90,6 +150,16 @@ export default function Home() {
     const newBabies = savedBabies.filter(b => b.code !== c);
     setSavedBabies(newBabies);
     localStorage.setItem('pe_thui_babies', JSON.stringify(newBabies.map(b => b.code)));
+    try {
+      const lastCode = localStorage.getItem('pe_thui_last_code');
+      if (lastCode === c) {
+        if (newBabies.length > 0) {
+          localStorage.setItem('pe_thui_last_code', newBabies[0].code);
+        } else {
+          localStorage.removeItem('pe_thui_last_code');
+        }
+      }
+    } catch (e) {}
   };
 
   if (redirecting) {

@@ -26,6 +26,14 @@ export default function ProfilePage() {
                     setProfile(json.data);
                     // Remember this code so the PWA can auto-login next time.
                     localStorage.setItem('pe_thui_last_code', code);
+                    try {
+                        const stored = localStorage.getItem('pe_thui_babies');
+                        let codes = stored ? JSON.parse(stored) : [];
+                        if (!codes.includes(code)) {
+                            codes.unshift(code);
+                            localStorage.setItem('pe_thui_babies', JSON.stringify(codes));
+                        }
+                    } catch (e) {}
                 } else {
                     setError(true);
                 }

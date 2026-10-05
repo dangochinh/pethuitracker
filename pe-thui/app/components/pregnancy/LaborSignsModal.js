@@ -170,7 +170,7 @@ export default function LaborSignsModal({ onClose, onOpenHospitalBag }) {
                     ))}
 
                     {/* Rule 5-1-1 Highlight Box */}
-                    <div className="bg-gradient-to-r from-[#861949]/10 to-[#006972]/10 rounded-2xl p-4 border border-[#861949]/20 flex items-start gap-3">
+                    <div className="bg-[#861949]/5 rounded-2xl p-4 border border-[#861949]/15 flex items-start gap-3">
                         <span className="material-symbols-outlined text-[#861949] text-2xl shrink-0">timer</span>
                         <div className="text-xs">
                             <h5 className="font-bold text-[#861949] mb-1">Mẹo nhớ nhanh: Quy tắc chuyển dạ 5 - 1 - 1</h5>
@@ -181,9 +181,9 @@ export default function LaborSignsModal({ onClose, onOpenHospitalBag }) {
                     </div>
                 </div>
 
-                {/* Footer Actions */}
-                <div className="pt-2 border-t border-gray-100 flex items-center justify-between gap-3 shrink-0">
-                    {onOpenHospitalBag && (
+                {/* Footer Link if needed */}
+                {onOpenHospitalBag && (
+                    <div className="pt-2 border-t border-gray-100 flex items-center justify-between shrink-0">
                         <button
                             type="button"
                             onClick={() => {
@@ -193,17 +193,10 @@ export default function LaborSignsModal({ onClose, onOpenHospitalBag }) {
                             className="text-xs font-bold text-[#861949] hover:underline flex items-center gap-1 cursor-pointer"
                         >
                             <span className="material-symbols-outlined text-[16px]">luggage</span>
-                            <span>Xem Giỏ Đồ Đi Sinh</span>
+                            <span>Xem Giỏ Đồ Đi Sinh →</span>
                         </button>
-                    )}
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="px-6 py-2.5 rounded-2xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs ml-auto transition-all cursor-pointer shadow-xs active:scale-95"
-                    >
-                        Đã hiểu rõ
-                    </button>
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

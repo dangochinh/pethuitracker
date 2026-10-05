@@ -36,7 +36,7 @@ export default function LatePregnancyRemindModal({
 
                 {/* Header */}
                 <div className="flex items-center gap-3 pr-8">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 text-white flex items-center justify-center shrink-0 shadow-md shadow-pink-500/20">
+                    <div className="w-12 h-12 rounded-2xl bg-[#861949]/10 text-[#861949] border border-[#861949]/15 flex items-center justify-center shrink-0">
                         <span className="material-symbols-outlined text-2xl">notifications_active</span>
                     </div>
                     <div>

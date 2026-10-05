@@ -167,25 +167,25 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
     return (
         <div className="flex flex-col gap-3.5 pb-20">
             {/* Card 1: Header + Reel with CS:GO Select Area */}
-            <section className="mt-[38px] bg-gradient-to-br from-purple-100 to-pink-50 rounded-[2.5rem] p-6 shadow-sm border border-purple-200/50 text-center overflow-hidden relative">
+            <section className="mt-[38px] bg-white rounded-[2.5rem] p-6 shadow-sm border border-purple-100/70 text-center overflow-hidden relative">
                 <div className="absolute -top-4 -right-4 text-6xl opacity-10 blur-[2px] pointer-events-none">🤰</div>
                 <div className="absolute -bottom-4 -left-4 text-6xl opacity-10 blur-[2px] pointer-events-none">✨</div>
                 
-                <h2 className="text-purple-800 font-headline font-black text-2xl mb-1 transition-all">
+                <h2 className="text-[#861949] font-headline font-black text-2xl mb-1 transition-all">
                     {isCurrentWeek ? `Mẹ đang ở tuần ${stats.weeks}` : `Xem trước tuần ${selectedWeek}`}
                 </h2>
                 {isCurrentWeek ? (
                     <div className="flex flex-col items-center gap-1.5">
-                        <p className="text-purple-700/90 font-bold text-sm">
+                        <p className="text-[#861949]/90 font-bold text-sm">
                             {stats.days > 0 ? `Tuần ${stats.weeks} + ${stats.days} ngày` : `Tuần ${stats.weeks} tròn`}
-                            <span className="text-purple-400 font-normal mx-1.5">•</span>
+                            <span className="text-pink-300 font-normal mx-1.5">•</span>
                             Ngày thứ {stats.totalDaysPassed} của thai kỳ
                         </p>
                         {profile?.estimatedDueDate && (
                             <button
                                 type="button"
                                 onClick={() => onEditProfile?.()}
-                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white/70 hover:bg-white text-purple-700 hover:text-[#861949] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer border border-purple-200/50"
+                                className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50/70 hover:bg-pink-100/80 text-[#861949] text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer border border-pink-200/50"
                                 title="Bấm để chỉnh sửa ngày dự sinh hoặc thông tin"
                             >
                                 <span className="material-symbols-outlined text-[14px]">event</span>
@@ -198,7 +198,7 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                     <div className="flex justify-center mt-1">
                         <button 
                             onClick={() => handleWeekClick(stats.weeks)}
-                            className="inline-flex items-center gap-1.5 text-xs font-bold text-purple-700 bg-purple-200/70 hover:bg-purple-200 px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-xs cursor-pointer"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#861949] bg-pink-100/70 hover:bg-pink-200/80 px-3.5 py-1 rounded-full transition-all active:scale-95 shadow-xs cursor-pointer"
                             title="Quay lại tuần thực tế của bé"
                         >
                             <span>Quay lại tuần hiện tại ({stats.weeks})</span>
@@ -211,9 +211,9 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
                 {/* Timeline Carousel with CS:GO Style Select Area */}
                 <div className="mt-6 relative">
                     {/* Background track line */}
-                    <div className="absolute top-[36px] left-0 w-full h-1 bg-white/60 -translate-y-1/2 rounded-full pointer-events-none"></div>
+                    <div className="absolute top-[36px] left-0 w-full h-1 bg-gray-100 -translate-y-1/2 rounded-full pointer-events-none"></div>
                     <div 
-                        className="absolute top-[36px] left-0 h-1 bg-gradient-to-r from-purple-400 to-pink-400 -translate-y-1/2 rounded-full transition-all duration-150 pointer-events-none" 
+                        className="absolute top-[36px] left-0 h-1 bg-[#861949]/40 -translate-y-1/2 rounded-full transition-all duration-150 pointer-events-none" 
                         style={{ width: `${Math.min(100, Math.max(0, (selectedWeek / 42) * 100))}%` }}
                     ></div>
                     
@@ -411,7 +411,7 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
 
             {/* Late Pregnancy Alert Banner (khi >= 37 tuần hoặc <= 21 ngày) */}
             {isLatePregnancy(stats.weeks, stats.daysRemaining) && (
-                <section className="bg-gradient-to-r from-[#861949]/10 via-pink-50 to-amber-50 rounded-[2.5rem] p-5 shadow-xs border border-[#861949]/20 text-left relative overflow-hidden">
+                <section className="bg-pink-50/60 rounded-[2.5rem] p-5 shadow-xs border border-pink-200/70 text-left relative overflow-hidden">
                     <div className="flex items-start gap-3.5">
                         <div className="w-11 h-11 rounded-2xl bg-[#861949] text-white flex items-center justify-center shrink-0 shadow-sm shadow-[#861949]/30">
                             <span className="material-symbols-outlined text-2xl">notifications_active</span>
@@ -483,7 +483,7 @@ export default function PregnancyHomeView({ profile, code, onEditProfile }) {
 
             {/* Thẻ chuyển đổi hồ sơ: Khi và chỉ khi mang thai từ tuần 25 mới hiện card này ở dưới cùng */}
             {stats.weeks >= 25 && (
-                <section className="bg-gradient-to-r from-pink-50 via-rose-50 to-amber-50 rounded-[2.5rem] p-5 shadow-xs border border-pink-200/80 flex items-center justify-between text-left">
+                <section className="bg-pink-50/60 rounded-[2.5rem] p-5 shadow-xs border border-pink-200/70 flex items-center justify-between text-left">
                     <div className="flex items-center gap-3.5">
                         <span className="w-11 h-11 rounded-2xl bg-[#861949] text-white flex items-center justify-center shrink-0 shadow-sm shadow-[#861949]/20">
                             <span className="material-symbols-outlined text-2xl">celebration</span>

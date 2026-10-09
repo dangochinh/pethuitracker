@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import InfoModal from './components/InfoModal';
 import ProfileSetup from './components/ProfileSetup';
 import { FaBaby, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaBookOpen } from 'react-icons/fa6';
 import packageJson from '../package.json';
 
 export default function Home() {
@@ -262,7 +263,7 @@ export default function Home() {
             href="/landing"
             className="w-full mt-3 py-3 rounded-2xl font-bold bg-pink-50/70 hover:bg-pink-100/80 text-[#861949] text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5 border border-pink-200/60 shadow-2xs"
           >
-            <span className="material-symbols-outlined text-[16px]">menu_book</span>
+            <FaBookOpen className="text-[14px]" />
             <span>Khám phá tính năng Babie Tracker</span>
           </a>
         </div>

@@ -206,13 +206,6 @@ export default function LandingPage() {
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
                     <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
                         
-                        {/* Trust Badge */}
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-50 border border-pink-200/80 mb-6">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            <span className="text-xs font-bold text-[#861949] tracking-wide">
-                                Ứng dụng theo dõi thai kỳ & nuôi con • Chuẩn Y khoa & Riêng tư
-                            </span>
-                        </div>
 
                         {/* Main Headline (2 Clean Lines, No Awkward Word-Wrap) */}
                         <h1 className="font-headline font-black text-2xl sm:text-4xl md:text-5xl text-gray-950 tracking-tight leading-tight mb-5">

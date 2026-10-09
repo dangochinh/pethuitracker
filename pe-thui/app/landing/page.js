@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
     FaArrowRight,
@@ -31,6 +31,8 @@ import {
 export default function LandingPage() {
     const [modeTab, setModeTab] = useState('pregnancy'); // 'pregnancy' | 'baby'
     const [faqOpen, setFaqOpen] = useState([0]); // Open first FAQ by default
+    const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState('');
 
     const toggleFaq = (index) => {
         setFaqOpen(prev => 
@@ -38,7 +40,35 @@ export default function LandingPage() {
         );
     };
 
-    // Smooth scroll handler with offset for sticky header
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 15);
+
+            // Active section spy
+            const sections = ['pregnancy', 'baby-care', 'sweetspot', 'family-sync', 'compare', 'faq'];
+            const scrollPosition = window.scrollY + 130;
+            let current = '';
+
+            for (const sectionId of sections) {
+                const el = document.getElementById(sectionId);
+                if (el) {
+                    const top = el.offsetTop;
+                    const height = el.offsetHeight;
+                    if (scrollPosition >= top && scrollPosition < top + height) {
+                        current = sectionId;
+                        break;
+                    }
+                }
+            }
+            if (current) setActiveSection(current);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Smooth scroll handler with offset for pinned sticky header
     const handleScrollTo = (e, id) => {
         if (e) e.preventDefault();
         const element = document.getElementById(id);
@@ -53,11 +83,15 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="w-full min-h-screen bg-gradient-to-b from-[#fff6f6] via-[#fffbf9] to-[#fef2f4] text-gray-800 selection:bg-pink-200 selection:text-[#861949] overflow-x-hidden font-body">
+        <div className="w-full min-h-screen bg-gradient-to-b from-[#fff6f6] via-[#fffbf9] to-[#fef2f4] text-gray-800 selection:bg-pink-200 selection:text-[#861949] overflow-x-hidden font-body pt-18 sm:pt-20">
             
-            {/* 1. FULL-WIDTH TOP NAVIGATION BAR */}
-            <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/90 border-b border-pink-200/60 shadow-xs transition-all w-full">
-                <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 h-18 sm:h-20 flex items-center justify-between">
+            {/* 1. PINNED FIXED NAVIGATION BAR */}
+            <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-xl transition-all duration-300 w-full ${
+                scrolled 
+                    ? 'bg-white/95 shadow-md shadow-pink-950/10 border-b border-pink-200/90 py-0.5' 
+                    : 'bg-white/90 shadow-xs border-b border-pink-200/60 py-1 sm:py-1.5'
+            }`}>
+                <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 h-16 sm:h-18 flex items-center justify-between">
                     
                     {/* Logo & Brand (Far Left) */}
                     <Link href="/" className="flex items-center gap-3 group shrink-0">
@@ -79,26 +113,38 @@ export default function LandingPage() {
                         </div>
                     </Link>
 
-                    {/* Nav Links (Desktop Middle) */}
-                    <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-bold text-gray-700">
+                    {/* Nav Links (Desktop Middle) with Active Section Highlights */}
+                    <nav className="hidden lg:flex items-center gap-3 xl:gap-5 text-sm font-bold text-gray-700">
                         <a 
                             href="#pregnancy" 
                             onClick={(e) => handleScrollTo(e, 'pregnancy')}
-                            className="hover:text-[#861949] transition-colors py-1 hover:border-b-2 hover:border-[#861949]"
+                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                                activeSection === 'pregnancy'
+                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
+                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
+                            }`}
                         >
                             42 Tuần Thai Kỳ
                         </a>
                         <a 
                             href="#baby-care" 
                             onClick={(e) => handleScrollTo(e, 'baby-care')}
-                            className="hover:text-[#861949] transition-colors py-1 hover:border-b-2 hover:border-[#861949]"
+                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                                activeSection === 'baby-care'
+                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
+                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
+                            }`}
                         >
                             Chăm Sóc Bé
                         </a>
                         <a 
                             href="#sweetspot" 
                             onClick={(e) => handleScrollTo(e, 'sweetspot')}
-                            className="hover:text-[#861949] transition-colors flex items-center gap-1.5 py-1 hover:border-b-2 hover:border-[#861949]"
+                            className={`transition-all py-1.5 px-3 rounded-xl flex items-center gap-1.5 ${
+                                activeSection === 'sweetspot'
+                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
+                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
+                            }`}
                         >
                             <span>SweetSpot®</span>
                             <span className="text-[9px] bg-gradient-to-r from-amber-500 to-amber-600 text-white px-1.5 py-0.5 rounded-full font-black shadow-2xs">
@@ -108,21 +154,33 @@ export default function LandingPage() {
                         <a 
                             href="#family-sync" 
                             onClick={(e) => handleScrollTo(e, 'family-sync')}
-                            className="hover:text-[#861949] transition-colors py-1 hover:border-b-2 hover:border-[#861949]"
+                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                                activeSection === 'family-sync'
+                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
+                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
+                            }`}
                         >
                             Mã Bé #CODE
                         </a>
                         <a 
                             href="#compare" 
                             onClick={(e) => handleScrollTo(e, 'compare')}
-                            className="hover:text-[#861949] transition-colors py-1 hover:border-b-2 hover:border-[#861949]"
+                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                                activeSection === 'compare'
+                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
+                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
+                            }`}
                         >
                             So Sánh
                         </a>
                         <a 
                             href="#faq" 
                             onClick={(e) => handleScrollTo(e, 'faq')}
-                            className="hover:text-[#861949] transition-colors py-1 hover:border-b-2 hover:border-[#861949]"
+                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                                activeSection === 'faq'
+                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
+                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
+                            }`}
                         >
                             Hỏi Đáp
                         </a>

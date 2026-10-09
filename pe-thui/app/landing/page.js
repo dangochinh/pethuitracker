@@ -374,14 +374,14 @@ export default function LandingPage() {
             {/* 3. CORE COMMITMENTS (WHY PARENTS LOVE BABIE TRACKER) */}
             <section className="py-16 sm:py-20 bg-white/90 border-y border-pink-200/70 shadow-xs">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-12">
+                    <div className="text-center max-w-4xl mx-auto mb-12">
                         <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
                             Tôn chỉ sản phẩm
                         </span>
-                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-3">
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-gray-950 mt-3 mb-3 whitespace-normal md:whitespace-nowrap">
                             Tại sao ba mẹ chọn Babie Tracker thay vì các app khác?
                         </h2>
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-gray-600 font-medium max-w-2xl mx-auto">
                             Không tính năng thừa, không làm phiền cha mẹ những lúc chăm con vất vả nhất.
                         </p>
                     </div>
@@ -590,11 +590,11 @@ export default function LandingPage() {
             {/* 5.5. A DAY IN THE LIFE (24H WITH BABIE TRACKER) */}
             <section className="py-16 sm:py-20 bg-[#fffbfc] border-y border-pink-100/70">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-12">
+                    <div className="text-center max-w-3xl mx-auto mb-12">
                         <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
                             Thực tế từng ngày
                         </span>
-                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2 whitespace-normal md:whitespace-nowrap">
                             Một ngày nhẹ nhàng hơn cùng Babie Tracker
                         </h2>
                         <p className="text-sm text-gray-600 font-medium">
@@ -657,14 +657,14 @@ export default function LandingPage() {
             {/* 6. DEEP DIVE: HEALTH, WHO CHARTS & TEETHING */}
             <section className="py-16 sm:py-24 bg-gradient-to-b from-[#fffbfc] to-[#fff6f8]">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-14">
+                    <div className="text-center max-w-4xl mx-auto mb-14">
                         <span className="text-xs font-bold text-teal-800 uppercase tracking-widest bg-teal-100 px-3.5 py-1 rounded-full border border-teal-200">
                             Sổ sức khỏe số
                         </span>
-                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-3">
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-gray-950 mt-3 mb-3 whitespace-normal md:whitespace-nowrap">
                             Theo dõi tăng trưởng & Tiêm chủng chuẩn Bộ Y Tế
                         </h2>
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-gray-600 font-medium max-w-2xl mx-auto">
                             Tự tin mỗi khi đưa con đi khám định kỳ với đầy đủ dữ liệu tăng trưởng trong tay.
                         </p>
                     </div>
@@ -808,14 +808,14 @@ export default function LandingPage() {
 
             {/* 7. FAMILY SYNC WITH BABY CODE #CODE */}
             <section id="family-sync" className="py-16 sm:py-20 bg-gradient-to-br from-pink-100/70 via-rose-50/50 to-purple-100/60 border-y-2 border-pink-200">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
                     <div className="w-16 h-16 rounded-3xl bg-gradient-to-r from-[#861949] to-[#c2185b] text-white mx-auto flex items-center justify-center text-3xl shadow-lg shadow-pink-900/20 mb-6">
                         👨‍👩‍👧
                     </div>
                     <span className="text-xs font-black text-[#861949] uppercase tracking-widest bg-white/90 px-3.5 py-1 rounded-full border border-pink-200 shadow-2xs">
                         Đột phá trải nghiệm
                     </span>
-                    <h2 className="font-headline font-black text-2xl sm:text-4xl text-gray-950 mt-3 mb-4">
+                    <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-gray-950 mt-3 mb-4 whitespace-normal md:whitespace-nowrap">
                         Đồng bộ cả gia đình chỉ bằng một Mã Bé duy nhất
                     </h2>
                     <p className="text-base text-gray-700 max-w-2xl mx-auto leading-relaxed mb-8 font-medium">
@@ -855,11 +855,11 @@ export default function LandingPage() {
             {/* 7.5. 3 AM PARENT ERGONOMICS & RELIABILITY */}
             <section className="py-16 sm:py-24 bg-white">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-14">
+                    <div className="text-center max-w-3xl mx-auto mb-14">
                         <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
                             Thiết kế vị nhân sinh
                         </span>
-                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2 whitespace-normal md:whitespace-nowrap">
                             Thấu hiểu từng chi tiết lúc 3 giờ sáng
                         </h2>
                         <p className="text-sm text-gray-600 font-medium">
@@ -989,11 +989,11 @@ export default function LandingPage() {
             {/* 8.5. AUTHENTIC PARENT VOICES */}
             <section className="py-16 sm:py-24 bg-gradient-to-b from-[#fffbfc] to-white border-t border-pink-100/80">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div className="text-center max-w-2xl mx-auto mb-14">
+                    <div className="text-center max-w-3xl mx-auto mb-14">
                         <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
                             Chia sẻ thực tế
                         </span>
-                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2 whitespace-normal md:whitespace-nowrap">
                             Được tin dùng trong từng cữ sữa & giấc ngủ
                         </h2>
                         <p className="text-sm text-gray-600 font-medium">
@@ -1160,12 +1160,12 @@ export default function LandingPage() {
 
             {/* 10. FINAL CALL TO ACTION & FOOTER */}
             <section className="py-16 sm:py-24 bg-gradient-to-b from-[#fff6f8] to-[#fee6ed] text-center border-t-2 border-pink-200">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6">
                     <div className="w-16 h-16 rounded-full mx-auto p-1 bg-white border-2 border-pink-300 shadow-lg overflow-hidden mb-6">
                         <img src="/logo-stitch.png" alt="Babie Tracker Logo" className="w-full h-full object-cover rounded-full" />
                     </div>
 
-                    <h2 className="font-headline font-black text-2xl sm:text-4xl text-gray-950 mb-3">
+                    <h2 className="font-headline font-black text-2xl sm:text-3xl lg:text-4xl text-gray-950 mb-3 whitespace-normal md:whitespace-nowrap">
                         Bắt đầu hành trình chăm con an tâm ngay hôm nay
                     </h2>
                     <p className="text-sm sm:text-base text-gray-700 max-w-xl mx-auto mb-8 font-medium">

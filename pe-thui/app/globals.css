@@ -73,6 +73,41 @@
     text-rendering: optimizeLegibility !important;
     -moz-osx-font-smoothing: grayscale !important;
     font-feature-settings: "liga" !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+  }
+
+  /* Prevent accidental text selection on interactive elements & UI controls */
+  button, 
+  a, 
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  summary,
+  nav,
+  header,
+  label,
+  .select-none,
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent dragging images on interactive elements */
+  button img,
+  a img,
+  header img {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /* Refined selection style for readable body text */
+  ::selection {
+    background-color: #ffd9e2;
+    color: #861949;
   }
 }
 

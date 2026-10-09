@@ -49,7 +49,7 @@ export default function LandingPage() {
             setScrolled(window.scrollY > 15);
 
             // Active section spy
-            const sections = ['pregnancy', 'baby-care', 'sweetspot', 'family-sync', 'compare', 'faq'];
+            const sections = ['pregnancy', 'baby-care', 'family-sync', 'compare', 'faq'];
             const scrollPosition = window.scrollY + 130;
             let current = '';
 
@@ -140,20 +140,6 @@ export default function LandingPage() {
                             }`}
                         >
                             Chăm Sóc Bé
-                        </a>
-                        <a 
-                            href="#sweetspot" 
-                            onClick={(e) => handleScrollTo(e, 'sweetspot')}
-                            className={`transition-all py-1.5 px-3 rounded-xl flex items-center gap-1.5 ${
-                                activeSection === 'sweetspot'
-                                    ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
-                                    : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
-                            }`}
-                        >
-                            <span>SweetSpot®</span>
-                            <span className="text-[9px] bg-gradient-to-r from-amber-500 to-amber-600 text-white px-1.5 py-0.5 rounded-full font-black shadow-2xs">
-                                PRO
-                            </span>
                         </a>
                         <a 
                             href="#family-sync" 
@@ -522,7 +508,7 @@ export default function LandingPage() {
             </section>
 
             {/* 5. DEEP DIVE: BABY CARE & SWEETSPOT® */}
-            <section id="sweetspot" className="py-16 sm:py-24 bg-white">
+            <section id="baby-care" className="py-16 sm:py-24 bg-white">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
                         
@@ -542,7 +528,7 @@ export default function LandingPage() {
                         </div>
 
                         {/* Text and Features Column */}
-                        <div className="flex-1" id="baby-care">
+                        <div className="flex-1" id="sweetspot">
                             <span className="text-xs font-bold text-indigo-800 uppercase tracking-widest bg-indigo-100 px-3.5 py-1 rounded-full border border-indigo-200">
                                 Chăm sóc bé & Rèn ngủ
                             </span>
@@ -1212,11 +1198,11 @@ export default function LandingPage() {
                                 Thai kỳ
                             </a>
                             <a 
-                                href="#sweetspot" 
-                                onClick={(e) => handleScrollTo(e, 'sweetspot')}
+                                href="#baby-care" 
+                                onClick={(e) => handleScrollTo(e, 'baby-care')}
                                 className="hover:text-[#861949]"
                             >
-                                SweetSpot®
+                                Chăm sóc bé
                             </a>
                             <a 
                                 href="#faq" 

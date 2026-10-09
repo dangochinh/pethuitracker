@@ -256,18 +256,18 @@ async function runE2E() {
         const isPinnedAtTop = headerBoxScrolled && Math.round(headerBoxScrolled.y) === 0;
         const hasScrolledShadow = await desktopPage.locator('header').evaluate(el => el.classList.contains('shadow-md'));
 
-        // Click nav link "SweetSpot®" from deep scroll position to jump across sections quickly
-        await desktopPage.locator('nav a:has-text("SweetSpot®")').click();
+        // Click nav link "Chăm Sóc Bé" from deep scroll position to jump across sections quickly
+        await desktopPage.locator('nav a:has-text("Chăm Sóc Bé")').click();
         await desktopPage.waitForTimeout(700);
 
         const currentY = await desktopPage.evaluate(() => window.scrollY);
-        const sweetSpotEl = await desktopPage.locator('#sweetspot').boundingBox();
-        const sweetSpotInView = sweetSpotEl && sweetSpotEl.y >= 0 && sweetSpotEl.y <= 130;
+        const babyCareEl = await desktopPage.locator('#baby-care').boundingBox();
+        const babyCareInView = babyCareEl && babyCareEl.y >= 0 && babyCareEl.y <= 130;
 
         const shot09 = path.join(EVIDENCE_DIR, 'TC-LP-09_pinned_header_scrolled.png');
         await desktopPage.screenshot({ path: shot09, clip: { x: 0, y: 0, width: 1440, height: 200 } });
 
-        const pass09 = isPinnedAtTop && hasScrolledShadow && sweetSpotInView;
+        const pass09 = isPinnedAtTop && hasScrolledShadow && babyCareInView;
         recordResult(
             'TC-LP-09',
             'Header được PIN cố định trên đỉnh khi cuộn xuống các section sâu, chuyển section tức thì',

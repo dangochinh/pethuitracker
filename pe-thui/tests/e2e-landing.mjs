@@ -106,22 +106,33 @@ async function runE2E() {
         );
 
         // ========================================================
-        // TC-LP-03: Visual Vibrance & Color Palette
+        // TC-LP-03: Solid Craft Buttons & 2-Line Headline Verification
         // ========================================================
-        const gradientHeading = await desktopPage.locator('h1 span.bg-clip-text').isVisible();
-        const ctaHasShadow = await desktopPage.locator('a:has-text("Bắt đầu miễn phí ngay")').evaluate(el => {
+        const line1Text = await desktopPage.locator('h1 span').first().innerText();
+        const line2Text = await desktopPage.locator('h1 span').nth(1).innerText();
+        const is2LinesClean = line1Text.includes('Theo dõi thai kỳ & nuôi con khoa học.') && line2Text.includes('Nhẹ nhàng, không quảng cáo.');
+
+        // Buttons must be SOLID brand color #861949, NOT AI-slop gradients
+        const heroBtnNoGradient = await desktopPage.locator('a:has-text("Bắt đầu miễn phí ngay")').evaluate(el => {
             const style = window.getComputedStyle(el);
-            return style.backgroundImage.includes('gradient');
+            return !style.backgroundImage.includes('gradient');
         });
-        const guaranteePillsCount = await desktopPage.locator('div:has-text("Không cần thẻ tín dụng") span:has-text("Không cần thẻ tín dụng")').count();
-        const pass03 = gradientHeading && ctaHasShadow;
+        const headerBtnNoGradient = await desktopPage.locator('header a:has-text("Vào App Ngay")').evaluate(el => {
+            const style = window.getComputedStyle(el);
+            return !style.backgroundImage.includes('gradient');
+        });
+
+        // Commitment 1 title check
+        const commitmentTitle = await desktopPage.locator('h3:has-text("Không quảng cáo")').first().isVisible();
+
+        const pass03 = is2LinesClean && heroBtnNoGradient && headerBtnNoGradient && commitmentTitle;
         const shot03 = path.join(EVIDENCE_DIR, 'TC-LP-03_vibrant_palette.png');
         await desktopPage.screenshot({ path: shot03, clip: { x: 0, y: 80, width: 1440, height: 750 } });
         recordResult(
             'TC-LP-03',
-            'Màu sắc sống động, độ tương phản cao, nền ấm áp có ambient backlight',
+            'Nút bấm màu solid #861949 cao cấp (không gradient), tiêu đề 2 dòng chuẩn không bị rớt chữ, cam kết Không quảng cáo',
             pass03,
-            `Tiêu đề phủ gradient dâu mận, nút CTA có shadow phát sáng và 3 viên thuốc cam kết có màu sắc riêng biệt.`,
+            `Dòng 1: "${line1Text}", Dòng 2: "${line2Text}". Nút Vào App/Bắt đầu miễn phí là màu solid thương hiệu. Cam kết "Không quảng cáo" chuẩn xác.`,
             'TC-LP-03_vibrant_palette.png'
         );
 

@@ -197,7 +197,7 @@ export default function LandingPage() {
                         </Link>
                         <Link 
                             href="/" 
-                            className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl text-xs sm:text-sm font-headline font-extrabold text-white bg-gradient-to-r from-[#d81b60] via-[#c2185b] to-[#880e4f] hover:from-[#c2185b] hover:to-[#700b3f] shadow-md shadow-pink-500/25 hover:shadow-lg hover:shadow-pink-500/35 transition-all active:scale-95 cursor-pointer"
+                            className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
                         >
                             <span>Vào App Ngay</span>
                             <FaArrowRight className="text-xs" />
@@ -214,22 +214,20 @@ export default function LandingPage() {
                 <div className="absolute top-48 -left-20 w-80 h-80 bg-gradient-to-tr from-purple-200/40 to-pink-200/30 rounded-full blur-[90px] pointer-events-none -z-10" />
 
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                    <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
+                    <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
                         
-                        {/* Vibrant Trust Badge */}
-                        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-100 via-rose-50 to-pink-100 border border-pink-300/80 shadow-xs mb-6">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-2xs"></span>
-                            <span className="text-xs font-black text-[#861949] tracking-wide">
-                                Ứng dụng theo dõi thai kỳ & nuôi con • 100% Không quảng cáo
+                        {/* Trust Badge */}
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-50 border border-pink-200/80 mb-6">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span className="text-xs font-bold text-[#861949] tracking-wide">
+                                Ứng dụng theo dõi thai kỳ & nuôi con • Không quảng cáo
                             </span>
                         </div>
 
-                        {/* Main Headline with Rich Gradient */}
-                        <h1 className="font-headline font-black text-3xl sm:text-5xl lg:text-6xl text-gray-950 tracking-tight leading-[1.18] sm:leading-[1.15] mb-5">
-                            Theo dõi thai kỳ & nuôi con khoa học. <br className="hidden sm:inline" />
-                            <span className="bg-gradient-to-r from-[#d81b60] via-[#b31454] to-[#7a063b] bg-clip-text text-transparent drop-shadow-xs">
-                                Nhẹ nhàng, không quảng cáo.
-                            </span>
+                        {/* Main Headline (2 Clean Lines, No Awkward Word-Wrap) */}
+                        <h1 className="font-headline font-black text-2xl sm:text-4xl md:text-5xl text-gray-950 tracking-tight leading-tight mb-5">
+                            <span className="block whitespace-normal sm:whitespace-nowrap">Theo dõi thai kỳ & nuôi con khoa học.</span>
+                            <span className="block text-[#861949] whitespace-normal sm:whitespace-nowrap mt-2 sm:mt-3">Nhẹ nhàng, không quảng cáo.</span>
                         </h1>
 
                         {/* Human Subtitle (Anti AI-Slop) */}
@@ -238,11 +236,11 @@ export default function LandingPage() {
                             Dự đoán giờ ngủ <strong className="text-[#861949] font-bold">SweetSpot®</strong> chống gắt ngủ, biểu đồ WHO chuẩn quốc tế và đồng bộ cả gia đình bằng <strong className="text-[#861949] font-bold">một Mã Bé duy nhất</strong>.
                         </p>
 
-                        {/* CTA Buttons Row */}
+                        {/* CTA Buttons Row (Solid Craft Buttons, No AI-Slop Gradients) */}
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-7">
                             <Link 
                                 href="/" 
-                                className="w-full sm:w-auto px-8 py-4 rounded-2xl text-base font-headline font-black text-white bg-gradient-to-r from-[#e91e63] via-[#c2185b] to-[#880e4f] hover:from-[#c2185b] hover:to-[#6d0532] shadow-xl shadow-pink-500/30 hover:shadow-2xl hover:shadow-pink-500/40 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer"
+                                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-base font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer"
                             >
                                 <span>Bắt đầu miễn phí ngay</span>
                                 <FaRocket className="text-sm" />
@@ -251,9 +249,9 @@ export default function LandingPage() {
                             <a 
                                 href="#overview" 
                                 onClick={(e) => handleScrollTo(e, 'overview')}
-                                className="w-full sm:w-auto px-7 py-4 rounded-2xl text-base font-headline font-bold text-gray-800 bg-white/95 hover:bg-pink-50/50 border-2 border-pink-200/90 shadow-md shadow-pink-100/60 hover:border-pink-300 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-base font-headline font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 shadow-2xs transition-all active:scale-95 flex items-center justify-center gap-2"
                             >
-                                <FaCircleChevronDown className="text-sm text-pink-600" />
+                                <FaCircleChevronDown className="text-sm text-gray-500" />
                                 <span>Xem các tính năng</span>
                             </a>
                         </div>
@@ -405,7 +403,7 @@ export default function LandingPage() {
                                 🚫
                             </div>
                             <h3 className="font-headline font-black text-lg text-gray-900 mb-2">
-                                100% Không bao giờ có quảng cáo
+                                Không quảng cáo
                             </h3>
                             <p className="text-sm text-gray-600 leading-relaxed">
                                 Nửa đêm bé khóc, mẹ mở app lên là để ghi nhận trong 3 giây. Chúng tôi cam kết không chèn banner chớp nháy, không bắt xem video 30 giây quảng cáo sữa hay bỉm.
@@ -858,7 +856,7 @@ export default function LandingPage() {
 
                     <Link 
                         href="/" 
-                        className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl text-base font-headline font-black text-white bg-gradient-to-r from-[#d81b60] via-[#c2185b] to-[#880e4f] hover:from-[#c2185b] hover:to-[#6d0532] shadow-xl shadow-pink-500/30 hover:shadow-2xl transition-all active:scale-95 cursor-pointer"
+                        className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl text-base font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
                     >
                         <span>Mở Babie Tracker Ngay</span>
                         <FaArrowRight className="text-sm" />

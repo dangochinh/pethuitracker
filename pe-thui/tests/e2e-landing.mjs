@@ -197,7 +197,7 @@ async function runE2E() {
         const faq2Answer = await desktopPage.locator('text=Mỗi bé sẽ có một mã định danh duy nhất').isVisible();
 
         const shot06 = path.join(EVIDENCE_DIR, 'TC-LP-06_faq_accordion.png');
-        await desktopPage.screenshot({ path: shot06, clip: { x: 250, y: 100, width: 940, height: 600 } });
+        await desktopPage.locator('#faq').screenshot({ path: shot06 });
         const pass06 = faq1Open && faq2Answer;
         recordResult(
             'TC-LP-06',
@@ -232,6 +232,37 @@ async function runE2E() {
             pass07,
             `Chuyển đổi mượt mà từ Landing -> App Portal -> Quay lại Landing qua nút khám phá tính năng.`,
             'TC-LP-07_home_portal.png'
+        );
+
+        // ========================================================
+        // TC-LP-09: Pinned Header While Scrolled Across Sections
+        // ========================================================
+        // Scroll down to 2200px (near deep dive section)
+        await desktopPage.evaluate(() => window.scrollTo(0, 2200));
+        await desktopPage.waitForTimeout(400);
+
+        const headerBoxScrolled = await desktopPage.locator('header').boundingBox();
+        const isPinnedAtTop = headerBoxScrolled && Math.round(headerBoxScrolled.y) === 0;
+        const hasScrolledShadow = await desktopPage.locator('header').evaluate(el => el.classList.contains('shadow-md'));
+
+        // Click nav link "SweetSpot®" from deep scroll position to jump across sections quickly
+        await desktopPage.locator('nav a:has-text("SweetSpot®")').click();
+        await desktopPage.waitForTimeout(700);
+
+        const currentY = await desktopPage.evaluate(() => window.scrollY);
+        const sweetSpotEl = await desktopPage.locator('#sweetspot').boundingBox();
+        const sweetSpotInView = sweetSpotEl && sweetSpotEl.y >= 0 && sweetSpotEl.y <= 130;
+
+        const shot09 = path.join(EVIDENCE_DIR, 'TC-LP-09_pinned_header_scrolled.png');
+        await desktopPage.screenshot({ path: shot09, clip: { x: 0, y: 0, width: 1440, height: 200 } });
+
+        const pass09 = isPinnedAtTop && hasScrolledShadow && sweetSpotInView;
+        recordResult(
+            'TC-LP-09',
+            'Header được PIN cố định trên đỉnh khi cuộn xuống các section sâu, chuyển section tức thì',
+            pass09,
+            `Header luôn cố định tại y = 0px (shadow-md kích hoạt). Bấm nhảy giữa các section siêu nhanh từ mọi vị trí trang.`,
+            'TC-LP-09_pinned_header_scrolled.png'
         );
 
     } finally {

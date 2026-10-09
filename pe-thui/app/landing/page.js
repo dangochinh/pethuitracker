@@ -128,7 +128,7 @@ export default function LandingPage() {
                                     : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
                             }`}
                         >
-                            42 Tuần Thai Kỳ
+                            Thai Kỳ
                         </a>
                         <a 
                             href="#baby-care" 

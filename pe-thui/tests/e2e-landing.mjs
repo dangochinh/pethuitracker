@@ -170,8 +170,8 @@ async function runE2E() {
         // ========================================================
         // TC-LP-05: Smooth Scroll & Sticky Header Offset
         // ========================================================
-        // Click on "42 Tuần Thai Kỳ" in navbar
-        await desktopPage.locator('nav a:has-text("42 Tuần Thai Kỳ")').click();
+        // Click on "Thai Kỳ" in navbar
+        await desktopPage.locator('nav a:has-text("Thai Kỳ")').click();
         await desktopPage.waitForTimeout(800); // Wait for smooth scroll
 
         const scrollY = await desktopPage.evaluate(() => window.scrollY);

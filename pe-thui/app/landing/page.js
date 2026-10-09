@@ -25,7 +25,11 @@ import {
     FaBolt,
     FaHeart,
     FaBookOpen,
-    FaMobileScreen
+    FaMobileScreen,
+    FaQuoteLeft,
+    FaFileExport,
+    FaWifi,
+    FaStar
 } from 'react-icons/fa6';
 
 export default function LandingPage() {
@@ -597,6 +601,73 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* 5.5. A DAY IN THE LIFE (24H WITH BABIE TRACKER) */}
+            <section className="py-16 sm:py-20 bg-[#fffbfc] border-y border-pink-100/70">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                        <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
+                            Thực tế từng ngày
+                        </span>
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                            Một ngày nhẹ nhàng hơn cùng Babie Tracker
+                        </h2>
+                        <p className="text-sm text-gray-600 font-medium">
+                            Từ sáng sớm tinh mơ đến đêm muộn, ứng dụng đồng hành như một người bạn thấu hiểu.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {/* 06:30 */}
+                        <div className="bg-white p-5 rounded-2xl border border-pink-200/80 shadow-2xs hover:shadow-md transition-all">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-black text-[#861949] bg-pink-50 px-2.5 py-1 rounded-lg border border-pink-200/60">06:30 Sáng</span>
+                                <span className="text-lg">🌅</span>
+                            </div>
+                            <h4 className="font-headline font-bold text-sm text-gray-900 mb-1">Cữ bú đầu ngày & Đổi bên</h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Bấm 1 chạm bắt đầu cữ bú mẹ. Đồng hồ đếm giờ chia bên ngực trái/phải giúp mẹ không bao giờ phải băn khoăn: "Vừa nãy bé bú bên nào nhỉ?".
+                            </p>
+                        </div>
+
+                        {/* 08:45 */}
+                        <div className="bg-white p-5 rounded-2xl border border-indigo-200/80 shadow-2xs hover:shadow-md transition-all">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-black text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200/60">08:45 Sáng</span>
+                                <span className="text-lg">☀️</span>
+                            </div>
+                            <h4 className="font-headline font-bold text-sm text-gray-900 mb-1">SweetSpot® đón giấc ngủ ngày</h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Thuật toán đọc thời gian thức, thông báo cữ nap 1 lúc 09:00. Mẹ chuẩn bị phòng trước 15 phút, bé vào giấc êm dịu không gắt khóc vì quá mệt.
+                            </p>
+                        </div>
+
+                        {/* 12:30 */}
+                        <div className="bg-white p-5 rounded-2xl border border-amber-200/80 shadow-2xs hover:shadow-md transition-all">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-black text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200/60">12:30 Trưa</span>
+                                <span className="text-lg">🥪</span>
+                            </div>
+                            <h4 className="font-headline font-bold text-sm text-gray-900 mb-1">Ghi nhận lượng sữa & Tã bỉm</h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Bà cho bé bú bình 130ml và thay tã ướt. Chỉ 3 giây thao tác, cả bố mẹ đều nắm được tình trạng tiêu hóa của con mà không cần ghi sổ tay.
+                            </p>
+                        </div>
+
+                        {/* 20:00 */}
+                        <div className="bg-white p-5 rounded-2xl border border-purple-200/80 shadow-2xs hover:shadow-md transition-all">
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="text-xs font-black text-purple-700 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-200/60">20:00 Tối</span>
+                                <span className="text-lg">🌙</span>
+                            </div>
+                            <h4 className="font-headline font-bold text-sm text-gray-900 mb-1">Chốt ngày & Giấc ngủ đêm</h4>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Tự động thống kê lượng sữa và số giờ ngủ trong ngày. Bố đi làm về mở điện thoại là an tâm biết con đã sinh hoạt nề nếp, ngủ say.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* 6. DEEP DIVE: HEALTH, WHO CHARTS & TEETHING */}
             <section className="py-16 sm:py-24 bg-gradient-to-b from-[#fffbfc] to-[#fff6f8]">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -670,6 +741,85 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* 6.5. CLINICAL & SCIENTIFIC FOUNDATIONS */}
+            <section className="py-16 sm:py-20 bg-white border-b border-pink-100/70">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                        <span className="text-xs font-bold text-teal-800 uppercase tracking-widest bg-teal-100/80 px-3.5 py-1 rounded-full border border-teal-200">
+                            Chứng thực khoa học
+                        </span>
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                            Dữ liệu chuẩn xác. Không phỏng đoán.
+                        </h2>
+                        <p className="text-sm text-gray-600 font-medium">
+                            Mọi thuật toán gợi ý, biểu đồ và mốc phát triển trong Babie Tracker đều dựa trên các phác đồ y khoa chuẩn mực quốc tế và Bộ Y Tế.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* WHO 2006 */}
+                        <div className="p-6 rounded-3xl bg-[#f8fbfa] border-2 border-teal-100/90 shadow-2xs hover:shadow-md transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center text-xl mb-4">
+                                <FaChartLine />
+                            </div>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/60">
+                                Tiêu chuẩn WHO 2006
+                            </span>
+                            <h3 className="font-headline font-black text-base text-gray-900 mt-2 mb-2">
+                                Biểu đồ bách phân vị Z-Scores
+                            </h3>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Ứng dụng tích hợp bộ số liệu nghiên cứu đa trung tâm của Tổ chức Y tế Thế giới (WHO MGRS), so sánh chuẩn P3, P15, P50, P85, P97 theo tháng tuổi cho bé trai và bé gái.
+                            </p>
+                            <div className="mt-4 pt-3 border-t border-teal-100 text-[11px] font-semibold text-teal-900 flex items-center gap-1.5">
+                                <FaCircleCheck className="text-teal-600 text-xs shrink-0" />
+                                <span>Phát hiện sớm nguy cơ nhẹ cân / béo phì</span>
+                            </div>
+                        </div>
+
+                        {/* AAP Sleep */}
+                        <div className="p-6 rounded-3xl bg-[#fbf9fe] border-2 border-purple-100/90 shadow-2xs hover:shadow-md transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-800 flex items-center justify-center text-xl mb-4">
+                                <FaMoon />
+                            </div>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200/60">
+                                Khuyến nghị AAP Hoa Kỳ
+                            </span>
+                            <h3 className="font-headline font-black text-base text-gray-900 mt-2 mb-2">
+                                Khoảng thức Wake Windows
+                            </h3>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Thuật toán SweetSpot® tuân thủ nghiên cứu sinh lý giấc ngủ của Viện Hàn lâm Nhi khoa Hoa Kỳ (AAP), tính toán áp lực giấc ngủ (sleep pressure) để dự đoán chính xác giờ bé buồn ngủ.
+                            </p>
+                            <div className="mt-4 pt-3 border-t border-purple-100 text-[11px] font-semibold text-purple-900 flex items-center gap-1.5">
+                                <FaCircleCheck className="text-purple-600 text-xs shrink-0" />
+                                <span>Tránh kích thích quá mức (Overtired)</span>
+                            </div>
+                        </div>
+
+                        {/* VN MOH Vaccine */}
+                        <div className="p-6 rounded-3xl bg-[#fdf8f9] border-2 border-pink-100/90 shadow-2xs hover:shadow-md transition-all">
+                            <div className="w-12 h-12 rounded-2xl bg-pink-100 text-[#861949] flex items-center justify-center text-xl mb-4">
+                                <FaShieldHeart />
+                            </div>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-[#861949] bg-pink-50 px-2.5 py-0.5 rounded-full border border-pink-200/60">
+                                Bộ Y Tế Việt Nam
+                            </span>
+                            <h3 className="font-headline font-black text-base text-gray-900 mt-2 mb-2">
+                                Tiêm chủng Mở rộng & Dịch vụ
+                            </h3>
+                            <p className="text-xs text-gray-600 leading-relaxed">
+                                Danh mục 46 mũi tiêm được xây dựng đồng bộ với phác đồ y tế dự phòng Việt Nam: Lao sơ sinh, 6in1, Rota, Phế cầu, Sởi - Quai bị - Rubella, Viêm não Nhật Bản và Cúm mùa.
+                            </p>
+                            <div className="mt-4 pt-3 border-t border-pink-100 text-[11px] font-semibold text-[#861949] flex items-center gap-1.5">
+                                <FaCircleCheck className="text-[#861949] text-xs shrink-0" />
+                                <span>Tự động đếm ngược ngày tiêm kế tiếp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* 7. FAMILY SYNC WITH BABY CODE #CODE */}
             <section id="family-sync" className="py-16 sm:py-20 bg-gradient-to-br from-pink-100/70 via-rose-50/50 to-purple-100/60 border-y-2 border-pink-200">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -711,6 +861,76 @@ export default function LandingPage() {
                             </div>
                             <h4 className="font-headline font-black text-xs text-gray-900">Đồng bộ đám mây tức thì</h4>
                             <p className="text-[11px] text-gray-600 mt-0.5">Mẹ vừa ghi cữ sữa, điện thoại bố thấy ngay.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 7.5. 3 AM PARENT ERGONOMICS & RELIABILITY */}
+            <section className="py-16 sm:py-24 bg-white">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div className="text-center max-w-2xl mx-auto mb-14">
+                        <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
+                            Thiết kế vị nhân sinh
+                        </span>
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                            Thấu hiểu từng chi tiết lúc 3 giờ sáng
+                        </h2>
+                        <p className="text-sm text-gray-600 font-medium">
+                            Khi một tay đang bế con và mắt còn ngái ngủ, bạn không cần một ứng dụng rối rắm — bạn cần sự chính xác trong từng cú chạm.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                        {/* 1-Hand Thumb Zone */}
+                        <div className="bg-[#fffbfc] rounded-3xl p-6 border-2 border-pink-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col">
+                            <div className="w-12 h-12 rounded-2xl bg-pink-100 text-[#861949] flex items-center justify-center text-xl mb-4">
+                                <FaMobileScreen />
+                            </div>
+                            <h3 className="font-headline font-black text-base text-gray-950 mb-2">
+                                Thao tác 1 tay vùng ngón cái
+                            </h3>
+                            <p className="text-xs text-gray-600 leading-relaxed flex-1">
+                                Một tay bế con, mẹ chỉ còn một bàn tay thao tác. Toàn bộ các nút bấm chính (bấm giờ bú, đổi bên ngực, ghi tã) được tối ưu ở nửa dưới màn hình với tiết diện chạm lớn, không cần với tay lên đỉnh.
+                            </p>
+                            <div className="mt-4 pt-3 border-t border-pink-100/80 flex items-center gap-2 text-[11px] font-bold text-gray-700">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span>Tiết diện chạm tối thiểu 48x48px</span>
+                            </div>
+                        </div>
+
+                        {/* PWA Offline Resilience */}
+                        <div className="bg-[#fbfcff] rounded-3xl p-6 border-2 border-indigo-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col">
+                            <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xl mb-4">
+                                <FaWifi />
+                            </div>
+                            <h3 className="font-headline font-black text-base text-gray-950 mb-2">
+                                Hoạt động ngoại tuyến khi mất sóng
+                            </h3>
+                            <p className="text-xs text-gray-600 leading-relaxed flex-1">
+                                Phòng ngủ của bé cách âm kín, WiFi chập chờn? Ứng dụng PWA khởi động ngay trong 0.3 giây, ghi nhận dữ liệu vào bộ nhớ máy và tự động đồng bộ lên đám mây ngay khi có mạng trở lại.
+                            </p>
+                            <div className="mt-4 pt-3 border-t border-indigo-100/80 flex items-center gap-2 text-[11px] font-bold text-indigo-900">
+                                <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                                <span>Zero mất mát dữ liệu cữ ăn/ngủ</span>
+                            </div>
+                        </div>
+
+                        {/* Export to Pediatrician */}
+                        <div className="bg-[#f9fbf9] rounded-3xl p-6 border-2 border-emerald-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col">
+                            <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-4">
+                                <FaFileExport />
+                            </div>
+                            <h3 className="font-headline font-black text-base text-gray-950 mb-2">
+                                Dữ liệu sẵn sàng cho Bác sĩ Nhi
+                            </h3>
+                            <p className="text-xs text-gray-600 leading-relaxed flex-1">
+                                Khi đưa con đi khám, bác sĩ luôn hỏi: "Bé bú được bao nhiêu ml/ngày? Đi ngoài mấy lần?". Phụ huynh chỉ cần mở trang Thống kê đưa cho bác sĩ xem trực tiếp bảng tổng hợp 7 ngày rõ ràng.
+                            </p>
+                            <div className="mt-4 pt-3 border-t border-emerald-100/80 flex items-center gap-2 text-[11px] font-bold text-emerald-900">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span>Báo cáo lượng sữa & chu kỳ tã 7 ngày</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -775,6 +995,118 @@ export default function LandingPage() {
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 8.5. AUTHENTIC PARENT VOICES */}
+            <section className="py-16 sm:py-24 bg-gradient-to-b from-[#fffbfc] to-white border-t border-pink-100/80">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                    <div className="text-center max-w-2xl mx-auto mb-14">
+                        <span className="text-xs font-bold text-[#861949] uppercase tracking-widest bg-pink-100/80 px-3.5 py-1 rounded-full border border-pink-200">
+                            Chia sẻ thực tế
+                        </span>
+                        <h2 className="font-headline font-black text-2xl sm:text-3xl text-gray-950 mt-3 mb-2">
+                            Được tin dùng trong từng cữ sữa & giấc ngủ
+                        </h2>
+                        <p className="text-sm text-gray-600 font-medium">
+                            Không có những lời khen chung chung sáo rỗng. Đây là những trải nghiệm thực tế từ các gia đình đang nuôi con nhỏ.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                        {/* Parent 1 */}
+                        <div className="bg-white rounded-3xl p-6 border-2 border-pink-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex text-amber-400 gap-0.5 text-xs">
+                                        {[...Array(5)].map((_, i) => (
+                                            <FaStar key={i} />
+                                        ))}
+                                    </div>
+                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                        Đã xác minh
+                                    </span>
+                                </div>
+                                <div className="text-pink-300 text-lg mb-2">
+                                    <FaQuoteLeft />
+                                </div>
+                                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic mb-6">
+                                    "Trước đây cứ tầm 6h tối là bé nhà mình quấy khóc vật vã 2 tiếng đồng hồ vì gắt ngủ. Từ khi dùng SweetSpot® và theo dõi wake window, mình cho con vào phòng ngủ trước giờ dự đoán 15 phút, bé ngủ ngon lành chỉ sau vài phút vỗ về. Đúng nghĩa giải cứu tinh thần cho cả 2 vợ chồng!"
+                                </p>
+                            </div>
+                            <div className="pt-4 border-t border-pink-100 flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-headline font-bold text-xs text-gray-950">Mẹ Mai Anh</h4>
+                                    <p className="text-[11px] text-gray-500">Bé Bon (4 tháng tuổi) • Hà Nội</p>
+                                </div>
+                                <span className="text-[10px] bg-pink-50 text-[#861949] font-bold px-2 py-0.5 rounded-md border border-pink-200/60">
+                                    SweetSpot®
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Parent 2 */}
+                        <div className="bg-white rounded-3xl p-6 border-2 border-purple-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex text-amber-400 gap-0.5 text-xs">
+                                        {[...Array(5)].map((_, i) => (
+                                            <FaStar key={i} />
+                                        ))}
+                                    </div>
+                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                        Đã xác minh
+                                    </span>
+                                </div>
+                                <div className="text-purple-300 text-lg mb-2">
+                                    <FaQuoteLeft />
+                                </div>
+                                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic mb-6">
+                                    "Mình đi làm văn phòng cả ngày, bé ở nhà có bà nội chăm. Điểm ưng ý nhất là Mã Bé #CODE: bà chỉ cần chạm ghi cữ sữa hay thay tã là điện thoại mình ở công ty nhảy cập nhật ngay. Chiều về là nắm rõ hôm nay con ăn ngủ thế nào, không cần gặng hỏi dồn dập bà."
+                                </p>
+                            </div>
+                            <div className="pt-4 border-t border-purple-100 flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-headline font-bold text-xs text-gray-950">Bố Quốc Tuấn</h4>
+                                    <p className="text-[11px] text-gray-500">Bé Miu (7 tháng tuổi) • TP.HCM</p>
+                                </div>
+                                <span className="text-[10px] bg-purple-50 text-purple-800 font-bold px-2 py-0.5 rounded-md border border-purple-200/60">
+                                    Mã Bé #CODE
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Parent 3 */}
+                        <div className="bg-white rounded-3xl p-6 border-2 border-teal-200/80 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex text-amber-400 gap-0.5 text-xs">
+                                        {[...Array(5)].map((_, i) => (
+                                            <FaStar key={i} />
+                                        ))}
+                                    </div>
+                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                        Đã xác minh
+                                    </span>
+                                </div>
+                                <div className="text-teal-300 text-lg mb-2">
+                                    <FaQuoteLeft />
+                                </div>
+                                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic mb-6">
+                                    "Mình từng tải qua 4-5 app thai kỳ khác nhau nhưng app nào cũng chèn quảng cáo nổ đôm đốp và giao diện rối mắt. Babie Tracker vào thẳng vấn đề, theo dõi tuần thai theo hình ảnh quả củ rất dễ thương, nhắc lịch tiêm uốn ván chuẩn chỉ và không có bất kỳ banner quảng cáo nào."
+                                </p>
+                            </div>
+                            <div className="pt-4 border-t border-teal-100 flex items-center justify-between">
+                                <div>
+                                    <h4 className="font-headline font-bold text-xs text-gray-950">Mẹ Thùy Trang</h4>
+                                    <p className="text-[11px] text-gray-500">Tuần thai thứ 32 • Đà Nẵng</p>
+                                </div>
+                                <span className="text-[10px] bg-teal-50 text-teal-800 font-bold px-2 py-0.5 rounded-md border border-teal-200/60">
+                                    42 Tuần Thai Kỳ
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

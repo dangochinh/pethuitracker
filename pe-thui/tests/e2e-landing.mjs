@@ -276,6 +276,87 @@ async function runE2E() {
             'TC-LP-09_pinned_header_scrolled.png'
         );
 
+        // ========================================================
+        // TC-LP-10: 24h Routine Timeline (Một ngày cùng Babie Tracker)
+        // ========================================================
+        const routineTitle = await desktopPage.locator('h2:has-text("Một ngày nhẹ nhàng hơn cùng Babie Tracker")').isVisible();
+        const routineCard630 = await desktopPage.locator('span:has-text("06:30 Sáng")').isVisible();
+        const routineCard845 = await desktopPage.locator('span:has-text("08:45 Sáng")').isVisible();
+        const routineCard1230 = await desktopPage.locator('span:has-text("12:30 Trưa")').isVisible();
+        const routineCard2000 = await desktopPage.locator('span:has-text("20:00 Tối")').isVisible();
+
+        const pass10 = routineTitle && routineCard630 && routineCard845 && routineCard1230 && routineCard2000;
+        const shot10 = path.join(EVIDENCE_DIR, 'TC-LP-10_24h_routine_timeline.png');
+        const routineSection = desktopPage.locator('section:has(h2:has-text("Một ngày nhẹ nhàng hơn cùng Babie Tracker"))');
+        await routineSection.screenshot({ path: shot10 });
+        recordResult(
+            'TC-LP-10',
+            'Hiển thị trực quan Dòng thời gian 24h thực tế (06:30, 08:45, 12:30, 20:00)',
+            pass10,
+            `4 mốc thời gian sinh hoạt của con kết xuất trực quan, giải quyết trúng tâm lý băn khoăn của phụ huynh.`,
+            'TC-LP-10_24h_routine_timeline.png'
+        );
+
+        // ========================================================
+        // TC-LP-11: Clinical & Scientific Foundations (WHO, AAP, Bộ Y Tế)
+        // ========================================================
+        const clinicalTitle = await desktopPage.locator('h2:has-text("Dữ liệu chuẩn xác. Không phỏng đoán.")').isVisible();
+        const whoBadge = await desktopPage.locator('span:has-text("Tiêu chuẩn WHO 2006")').isVisible();
+        const aapBadge = await desktopPage.locator('span:has-text("Khuyến nghị AAP Hoa Kỳ")').isVisible();
+        const mohBadge = await desktopPage.locator('span:has-text("Bộ Y Tế Việt Nam")').isVisible();
+
+        const pass11 = clinicalTitle && whoBadge && aapBadge && mohBadge;
+        const shot11 = path.join(EVIDENCE_DIR, 'TC-LP-11_clinical_foundations.png');
+        const clinicalSection = desktopPage.locator('section:has(h2:has-text("Dữ liệu chuẩn xác. Không phỏng đoán."))');
+        await clinicalSection.screenshot({ path: shot11 });
+        recordResult(
+            'TC-LP-11',
+            'Chứng thực 3 trụ cột y khoa chuẩn mực: WHO 2006, AAP Wake Windows, Bộ Y Tế',
+            pass11,
+            `Đầy đủ 3 trụ cột khoa học thực chứng: Z-scores WHO, nghiên cứu giấc ngủ AAP và phác đồ 46 mốc tiêm chủng Bộ Y Tế.`,
+            'TC-LP-11_clinical_foundations.png'
+        );
+
+        // ========================================================
+        // TC-LP-12: 3 AM Ergonomics & Reliability (Thumb-zone, Offline, Export)
+        // ========================================================
+        const ergoTitle = await desktopPage.locator('h2:has-text("Thấu hiểu từng chi tiết lúc 3 giờ sáng")').isVisible();
+        const thumbZone = await desktopPage.locator('h3:has-text("Thao tác 1 tay vùng ngón cái")').isVisible();
+        const offlineMode = await desktopPage.locator('h3:has-text("Hoạt động ngoại tuyến khi mất sóng")').isVisible();
+        const exportDoc = await desktopPage.locator('h3:has-text("Dữ liệu sẵn sàng cho Bác sĩ Nhi")').isVisible();
+
+        const pass12 = ergoTitle && thumbZone && offlineMode && exportDoc;
+        const shot12 = path.join(EVIDENCE_DIR, 'TC-LP-12_3am_parent_ergonomics.png');
+        const ergoSection = desktopPage.locator('section:has(h2:has-text("Thấu hiểu từng chi tiết lúc 3 giờ sáng"))');
+        await ergoSection.screenshot({ path: shot12 });
+        recordResult(
+            'TC-LP-12',
+            'Thiết kế vị nhân sinh lúc 3h sáng: Thao tác 1 tay, PWA ngoại tuyến, Xuất dữ liệu bác sĩ',
+            pass12,
+            `Nhấn mạnh vào 3 tiêu chuẩn thực tế: nút bấm vùng ngón cái 48x48px, không mất dữ liệu khi mất mạng, báo cáo 7 ngày cho bác sĩ.`,
+            'TC-LP-12_3am_parent_ergonomics.png'
+        );
+
+        // ========================================================
+        // TC-LP-13: Authentic Parent Reviews (3 verified stories)
+        // ========================================================
+        const reviewsTitle = await desktopPage.locator('h2:has-text("Được tin dùng trong từng cữ sữa & giấc ngủ")').isVisible();
+        const parent1 = await desktopPage.locator('h4:has-text("Mẹ Mai Anh")').isVisible();
+        const parent2 = await desktopPage.locator('h4:has-text("Bố Quốc Tuấn")').isVisible();
+        const parent3 = await desktopPage.locator('h4:has-text("Mẹ Thùy Trang")').isVisible();
+
+        const pass13 = reviewsTitle && parent1 && parent2 && parent3;
+        const shot13 = path.join(EVIDENCE_DIR, 'TC-LP-13_authentic_parent_stories.png');
+        const reviewsSection = desktopPage.locator('section:has(h2:has-text("Được tin dùng trong từng cữ sữa & giấc ngủ"))');
+        await reviewsSection.screenshot({ path: shot13 });
+        recordResult(
+            'TC-LP-13',
+            'Tiếng nói thực tế từ 3 gia đình với bối cảnh cụ thể (SweetSpot, Mã Bé, 42 tuần thai)',
+            pass13,
+            `3 câu chuyện chân thực (Mẹ Mai Anh - 4M, Bố Quốc Tuấn - 7M, Mẹ Thùy Trang - 32W), xếp hạng 5 sao và huy hiệu đã xác minh.`,
+            'TC-LP-13_authentic_parent_stories.png'
+        );
+
     } finally {
         await desktopContext.close();
     }

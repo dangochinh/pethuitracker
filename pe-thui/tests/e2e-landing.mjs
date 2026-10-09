@@ -356,6 +356,34 @@ async function runE2E() {
             `3 câu chuyện chân thực (Mẹ Mai Anh - 4M, Bố Quốc Tuấn - 7M, Mẹ Thùy Trang - 32W), xếp hạng 5 sao và huy hiệu đã xác minh.`,
             'TC-LP-13_authentic_parent_stories.png'
         );
+        // ========================================================
+        // TC-LP-14: No-Select / Prevent Accidental Text Selection on Buttons & Header
+        // ========================================================
+        const headerSelect = await desktopPage.locator('header').evaluate(el => window.getComputedStyle(el).userSelect);
+        const navLinkSelect = await desktopPage.locator('nav a:has-text("Thai Kỳ")').evaluate(el => window.getComputedStyle(el).userSelect);
+        const ctaBtnSelect = await desktopPage.locator('a:has-text("Vào App Ngay")').first().evaluate(el => window.getComputedStyle(el).userSelect);
+        const heroBtnSelect = await desktopPage.locator('a:has-text("Bắt đầu miễn phí ngay")').first().evaluate(el => window.getComputedStyle(el).userSelect);
+        const tabBtnSelect = await desktopPage.locator('button:has-text("Giai đoạn Mang thai")').first().evaluate(el => window.getComputedStyle(el).userSelect);
+
+        // Try double-clicking nav link to verify no selection is created
+        await desktopPage.locator('nav a:has-text("Thai Kỳ")').dblclick();
+        const selectedText = await desktopPage.evaluate(() => window.getSelection().toString());
+
+        const pass14 = (headerSelect === 'none') && 
+                       (navLinkSelect === 'none') && 
+                       (ctaBtnSelect === 'none') && 
+                       (heroBtnSelect === 'none') && 
+                       (tabBtnSelect === 'none') &&
+                       (selectedText === '');
+        const shot14 = path.join(EVIDENCE_DIR, 'TC-LP-14_user_select_none.png');
+        await desktopPage.locator('header').screenshot({ path: shot14 });
+        recordResult(
+            'TC-LP-14',
+            'Chống bôi đen text ngoài ý muốn (user-select: none) trên Header, Menu, Nút bấm & Tabs',
+            pass14,
+            `Header (${headerSelect}), Nav links (${navLinkSelect}), CTA Buttons (${heroBtnSelect}), Tabs (${tabBtnSelect}) đều áp dụng user-select: none. Double click không làm bôi đen chữ.`,
+            'TC-LP-14_user_select_none.png'
+        );
 
     } finally {
         await desktopContext.close();

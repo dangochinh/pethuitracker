@@ -90,7 +90,7 @@ export default function LandingPage() {
         <div className="w-full min-h-screen bg-gradient-to-b from-[#fff6f6] via-[#fffbf9] to-[#fef2f4] text-gray-800 selection:bg-pink-200 selection:text-[#861949] overflow-x-hidden font-body pt-18 sm:pt-20">
             
             {/* 1. PINNED FIXED NAVIGATION BAR */}
-            <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-xl transition-all duration-300 w-full ${
+            <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-xl transition-all duration-300 w-full select-none ${
                 scrolled 
                     ? 'bg-white/95 shadow-md shadow-pink-950/10 border-b border-pink-200/90 py-0.5' 
                     : 'bg-white/90 shadow-xs border-b border-pink-200/60 py-1 sm:py-1.5'
@@ -98,7 +98,7 @@ export default function LandingPage() {
                 <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 h-16 sm:h-18 flex items-center justify-between">
                     
                     {/* Logo & Brand (Far Left) */}
-                    <Link href="/" className="flex items-center gap-3 group shrink-0">
+                    <Link href="/" className="flex items-center gap-3 group shrink-0 select-none">
                         <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full p-0.5 bg-white border-2 border-pink-300/80 shadow-sm overflow-hidden transition-transform group-hover:scale-105 group-hover:rotate-3">
                             <img src="/logo-stitch.png" alt="Babie Tracker Logo" className="w-full h-full object-cover rounded-full" />
                         </div>
@@ -118,11 +118,11 @@ export default function LandingPage() {
                     </Link>
 
                     {/* Nav Links (Desktop Middle) with Active Section Highlights */}
-                    <nav className="hidden lg:flex items-center gap-3 xl:gap-5 text-sm font-bold text-gray-700">
+                    <nav className="hidden lg:flex items-center gap-3 xl:gap-5 text-sm font-bold text-gray-700 select-none">
                         <a 
                             href="#pregnancy" 
                             onClick={(e) => handleScrollTo(e, 'pregnancy')}
-                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                            className={`transition-all py-1.5 px-3 rounded-xl select-none ${
                                 activeSection === 'pregnancy'
                                     ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
                                     : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
@@ -133,7 +133,7 @@ export default function LandingPage() {
                         <a 
                             href="#baby-care" 
                             onClick={(e) => handleScrollTo(e, 'baby-care')}
-                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                            className={`transition-all py-1.5 px-3 rounded-xl select-none ${
                                 activeSection === 'baby-care'
                                     ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
                                     : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
@@ -144,7 +144,7 @@ export default function LandingPage() {
                         <a 
                             href="#family-sync" 
                             onClick={(e) => handleScrollTo(e, 'family-sync')}
-                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                            className={`transition-all py-1.5 px-3 rounded-xl select-none ${
                                 activeSection === 'family-sync'
                                     ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
                                     : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
@@ -155,7 +155,7 @@ export default function LandingPage() {
                         <a 
                             href="#compare" 
                             onClick={(e) => handleScrollTo(e, 'compare')}
-                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                            className={`transition-all py-1.5 px-3 rounded-xl select-none ${
                                 activeSection === 'compare'
                                     ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
                                     : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
@@ -166,7 +166,7 @@ export default function LandingPage() {
                         <a 
                             href="#faq" 
                             onClick={(e) => handleScrollTo(e, 'faq')}
-                            className={`transition-all py-1.5 px-3 rounded-xl ${
+                            className={`transition-all py-1.5 px-3 rounded-xl select-none ${
                                 activeSection === 'faq'
                                     ? 'text-[#861949] bg-pink-100/90 font-black shadow-2xs'
                                     : 'text-gray-700 hover:text-[#861949] hover:bg-pink-50/60'
@@ -177,17 +177,17 @@ export default function LandingPage() {
                     </nav>
 
                     {/* CTA Actions (Far Right) */}
-                    <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                    <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 select-none">
                         <Link 
                             href="/" 
-                            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-gray-800 bg-white hover:bg-pink-50/70 border border-pink-200/80 shadow-2xs transition-all active:scale-95"
+                            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-gray-800 bg-white hover:bg-pink-50/70 border border-pink-200/80 shadow-2xs transition-all active:scale-95 select-none"
                         >
                             <FaHashtag className="text-[#861949] text-xs" />
                             <span>Nhập Mã Bé</span>
                         </Link>
                         <Link 
                             href="/" 
-                            className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+                            className="inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer select-none"
                         >
                             <span>Vào App Ngay</span>
                             <FaArrowRight className="text-xs" />
@@ -220,10 +220,10 @@ export default function LandingPage() {
                         </p>
 
                         {/* CTA Buttons Row (Solid Craft Buttons, No AI-Slop Gradients) */}
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-7">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 mb-7 select-none">
                             <Link 
                                 href="/" 
-                                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-base font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer"
+                                className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-base font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer select-none"
                             >
                                 <span>Bắt đầu miễn phí ngay</span>
                                 <FaRocket className="text-sm" />
@@ -232,7 +232,7 @@ export default function LandingPage() {
                             <a 
                                 href="#overview" 
                                 onClick={(e) => handleScrollTo(e, 'overview')}
-                                className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-base font-headline font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 shadow-2xs transition-all active:scale-95 flex items-center justify-center gap-2"
+                                className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-base font-headline font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 shadow-2xs transition-all active:scale-95 flex items-center justify-center gap-2 select-none"
                             >
                                 <FaCircleChevronDown className="text-sm text-gray-500" />
                                 <span>Xem các tính năng</span>
@@ -240,16 +240,16 @@ export default function LandingPage() {
                         </div>
 
                         {/* Colorful Micro Guarantee Pills */}
-                        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs">
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50/90 border border-emerald-200 text-emerald-800 font-bold shadow-2xs">
+                        <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs select-none">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50/90 border border-emerald-200 text-emerald-800 font-bold shadow-2xs select-none">
                                 <FaCircleCheck className="text-emerald-500 text-xs" />
                                 Không cần thẻ tín dụng
                             </span>
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-50/90 border border-pink-200 text-pink-900 font-bold shadow-2xs">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pink-50/90 border border-pink-200 text-pink-900 font-bold shadow-2xs select-none">
                                 <FaCircleCheck className="text-pink-600 text-xs" />
                                 Đồng bộ tức thì cả nhà
                             </span>
-                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-50/90 border border-sky-200 text-sky-900 font-bold shadow-2xs">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sky-50/90 border border-sky-200 text-sky-900 font-bold shadow-2xs select-none">
                                 <FaCircleCheck className="text-sky-600 text-xs" />
                                 Cài đặt PWA nhẹ & mượt
                             </span>
@@ -260,11 +260,11 @@ export default function LandingPage() {
                     <div id="overview" className="max-w-4xl mx-auto pt-4">
                         
                         {/* Tab Switcher: Thai kỳ vs Em bé */}
-                        <div className="flex justify-center mb-7">
-                            <div className="inline-flex p-1.5 bg-pink-100/70 rounded-2xl border border-pink-200 shadow-inner">
+                        <div className="flex justify-center mb-7 select-none">
+                            <div className="inline-flex p-1.5 bg-pink-100/70 rounded-2xl border border-pink-200 shadow-inner select-none">
                                 <button
                                     onClick={() => setModeTab('pregnancy')}
-                                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold flex items-center gap-2 transition-all cursor-pointer select-none ${
                                         modeTab === 'pregnancy'
                                             ? 'bg-gradient-to-r from-[#861949] to-[#b3275c] text-white shadow-md shadow-pink-900/25 scale-[1.02]'
                                             : 'text-gray-700 hover:text-[#861949] hover:bg-white/60'
@@ -275,7 +275,7 @@ export default function LandingPage() {
                                 </button>
                                 <button
                                     onClick={() => setModeTab('baby')}
-                                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold flex items-center gap-2 transition-all cursor-pointer ${
+                                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-headline font-bold flex items-center gap-2 transition-all cursor-pointer select-none ${
                                         modeTab === 'baby'
                                             ? 'bg-gradient-to-r from-[#861949] to-[#b3275c] text-white shadow-md shadow-pink-900/25 scale-[1.02]'
                                             : 'text-gray-700 hover:text-[#861949] hover:bg-white/60'
@@ -314,7 +314,7 @@ export default function LandingPage() {
                                 {/* Floating Highlight Badges around the Phone */}
                                 {modeTab === 'pregnancy' ? (
                                     <>
-                                        <div className="hidden sm:flex absolute -left-12 top-24 bg-white/95 backdrop-blur-md border-2 border-pink-200 p-3.5 rounded-2xl shadow-xl shadow-pink-900/10 items-center gap-3 animate-in fade-in duration-300">
+                                        <div className="hidden sm:flex absolute -left-12 top-24 bg-white/95 backdrop-blur-md border-2 border-pink-200 p-3.5 rounded-2xl shadow-xl shadow-pink-900/10 items-center gap-3 animate-in fade-in duration-300 select-none">
                                             <span className="text-3xl">🥦</span>
                                             <div>
                                                 <p className="text-[10px] font-black text-pink-500 uppercase tracking-wider">Tuần 27</p>
@@ -323,7 +323,7 @@ export default function LandingPage() {
                                             </div>
                                         </div>
 
-                                        <div className="hidden sm:flex absolute -right-12 bottom-32 bg-white/95 backdrop-blur-md border-2 border-purple-200 p-3.5 rounded-2xl shadow-xl shadow-purple-900/10 items-center gap-3 animate-in fade-in duration-300">
+                                        <div className="hidden sm:flex absolute -right-12 bottom-32 bg-white/95 backdrop-blur-md border-2 border-purple-200 p-3.5 rounded-2xl shadow-xl shadow-purple-900/10 items-center gap-3 animate-in fade-in duration-300 select-none">
                                             <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center font-black text-xs shadow-2xs">
                                                 42W
                                             </div>
@@ -336,7 +336,7 @@ export default function LandingPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <div className="hidden sm:flex absolute -left-12 top-28 bg-white/95 backdrop-blur-md border-2 border-indigo-200 p-3.5 rounded-2xl shadow-xl shadow-indigo-900/10 items-center gap-3 animate-in fade-in duration-300">
+                                        <div className="hidden sm:flex absolute -left-12 top-28 bg-white/95 backdrop-blur-md border-2 border-indigo-200 p-3.5 rounded-2xl shadow-xl shadow-indigo-900/10 items-center gap-3 animate-in fade-in duration-300 select-none">
                                             <span className="text-3xl">💤</span>
                                             <div>
                                                 <div className="flex items-center gap-1.5">
@@ -348,7 +348,7 @@ export default function LandingPage() {
                                             </div>
                                         </div>
 
-                                        <div className="hidden sm:flex absolute -right-12 bottom-28 bg-white/95 backdrop-blur-md border-2 border-pink-200 p-3.5 rounded-2xl shadow-xl shadow-pink-900/10 items-center gap-3 animate-in fade-in duration-300">
+                                        <div className="hidden sm:flex absolute -right-12 bottom-28 bg-white/95 backdrop-blur-md border-2 border-pink-200 p-3.5 rounded-2xl shadow-xl shadow-pink-900/10 items-center gap-3 animate-in fade-in duration-300 select-none">
                                             <span className="text-3xl">🍼</span>
                                             <div>
                                                 <p className="text-[10px] font-black text-pink-500 uppercase tracking-wider">Ghi nhận 1 chạm</p>
@@ -1132,7 +1132,7 @@ export default function LandingPage() {
                             >
                                 <button
                                     onClick={() => toggleFaq(idx)}
-                                    className="w-full p-4.5 sm:p-5 text-left font-headline font-bold text-sm sm:text-base text-gray-900 flex items-center justify-between gap-4 cursor-pointer"
+                                    className="w-full p-4.5 sm:p-5 text-left font-headline font-bold text-sm sm:text-base text-gray-900 flex items-center justify-between gap-4 cursor-pointer select-none"
                                 >
                                     <span>{item.q}</span>
                                     <FaChevronDown 
@@ -1154,7 +1154,7 @@ export default function LandingPage() {
             {/* 10. FINAL CALL TO ACTION & FOOTER */}
             <section className="py-16 sm:py-24 bg-gradient-to-b from-[#fff6f8] to-[#fee6ed] text-center border-t-2 border-pink-200">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6">
-                    <div className="w-16 h-16 rounded-full mx-auto p-1 bg-white border-2 border-pink-300 shadow-lg overflow-hidden mb-6">
+                    <div className="w-16 h-16 rounded-full mx-auto p-1 bg-white border-2 border-pink-300 shadow-lg overflow-hidden mb-6 select-none">
                         <img src="/logo-stitch.png" alt="Babie Tracker Logo" className="w-full h-full object-cover rounded-full" />
                     </div>
 
@@ -1167,40 +1167,40 @@ export default function LandingPage() {
 
                     <Link 
                         href="/" 
-                        className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl text-base font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+                        className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl text-base font-headline font-bold text-white bg-[#861949] hover:bg-[#6f123c] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer select-none"
                     >
                         <span>Mở Babie Tracker Ngay</span>
                         <FaArrowRight className="text-sm" />
                     </Link>
 
                     {/* Footer text */}
-                    <div className="mt-16 pt-8 border-t border-pink-300/60 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-600 gap-4">
+                    <div className="mt-16 pt-8 border-t border-pink-300/60 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-600 gap-4 select-none">
                         <div className="flex items-center gap-2 font-semibold">
                             <span>Babie Tracker © 2026</span>
                             <span>•</span>
                             <span>From parents with ❤️</span>
                         </div>
 
-                        <div className="flex items-center gap-4 font-bold text-gray-700">
-                            <Link href="/" className="hover:text-[#861949]">Trang chủ</Link>
+                        <div className="flex items-center gap-4 font-bold text-gray-700 select-none">
+                            <Link href="/" className="hover:text-[#861949] select-none">Trang chủ</Link>
                             <a 
                                 href="#pregnancy" 
                                 onClick={(e) => handleScrollTo(e, 'pregnancy')}
-                                className="hover:text-[#861949]"
+                                className="hover:text-[#861949] select-none"
                             >
                                 Thai kỳ
                             </a>
                             <a 
                                 href="#baby-care" 
                                 onClick={(e) => handleScrollTo(e, 'baby-care')}
-                                className="hover:text-[#861949]"
+                                className="hover:text-[#861949] select-none"
                             >
                                 Chăm sóc bé
                             </a>
                             <a 
                                 href="#faq" 
                                 onClick={(e) => handleScrollTo(e, 'faq')}
-                                className="hover:text-[#861949]"
+                                className="hover:text-[#861949] select-none"
                             >
                                 Hỏi đáp
                             </a>

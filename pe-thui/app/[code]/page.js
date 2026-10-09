@@ -50,7 +50,7 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50">
+            <div className="max-w-md mx-auto min-h-screen shadow-2xl flex flex-col items-center justify-center bg-pink-50">
                 <div className="animate-bounce">
                     <FaBaby size={60} className="text-pink-400" />
                 </div>
@@ -61,7 +61,7 @@ export default function ProfilePage() {
 
     if (error || !profile) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-pink-50 p-6">
+            <div className="max-w-md mx-auto min-h-screen shadow-2xl flex flex-col items-center justify-center bg-pink-50 p-6">
                 <div className="cute-card max-w-sm w-full p-8 text-center bg-white backdrop-blur-xl">
                     <div className="text-5xl mb-4">😢</div>
                     <h2 className="text-xl font-bold text-gray-800 mb-2">Không tìm thấy mã bé!</h2>
@@ -78,5 +78,9 @@ export default function ProfilePage() {
         );
     }
 
-    return <Dashboard profile={profile} code={code} />;
+    return (
+        <div className="max-w-md mx-auto min-h-screen shadow-2xl bg-background relative">
+            <Dashboard profile={profile} code={code} />
+        </div>
+    );
 }

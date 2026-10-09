@@ -39,10 +39,10 @@ export default function RootLayout({ children }) {
             <link rel="icon" href="/Logo.png" />
             <link rel="apple-touch-icon" sizes="180x180" href="/Logo.png" />
         </head>
-        <body className="font-body">
-        <main className="min-h-screen max-w-md mx-auto bg-background shadow-2xl relative">
-          {children}
-        </main>
+        <body className="font-body bg-[#fff8f8]">
+          <main className="min-h-screen w-full relative">
+            {children}
+          </main>
         <Analytics />
         <SpeedInsights />
         <script dangerouslySetInnerHTML={{ __html: `

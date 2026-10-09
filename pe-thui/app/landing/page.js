@@ -112,7 +112,7 @@ export default function LandingPage() {
                                 </span>
                             </div>
                             <span className="text-[11px] text-[#861949]/70 font-semibold hidden sm:block">
-                                Không quảng cáo • Đồng bộ cả nhà tức thì
+                                Đồng bộ gia đình • Riêng tư & Miễn phí
                             </span>
                         </div>
                     </Link>
@@ -210,7 +210,7 @@ export default function LandingPage() {
                         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-50 border border-pink-200/80 mb-6">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                             <span className="text-xs font-bold text-[#861949] tracking-wide">
-                                Ứng dụng theo dõi thai kỳ & nuôi con • Không quảng cáo
+                                Ứng dụng theo dõi thai kỳ & nuôi con • Chuẩn Y khoa & Riêng tư
                             </span>
                         </div>
 
@@ -1169,7 +1169,7 @@ export default function LandingPage() {
                         Bắt đầu hành trình chăm con an tâm ngay hôm nay
                     </h2>
                     <p className="text-sm sm:text-base text-gray-700 max-w-xl mx-auto mb-8 font-medium">
-                        Không cần đăng ký thẻ, không quảng cáo, mở ra là dùng ngay.
+                        Không cần đăng ký thẻ tín dụng, mở trình duyệt là dùng ngay.
                     </p>
 
                     <Link 

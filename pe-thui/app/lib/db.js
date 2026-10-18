@@ -1,4 +1,5 @@
 import { getFirestore } from './firestore.js';
+import { normalizeIsoDate } from './calculations.js';
 
 // -------------------------------------------------------------
 // BABIES / PROFILE
@@ -225,22 +226,27 @@ export async function getGrowthRecords(code) {
 
     const records = snap.docs.map(doc => {
         const d = doc.data();
+        const date = normalizeIsoDate(d.date) || d.date || '';
         return {
             id: doc.id,
-            date: d.date || '',
+            date,
             ageMonths: Number(d.ageMonths) || 0,
             weight: Number(d.weight) || 0,
             height: Number(d.height) || 0,
             type: d.type || '',
             gestationalAge: d.gestationalAge || '',
             note: d.note || '',
+            createdAt: d.createdAt ? (d.createdAt.toDate ? d.createdAt.toDate().toISOString() : d.createdAt) : null,
         };
     });
 
     // Sort by date ascending, fallback by ageMonths
     records.sort((a, b) => {
-        if (a.date && b.date) return a.date.localeCompare(b.date);
-        return a.ageMonths - b.ageMonths;
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        if (!isNaN(dateA) && !isNaN(dateB) && dateA !== dateB) return dateA - dateB;
+        if (a.ageMonths !== b.ageMonths) return a.ageMonths - b.ageMonths;
+        return String(a.id || '').localeCompare(String(b.id || ''));
     });
 
     return records;
@@ -250,7 +256,7 @@ export async function addGrowthRecord(code, record) {
     const db = getFirestore();
     const growthCol = db.collection('babies').doc(code).collection('growth');
     const docData = {
-        date: record.date || '',
+        date: normalizeIsoDate(record.date) || record.date || '',
         ageMonths: Number(record.ageMonths) || 0,
         weight: Number(record.weight) || 0,
         height: Number(record.height) || 0,
@@ -267,7 +273,7 @@ export async function updateGrowthRecord(code, id, record) {
     const db = getFirestore();
     const docRef = db.collection('babies').doc(code).collection('growth').doc(String(id));
     const updateData = {
-        date: record.date || '',
+        date: normalizeIsoDate(record.date) || record.date || '',
         ageMonths: Number(record.ageMonths) || 0,
         weight: Number(record.weight) || 0,
         height: Number(record.height) || 0,

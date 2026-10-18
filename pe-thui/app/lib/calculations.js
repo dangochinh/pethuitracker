@@ -59,3 +59,40 @@ export function assessHeight(height, ageMonths) {
     if (height < avg * 0.9) return { status: 'Dưới chuẩn', color: 'text-[#c2185b]', bg: 'bg-[#f8bbd0]' };
     return { status: 'Đạt chuẩn', color: 'text-[#00838f]', bg: 'bg-[#b2ebf2]' };
 }
+
+export function normalizeIsoDate(dateStr) {
+    if (!dateStr) return '';
+    const trimmed = String(dateStr).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(trimmed)) {
+        const [d, m, y] = trimmed.split('/');
+        return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+    }
+    const d = new Date(trimmed);
+    if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+    return trimmed;
+}
+
+export function sortGrowthRecordsDescending(records = []) {
+    return [...records].sort((a, b) => {
+        const isoA = normalizeIsoDate(a.date);
+        const isoB = normalizeIsoDate(b.date);
+        const dateA = isoA ? new Date(isoA).getTime() : 0;
+        const dateB = isoB ? new Date(isoB).getTime() : 0;
+        if (!isNaN(dateA) && !isNaN(dateB) && dateA !== dateB) {
+            return dateB - dateA;
+        }
+        const ageA = Number(a.ageMonths) || 0;
+        const ageB = Number(b.ageMonths) || 0;
+        if (ageB !== ageA) {
+            return ageB - ageA;
+        }
+        const createdA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const createdB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (!isNaN(createdA) && !isNaN(createdB) && createdA !== createdB) {
+            return createdB - createdA;
+        }
+        return String(b.id || '').localeCompare(String(a.id || ''));
+    });
+}
+

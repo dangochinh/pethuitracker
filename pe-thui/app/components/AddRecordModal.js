@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { calculateAge, normalizeIsoDate } from '../lib/calculations';
 
 export default function AddRecordModal({ onClose, onSave, profile, code }) {
     const [weight, setWeight] = useState('');
@@ -9,19 +10,28 @@ export default function AddRecordModal({ onClose, onSave, profile, code }) {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
-    const start = new Date(profile.dob);
-    const end = new Date(date);
-    const ageMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-    const years = Math.floor(Math.max(0, ageMonths) / 12);
-    const months = Math.max(0, ageMonths) % 12;
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (!weight || !height || !date) {
-            setError('Vui lòng nhập đủ thông tin!');
+
+        const safeDate = normalizeIsoDate(date);
+        if (!safeDate) {
+            setError('Vui lòng chọn ngày đo hợp lệ!');
             return;
         }
+
+        const numWeight = parseFloat(String(weight).trim().replace(',', '.'));
+        const numHeight = parseFloat(String(height).trim().replace(',', '.'));
+        const hasWeight = !isNaN(numWeight) && numWeight > 0;
+        const hasHeight = !isNaN(numHeight) && numHeight > 0;
+
+        if (!hasWeight && !hasHeight) {
+            setError('Vui lòng nhập cân nặng hoặc chiều cao của bé!');
+            return;
+        }
+
+        const computedAgeMonths = profile?.dob ? calculateAge(profile.dob, safeDate).totalMonths : 0;
+        const ageMonths = Math.max(0, computedAgeMonths);
 
         setSaving(true);
         try {
@@ -30,17 +40,20 @@ export default function AddRecordModal({ onClose, onSave, profile, code }) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     code: code,
-                    date,
-                    ageMonths: Math.max(0, ageMonths),
-                    weight: parseFloat(weight),
-                    height: parseFloat(height)
+                    date: safeDate,
+                    ageMonths,
+                    weight: hasWeight ? numWeight : 0,
+                    height: hasHeight ? numHeight : 0,
+                    type: 'baby_growth'
                 })
             });
             const json = await res.json();
-            if (json.success) {
+            if (res.ok && json.success) {
                 onSave();
                 onClose();
-            } else setError(json.error || 'Có lỗi xảy ra');
+            } else {
+                setError(json.error || 'Có lỗi xảy ra khi lưu chỉ số');
+            }
         } catch (e) {
             setError('Lỗi kết nối đến máy chủ. Vui lòng thử lại.');
         } finally {
@@ -80,7 +93,7 @@ export default function AddRecordModal({ onClose, onSave, profile, code }) {
                         <div className="space-y-2">
                             <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Cân nặng (kg)</label>
                             <input
-                                type="number" step="0.1"
+                                type="number" step="any"
                                 className="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
                                 placeholder="VD: 10.1"
                                 value={weight}
@@ -90,7 +103,7 @@ export default function AddRecordModal({ onClose, onSave, profile, code }) {
                         <div className="space-y-2">
                             <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Chiều cao (cm)</label>
                             <input
-                                type="number" step="0.1"
+                                type="number" step="any"
                                 className="w-full bg-surface-container-lowest border border-outline-variant/50 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
                                 placeholder="VD: 77"
                                 value={height}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { calculateAge, predictAdultHeight, assessWeight, assessHeight } from '../lib/calculations';
+import { calculateAge, predictAdultHeight, assessWeight, assessHeight, sortGrowthRecordsDescending } from '../lib/calculations';
 import AddRecordModal from './AddRecordModal';
 import EditProfileModal from './EditProfileModal';
 import EditRecordModal from './EditRecordModal';
@@ -144,10 +144,7 @@ export default function Dashboard({ profile, code }) {
                 const list = profile.mode === 'pregnancy'
                     ? growthJson.data
                     : growthJson.data.filter(d => d.type !== 'mother_weight');
-                setRecords(list.sort((a, b) => {
-                    if (b.ageMonths !== a.ageMonths) return b.ageMonths - a.ageMonths;
-                    return b.id - a.id;
-                }));
+                setRecords(sortGrowthRecordsDescending(list));
             }
             if (vaccineJson.success) setVaccineRecords(vaccineJson.data);
             if (teethJson.success) setTeethingRecords(teethJson.data);
@@ -218,7 +215,7 @@ export default function Dashboard({ profile, code }) {
                 if (profile.mode === 'pregnancy') {
                     return <PregnancyGrowth code={code} profile={profile} />;
                 }
-                return <GrowthCharts records={records} profile={profile} code={code} onBack={() => setView('home')} onEditRecord={setEditingRecord} />;
+                return <GrowthCharts records={records} profile={profile} code={code} onBack={() => setView('home')} onEditRecord={(rec) => requirePin(() => setEditingRecord(rec))} onAddRecord={() => requirePin(() => setShowAdd(true))} />;
             case 'health':
                 if (profile.mode === 'pregnancy') {
                     return <PregnancyCheckups profile={profile} code={code} />;
@@ -464,7 +461,7 @@ function HomeView({ profile, records, ageInfo, daysToBirthday, latest, setView, 
                     onFeed={onFeed}
                     onSleep={onSleep}
                     onDiaper={onDiaper}
-                    onMeasure={() => setView('growth')}
+                    onMeasure={() => requirePin(() => setShowAdd(true))}
                     activeSleep={activeSleep}
                 />
 

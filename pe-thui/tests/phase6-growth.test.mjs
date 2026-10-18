@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateAge, predictAdultHeight, assessWeight, assessHeight } from '../app/lib/calculations.js';
+import { calculateAge, predictAdultHeight, assessWeight, assessHeight, normalizeIsoDate, sortGrowthRecordsDescending } from '../app/lib/calculations.js';
 
 test('Phase 6: calculateAge correctly breaks down months and days', () => {
     const dob = '2025-01-01';
@@ -58,3 +58,52 @@ test('Phase 6: assessHeight matches WHO percentile categories', () => {
     const over = assessHeight(68, 6);
     assert.equal(over.status, 'Vượt chuẩn');
 });
+
+test('Phase 6: normalizeIsoDate converts various formats to standard YYYY-MM-DD', () => {
+    assert.equal(normalizeIsoDate('2026-05-10'), '2026-05-10', 'ISO format stays unchanged');
+    assert.equal(normalizeIsoDate('10/05/2026'), '2026-05-10', 'DD/MM/YYYY format is converted to YYYY-MM-DD');
+    assert.equal(normalizeIsoDate('5/5/2026'), '2026-05-05', 'D/M/YYYY format pads zeroes');
+    assert.equal(normalizeIsoDate('2026-05-10T08:30:00.000Z'), '2026-05-10', 'Full ISO timestamp is converted to date string');
+    assert.equal(normalizeIsoDate(''), '', 'Empty string returns empty');
+    assert.equal(normalizeIsoDate(null), '', 'Null returns empty');
+});
+
+test('Phase 6: sortGrowthRecordsDescending places latest measurements first and prevents NaN string ID bugs', () => {
+    const records = [
+        { id: 'docOld', date: '2026-06-01', ageMonths: 6, weight: 7.0, height: 65 },
+        { id: 'docNew', date: '2026-06-20', ageMonths: 6, weight: 7.8, height: 67 },
+        { id: 'docPreterm', date: '2025-12-01', ageMonths: 0, weight: 3.2, height: 49 },
+        { id: 'docTelegram', date: '25/06/2026', ageMonths: 6, weight: 8.0, height: 68 }
+    ];
+
+    const sorted = sortGrowthRecordsDescending(records);
+
+    // Latest date is 25/06/2026 (converted to 2026-06-25), followed by 2026-06-20, then 2026-06-01, then 2025-12-01
+    assert.equal(sorted[0].id, 'docTelegram', 'Bản ghi mới nhất ngày 25/06 phải đứng đầu');
+    assert.equal(sorted[1].id, 'docNew', 'Bản ghi ngày 20/06 phải đứng thứ 2');
+    assert.equal(sorted[2].id, 'docOld', 'Bản ghi ngày 01/06 phải đứng thứ 3');
+    assert.equal(sorted[3].id, 'docPreterm', 'Bản ghi sơ sinh tháng 0 phải đứng cuối');
+
+    // Latest weight and height records properly found
+    const latestWeight = sorted.find(r => r.weight > 0);
+    const latestHeight = sorted.find(r => r.height > 0);
+    assert.equal(latestWeight.weight, 8.0, 'Cân nặng mới nhất cập nhật đúng thành 8.0kg');
+    assert.equal(latestHeight.height, 68, 'Chiều cao mới nhất cập nhật đúng thành 68cm');
+});
+
+test('Phase 6: sortGrowthRecordsDescending handles independent weight-only and height-only records', () => {
+    const records = [
+        { id: 'w1', date: '2026-07-01', ageMonths: 7, weight: 8.5, height: 0 },
+        { id: 'h1', date: '2026-07-10', ageMonths: 7, weight: 0, height: 71.5 }
+    ];
+
+    const sorted = sortGrowthRecordsDescending(records);
+    const latestWeight = sorted.find(r => r.weight > 0);
+    const latestHeight = sorted.find(r => r.height > 0);
+
+    assert.equal(latestWeight.id, 'w1', 'Tìm đúng bản ghi cân nặng gần nhất');
+    assert.equal(latestWeight.weight, 8.5, 'Cân nặng là 8.5');
+    assert.equal(latestHeight.id, 'h1', 'Tìm đúng bản ghi chiều cao gần nhất');
+    assert.equal(latestHeight.height, 71.5, 'Chiều cao là 71.5');
+});
+

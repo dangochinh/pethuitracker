@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { calculateAge, normalizeIsoDate } from '../lib/calculations';
 
 export default function EditRecordModal({ onClose, onSave, profile, code, record }) {
-    const [date, setDate] = useState(record.date || new Date().toISOString().split('T')[0]);
-    const [weight, setWeight] = useState(record.weight || '');
-    const [height, setHeight] = useState(record.height || '');
+    const [date, setDate] = useState(normalizeIsoDate(record.date) || new Date().toISOString().split('T')[0]);
+    const [weight, setWeight] = useState(record.weight > 0 ? String(record.weight) : '');
+    const [height, setHeight] = useState(record.height > 0 ? String(record.height) : '');
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -14,31 +15,50 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        if (!weight || !height || !date) {
-            setError('Vui lòng nhập đủ thông tin!');
+
+        const safeDate = normalizeIsoDate(date);
+        if (!safeDate) {
+            setError('Vui lòng chọn ngày đo hợp lệ!');
             return;
         }
 
+        const numWeight = parseFloat(String(weight).trim().replace(',', '.'));
+        const numHeight = parseFloat(String(height).trim().replace(',', '.'));
+        const hasWeight = !isNaN(numWeight) && numWeight > 0;
+        const hasHeight = !isNaN(numHeight) && numHeight > 0;
+
+        if (!hasWeight && !hasHeight) {
+            setError('Vui lòng nhập cân nặng hoặc chiều cao của bé!');
+            return;
+        }
+
+        const computedAgeMonths = profile?.dob ? calculateAge(profile.dob, safeDate).totalMonths : (record.ageMonths ?? 0);
+        const ageMonths = Math.max(0, computedAgeMonths);
+
         setSaving(true);
         try {
-            const start = new Date(profile.dob);
-            const end = new Date(date);
-            const ageMonths = Math.max(0, (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()));
-
-            await fetch('/api/growth', {
+            const res = await fetch('/api/growth', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     id: record.id,
                     code,
-                    date,
+                    date: safeDate,
                     ageMonths,
-                    weight: parseFloat(weight),
-                    height: parseFloat(height)
+                    weight: hasWeight ? numWeight : 0,
+                    height: hasHeight ? numHeight : 0,
+                    type: record.type || 'baby_growth',
+                    gestationalAge: record.gestationalAge || '',
+                    note: record.note || ''
                 })
             });
-            onSave();
-            onClose();
+            const json = await res.json();
+            if (res.ok && json.success) {
+                onSave();
+                onClose();
+            } else {
+                setError(json.error || 'Có lỗi xảy ra khi cập nhật bản ghi.');
+            }
         } catch (e) {
             setError('Lỗi kết nối đến máy chủ. Vui lòng thử lại.');
         } finally {
@@ -54,11 +74,11 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
                 method: 'DELETE'
             });
             const json = await res.json();
-            if (json.success) {
+            if (res.ok && json.success) {
                 onSave();
                 onClose();
             } else {
-                setError('Lỗi khi xóa bản ghi.');
+                setError(json.error || 'Lỗi khi xóa bản ghi.');
             }
         } catch (e) {
             setError('Lỗi kết nối đến máy chủ. Vui lòng thử lại.');
@@ -131,7 +151,7 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
                                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Cân nặng (kg)</label>
                                 <input
                                     type="number"
-                                    step="0.01"
+                                    step="any"
                                     className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
                                     placeholder="VD: 8.5"
                                     value={weight}
@@ -142,7 +162,7 @@ export default function EditRecordModal({ onClose, onSave, profile, code, record
                                 <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest ml-1">Chiều cao (cm)</label>
                                 <input
                                     type="number"
-                                    step="0.1"
+                                    step="any"
                                     className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-2xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-on-surface"
                                     placeholder="VD: 72.5"
                                     value={height}

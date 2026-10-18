@@ -48,7 +48,13 @@ export default function BabyHomeView({
         const isWeight = chartMetric === 'weight';
         const validList = [...records]
             .filter(r => (isWeight ? r.weight > 0 : r.height > 0))
-            .sort((a, b) => (a.ageMonths ?? 0) - (b.ageMonths ?? 0));
+            .sort((a, b) => {
+                if ((a.ageMonths ?? 0) !== (b.ageMonths ?? 0)) return (a.ageMonths ?? 0) - (b.ageMonths ?? 0);
+                const dateA = a.date ? new Date(a.date).getTime() : 0;
+                const dateB = b.date ? new Date(b.date).getTime() : 0;
+                if (!isNaN(dateA) && !isNaN(dateB) && dateA !== dateB) return dateA - dateB;
+                return String(a.id || '').localeCompare(String(b.id || ''));
+            });
 
         let dataPoints = [];
         if (validList.length >= 2) {

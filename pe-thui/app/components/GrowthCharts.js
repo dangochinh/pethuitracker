@@ -1,10 +1,13 @@
 import { ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { predictAdultHeight, assessWeight, assessHeight } from '../lib/calculations';
 
-export default function GrowthCharts({ records, profile, code, onBack, onEditRecord }) {
+export default function GrowthCharts({ records, profile, code, onBack, onEditRecord, onAddRecord }) {
     const data = [...records].sort((a, b) => {
         if (a.ageMonths !== b.ageMonths) return a.ageMonths - b.ageMonths;
-        return b.id - a.id;
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        if (!isNaN(dateA) && !isNaN(dateB) && dateA !== dateB) return dateA - dateB;
+        return String(a.id || '').localeCompare(String(b.id || ''));
     });
 
     // Create smoothed out standard bands and integrate actual user records
@@ -24,9 +27,8 @@ export default function GrowthCharts({ records, profile, code, onBack, onEditRec
         const standardHeightAvg = i * 1.5 + 50;
 
         // Find the record matching THIS exact age.
-        // data is initially sorted chronologically descending in Dashboard, 
-        // and stable sorted by ageMonths here, so we get the newest if tie.
-        let record = data.find(d => d.ageMonths === i && (d.weight > 0 || d.height > 0));
+        // records is sorted chronologically descending, so we get the newest if tie.
+        let record = records.find(d => d.ageMonths === i && (d.weight > 0 || d.height > 0));
 
         return {
             ageMonths: i,
@@ -41,8 +43,7 @@ export default function GrowthCharts({ records, profile, code, onBack, onEditRec
         };
     });
 
-    const heightRecords = data.filter(d => d.height > 0);
-    const latestHeightRecord = heightRecords.length > 0 ? heightRecords[heightRecords.length - 1] : null;
+    const latestHeightRecord = records.find(r => r.height > 0) || null;
     const predictedHeight = latestHeightRecord ? predictAdultHeight(latestHeightRecord.height, profile.gender, latestHeightRecord.ageMonths) : 0;
     const latestHeightDateSource = latestHeightRecord?.createdAt || latestHeightRecord?.date;
     const latestHeightDate = latestHeightDateSource ? new Date(latestHeightDateSource).toLocaleDateString('vi-VN') : '--/--/----';
@@ -176,14 +177,30 @@ export default function GrowthCharts({ records, profile, code, onBack, onEditRec
 
 
                 {/* Growth History Section */}
-                {records.filter(r => r.weight > 0 || r.height > 0).length > 0 && (
-                    <section className="space-y-4">
-                        <div className="flex items-center justify-between px-2">
+                <section className="space-y-4">
+                    <div className="flex items-center justify-between px-2">
+                        <div>
                             <h3 className="text-base font-bold font-headline text-gray-900">Lịch sử đo đạc</h3>
+                            <p className="text-[11px] text-gray-400">Chạm vào bản ghi để chỉnh sửa hoặc xóa</p>
+                        </div>
+                        <div className="flex items-center gap-2">
                             <span className="text-[10px] font-black text-[#861949] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-pink-100">
                                 {records.filter(r => r.weight > 0 || r.height > 0).length} lần đo
                             </span>
+                            {onAddRecord && (
+                                <button
+                                    type="button"
+                                    onClick={onAddRecord}
+                                    className="flex items-center gap-1 bg-[#861949] text-white px-3 py-1.5 rounded-full font-bold text-xs hover:bg-[#6e143c] shadow-sm transition-all active:scale-95 cursor-pointer"
+                                >
+                                    <span className="material-symbols-outlined text-sm">add</span>
+                                    <span>Thêm số đo</span>
+                                </button>
+                            )}
                         </div>
+                    </div>
+
+                    {records.filter(r => r.weight > 0 || r.height > 0).length > 0 ? (
                         <div className="space-y-2.5">
                             {[...records]
                                 .filter(r => r.weight > 0 || r.height > 0)
@@ -243,8 +260,22 @@ export default function GrowthCharts({ records, profile, code, onBack, onEditRec
                                     );
                                 })}
                         </div>
-                    </section>
-                )}
+                    ) : (
+                        <div className="bg-white rounded-2xl p-6 border border-dashed border-pink-200 text-center">
+                            <p className="text-sm font-bold text-gray-600 mb-3">Chưa có số đo cân nặng hoặc chiều cao nào.</p>
+                            {onAddRecord && (
+                                <button
+                                    type="button"
+                                    onClick={onAddRecord}
+                                    className="inline-flex items-center gap-1.5 bg-[#861949] text-white px-4 py-2 rounded-full font-bold text-xs hover:bg-[#6e143c] shadow-sm transition-all active:scale-95 cursor-pointer"
+                                >
+                                    <span className="material-symbols-outlined text-sm">add</span>
+                                    <span>Ghi nhận số đo đầu tiên</span>
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </section>
 
             </div>
         </div>

@@ -311,6 +311,7 @@ export async function POST(request) {
       const mm = String(measureDate.getMonth() + 1).padStart(2, '0');
       const yyyy = measureDate.getFullYear();
       const measureDateStr = `${dd}/${mm}/${yyyy}`;
+      const isoDateStr = `${yyyy}-${mm}-${dd}`;
 
       let ageMonths = 0;
       const dobDate = parseDate(dob);
@@ -323,10 +324,11 @@ export async function POST(request) {
       }
 
       await addGrowthRecord(code, {
-        date: measureDateStr,
+        date: isoDateStr,
         ageMonths,
         weight,
-        height
+        height,
+        type: 'baby_growth'
       });
 
       await sendTelegramMessage(chatId,
